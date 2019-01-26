@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\GitHub\CPI\src\CPI.IService\CPI.IService.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\GitHub\CPI\src\CPI.IService\CPI.IService.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CPI.IService.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lotus.Core" Version="1.0.47" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CPI.Common\CPI.Common.csproj" />
+  </ItemGroup>
+
+</Project>

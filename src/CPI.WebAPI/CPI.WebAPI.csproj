@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lotus.Core" Version="1.0.47" />
+    <PackageReference Include="Lotus.Web.Mvc" Version="1.0.7.6" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CPI.Common\CPI.Common.csproj" />
+    <ProjectReference Include="..\CPI.Config\CPI.Config.csproj" />
+    <ProjectReference Include="..\CPI.Data.PostgreSQL\CPI.Data.PostgreSQL.csproj" />
+    <ProjectReference Include="..\CPI.Handlers\CPI.Handlers.csproj" />
+    <ProjectReference Include="..\CPI.IData\CPI.IData.csproj" />
+    <ProjectReference Include="..\CPI.IService\CPI.IService.csproj" />
+    <ProjectReference Include="..\CPI.Providers\CPI.Providers.csproj" />
+    <ProjectReference Include="..\CPI.Security\CPI.Security.csproj" />
+    <ProjectReference Include="..\CPI.Services\CPI.Services.csproj" />
+    <ProjectReference Include="..\CPI.Utils\CPI.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

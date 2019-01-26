@@ -1,0 +1,4018 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CPI.Common</name>
+    </assembly>
+    <members>
+        <member name="T:CPI.Common.AllotAmountOrderStatus">
+            <summary>
+            分账状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.AllotAmountOrderStatus.APPLY">
+            <summary>
+            申请中
+            </summary>
+        </member>
+        <member name="F:CPI.Common.AllotAmountOrderStatus.PROCESSING">
+            <summary>
+            处理中
+            </summary>
+        </member>
+        <member name="F:CPI.Common.AllotAmountOrderStatus.SUCCESS">
+            <summary>
+            成功
+            </summary>
+        </member>
+        <member name="F:CPI.Common.AllotAmountOrderStatus.FAILURE">
+            <summary>
+            失败
+            </summary>
+        </member>
+        <member name="T:CPI.Common.BankCardBindStatus">
+            <summary>
+            银行卡绑定状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.BankCardBindStatus.UNBOUND">
+            <summary>
+            未绑定
+            </summary>
+        </member>
+        <member name="F:CPI.Common.BankCardBindStatus.BOUND">
+            <summary>
+            绑定
+            </summary>
+        </member>
+        <member name="T:CPI.Common.CallResultStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.CallResultStatus.OK">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.CallResultStatus.ERROR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.CommonResponse">
+            <summary>
+            通用响应类基类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.CommonResponse.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.CommonResponse.Msg">
+            <summary>
+            状态描述
+            </summary>
+        </member>
+        <member name="T:CPI.Common.CommonStatus">
+            <summary>
+            通用状态类
+            </summary>
+        </member>
+        <member name="F:CPI.Common.CommonStatus.SUCCESS">
+            <summary>
+            成功
+            </summary>
+        </member>
+        <member name="F:CPI.Common.CommonStatus.FAILURE">
+            <summary>
+            失败
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail">
+            <summary>
+            协议支付绑卡详细信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.IDCardNo">
+            <summary>
+            付款人身份证号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.RealName">
+            <summary>
+            付款人真实姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.PayChannelCode">
+            <summary>
+            支付通道编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.PayToken">
+            <summary>
+            支付令牌
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.BindStatus">
+            <summary>
+            绑定状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.AgreePayBankCardBindDetail.ApplyTime">
+            <summary>
+            申请绑定时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.Bill99AgreePayQueryResult">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.Bill99AgreePayQueryResult.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.Bill99AgreePayQueryResult.Amount">
+            <summary>
+            支付金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.Bill99AgreePayQueryResult.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.Bill99AgreePayQueryResult.PayStatus">
+            <summary>
+            支付状态
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CommonPayRequest">
+            <summary>
+            协议支付通用请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CommonPayRequest.PayerId">
+            <summary>
+            付款人ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CommonPayRequest.Amount">
+            <summary>
+            付款金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CommonPayRequest.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CommonPayRequest.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.AgreePay.CommonPayRequest.GetPayAmount">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest">
+            <summary>
+            申请支付请求参数类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.OutTradeNo">
+            <summary>
+            外部交易号（商户订单号），最大长度64位
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.BankCardNo">
+            <summary>
+            付款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.RealName">
+            <summary>
+            付款人真实姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.IDCardNo">
+            <summary>
+            付款人身份证号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.Mobile">
+            <summary>
+            付款人银行预留手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest.BankCode">
+            <summary>
+            银行编码
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayApplyResponse">
+            <summary>
+            申请支付返回结果类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyResponse.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyResponse.OutTradeNo">
+            <summary>
+            外部交易号（商户订单号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyResponse.ApplyToken">
+            <summary>
+            申请的令牌，绑卡操作需要此令牌
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayApplyResponse.ApplyTime">
+            <summary>
+            申请时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest">
+            <summary>
+            绑卡请求参数类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.OutTradeNo">
+            <summary>
+            外部交易号（商户订单号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.BankCardNo">
+            <summary>
+            绑卡银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.Mobile">
+            <summary>
+            付款人银行预留手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.ApplyToken">
+            <summary>
+            申请支付返回的令牌
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest.SmsValidCode">
+            <summary>
+            短信验证码
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardResponse">
+            <summary>
+            绑卡返回参数类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardResponse.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardResponse.PayToken">
+            <summary>
+            支付令牌
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayBindCardResponse.BindTime">
+            <summary>
+            绑定时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest">
+            <summary>
+            支付请求参数类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.Amount">
+            <summary>
+            交易金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.OutTradeNo">
+            <summary>
+            支付外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.PayToken">
+            <summary>
+            支付令牌
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.Mobile">
+            <summary>
+            银行预留手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.NotifyUrl">
+            <summary>
+            通知地址
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest.GetPayAmount">
+            <summary>
+            获取支付金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentResponse">
+            <summary>
+            支付响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentResponse.OutTradeNo">
+            <summary>
+            外部交易号（商户订单编号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentResponse.TradeNo">
+            <summary>
+            CPI内部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayPaymentResponse.PayTime">
+            <summary>
+            支付时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest">
+            <summary>
+            支付查询请求参数类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest.PageIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest.PageSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest.OutTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest.From">
+            <summary>
+            查询订单的起始时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest.To">
+            <summary>
+            查询订单的结束时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.AgreePay.CPIAgreePayQueryResult">
+            <summary>
+            支付查询结果类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryResult.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryResult.Amount">
+            <summary>
+            支付金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.AgreePay.CPIAgreePayQueryResult.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.Common.ApiResult">
+            <summary>
+            表示Api执行结果
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.ApiResult.Status">
+            <summary>
+            表示结果状态值
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.ApiResult.ErrMsg">
+            <summary>
+            表示错误描述信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.ApiResult.Value">
+            <summary>
+            表示返回值
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.Common.PagedListResult`1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.PagedListResult`1.PageIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.PagedListResult`1.PageSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.PagedListResult`1.TotalCount">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.PagedListResult`1.Items">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.Common.PullQueryItem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.Common.PullQueryItem.#ctor(System.String,System.DateTime)">
+            <summary>
+            
+            </summary>
+            <param name="outTradeNo"></param>
+            <param name="createTime"></param>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.PullQueryItem.OutTradeNo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.Common.PullQueryItem.CreateTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest">
+            <summary>
+            支付请求参数类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.IDCardNo">
+            <summary>
+            付款人身份证号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.RealName">
+            <summary>
+            付款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.BankCardNo">
+            <summary>
+            付款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.Mobile">
+            <summary>
+            付款人银行预留手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.Amount">
+            <summary>
+            交易金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.OutTradeNo">
+            <summary>
+            外部交易号（商户订单编号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.NotifyUrl">
+            <summary>
+            通知地址
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest.GetPayAmount">
+            <summary>
+            获取支付金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentResponse">
+            <summary>
+            支付响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentResponse.OutTradeNo">
+            <summary>
+            外部交易号（商户订单编号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentResponse.TradeNo">
+            <summary>
+            CPI内部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentResponse.PayTime">
+            <summary>
+            支付时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.EntrustPay.CPIEntrustPayQueryRequest">
+            <summary>
+            委托代收查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.EntrustPay.CPIEntrustPayQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.EntrustPay.CPIEntrustPayQueryResponse">
+            <summary>
+            委托代收查询响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest">
+            <summary>
+            快钱单笔代付查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.PageIndex">
+            <summary>
+            当前页码，范围大于等于1，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.PageSize">
+            <summary>
+            每页显示的记录数，范围[1,20]，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.StartTime">
+            <summary>
+            支付申请接口的调用起始时间，格式：yyyy-MM-dd HH:mm:ss，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.EndTime">
+            <summary>
+            支付申请接口的调用截至时间，格式：yyyy-MM-dd HH:mm:ss，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.OrderNo">
+            <summary>
+            订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.CreditName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryRequest.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse">
+            <summary>
+            快钱单笔代付查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.OrderNo">
+            <summary>
+            荷花平台订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.Bill99OrderNo">
+            <summary>
+            快钱订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.CreditName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.BankCardNo">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.Amount">
+            <summary>
+            收款金额，单位：元
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.Fee">
+            <summary>
+            手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.FeeAction">
+            <summary>
+            手续费付费方式，0表示收款方付费，1表示付款方付费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.Status">
+            <summary>
+            交易状态，100表示申请成功，101表示支付中，111表示支付成功，112表示支付失败，114：已退票
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.ApplyDate">
+            <summary>
+            申请时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.Bill99SingleSettlementQueryResponse.EndDate">
+            <summary>
+            结束时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.FOCommonResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.FundOut.Bill99.FOCommonResponse.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.FOCommonResponse.MemberCode">
+            <summary>
+            会员编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.FOCommonResponse.ErrorCode">
+            <summary>
+            错误码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.FOCommonResponse.ErrorMessage">
+            <summary>
+            错误描述
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.OrderStatusResult">
+            <summary>
+            订单状态结果类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.OrderStatusResult.OutTradeNo">
+            <summary>
+            订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.OrderStatusResult.CreateTime">
+            <summary>
+            订单创建时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest">
+            <summary>
+            单笔代付申请请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.OrderNo">
+            <summary>
+            商家订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.Amount">
+            <summary>
+            付款金额，单位：元
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.CreditName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.FeeAction">
+            <summary>
+            付费方式，0表示收款方付款，1表示付款方付费，默认是1
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.Mobile">
+            <summary>
+            收款人手机号，可不填，填了会发短信
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.Remark">
+            <summary>
+            备注，可不填
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest.GetPayAmount">
+            <summary>
+            获取支付金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse">
+            <summary>
+            单笔代付申请响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.OrderNo">
+            <summary>
+            订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.Amount">
+            <summary>
+            收款金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.CreditName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.Mobile">
+            <summary>
+            收款人手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.FeeAction">
+            <summary>
+            付费方式，0表示收款方付款，1表示付款方付费，默认是1
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyResponse.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest">
+            <summary>
+            单笔代付查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest.PageIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest.PageSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest.OrderNo">
+            <summary>
+            订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest.From">
+            <summary>
+            查询订单的起始时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest.To">
+            <summary>
+            查询订单的结束时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse">
+            <summary>
+            单笔代付查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.OutTradeNo">
+            <summary>
+            荷花平台订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.TradeNo">
+            <summary>
+            CPI内部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.CreditName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.BankCardNo">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.Amount">
+            <summary>
+            收款金额，单位：元
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.Fee">
+            <summary>
+            手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.FeeAction">
+            <summary>
+            手续费付费方式，0表示收款方付费，1表示付款方付费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryResponse.CreateTime">
+            <summary>
+            订单创建时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult">
+            <summary>
+            代付结果
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.LoanJsonList">
+            <summary>
+            收款信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.PlatformMoneymoremore">
+            <summary>
+            还乾宝平台标识
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.BatchNo">
+            <summary>
+            标号（外部订单编号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.Remark">
+            <summary>
+            自定义备注，选填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.ResultCode">
+            <summary>
+            返回码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.Message">
+            <summary>
+            返回信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.EPay95PayReturnResult.SignInfo">
+            <summary>
+            签名信息
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo">
+            <summary>
+            代付收款信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.Amount">
+            <summary>
+            金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.OrderNo">
+            <summary>
+            平台订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.RealName">
+            <summary>
+            收款人真实姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.IdentificationNo">
+            <summary>
+            收款人证件号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.CardNumber">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo.Type">
+            <summary>
+            类型，0：个人，1：企业
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfoJsonConverter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfoJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="hasExistingValue"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfoJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,CPI.Common.Domain.FundOut.EPay95.FundOutLoanInfo,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult">
+            <summary>
+            通知结果
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.LoanJsonList">
+            <summary>
+            收款信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.PlatformMoneymoremore">
+            <summary>
+            还乾宝平台标识
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.BatchNo">
+            <summary>
+            外部订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.ResultCode">
+            <summary>
+            返回码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.Message">
+            <summary>
+            返回信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayNotifyResult.SignInfo">
+            <summary>
+            签名信息
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.PayRequest">
+            <summary>
+            代付支付请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.Amount">
+            <summary>
+            金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.OutTradeNo">
+            <summary>
+            平台订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.MerchantNo">
+            <summary>
+            商户编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.RealName">
+            <summary>
+            收款人真实姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.IDCardNo">
+            <summary>
+            收款人身份证号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.BankCardNo">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayRequest.Remark">
+            <summary>
+            备注，可选
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.PayResponse">
+            <summary>
+            代付支付响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayResponse.Amount">
+            <summary>
+            金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayResponse.OutTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.PayResponse.BankCardNo">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.QueryDetailResult">
+            <summary>
+            单笔代付查询明细结果类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryDetailResult.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryDetailResult.RealName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryDetailResult.BankCardNo">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryDetailResult.Amount">
+            <summary>
+            收款金额，单位：元
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryDetailResult.CreateTime">
+            <summary>
+            订单创建时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.QueryRequest">
+            <summary>
+            单笔代付查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryRequest.PageIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryRequest.PageSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryRequest.OutTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryRequest.From">
+            <summary>
+            查询订单的起始时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryRequest.To">
+            <summary>
+            查询订单的结束时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.FundOut.EPay95.QueryStatusResult">
+            <summary>
+            单笔代付查询状态结果类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryStatusResult.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryStatusResult.BankCardNo">
+            <summary>
+            收款人银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryStatusResult.Amount">
+            <summary>
+            收款金额，单位：元
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.FundOut.EPay95.QueryStatusResult.CreateTime">
+            <summary>
+            订单创建时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.IPaymentRequest">
+            <summary>
+            支付请求接口类
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.IPaymentRequest.GetPayAmount">
+            <summary>
+            获取支付金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceInfo">
+            <summary>
+            账户余额实体类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceInfo.AccountBalanceType">
+            <summary>
+            账户余额类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceInfo.AccountName">
+            <summary>
+            账户名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceInfo.Balance">
+            <summary>
+            账户余额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceInfo.AvailableBalance">
+            <summary>
+            账户可用余额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryRequest">
+            <summary>
+            账户余额查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryRequest.AppId">
+            <summary>
+            分配给接入用户的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryRequest.AccountBalanceTypes">
+            <summary>
+            账户余额类型，SPAD0001：待分账账户，SPAW0001：可提现账户
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryResponse">
+            <summary>
+            账户余额查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryResponse.AccountBalances">
+            <summary>
+            账户余额列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceType">
+            <summary>
+            账户余额类型
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceType.SPAD0001">
+            <summary>
+            待分账账户
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceType.SPAW0001">
+            <summary>
+            可提现账户
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest">
+            <summary>
+            消费分账请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest.AppId">
+            <summary>
+            分配给接入平台Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest.PayeeId">
+            <summary>
+            收款人ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest.WithdrawOutTradeNo">
+            <summary>
+            提现单外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest.TotalAmount">
+            <summary>
+            分账总金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest.Validate">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayResponse">
+            <summary>
+            消费分账响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest">
+            <summary>
+            退货分账请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest.WithdrawOutTradeNo">
+            <summary>
+            提现外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest.TotalAmount">
+            <summary>
+            分账总金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest.SettlePeriod">
+            <summary>
+            分账数据
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundResponse">
+            <summary>
+            退货分账响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryRequest">
+            <summary>
+            分账明细查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryRequest.OutOrderNo">
+            <summary>
+            消费分账外部订单编号或退货分账的外部订单编号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryResponse">
+            <summary>
+            分账明细查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryResponse.OutOrderNo">
+            <summary>
+            外部订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryResponse.TxnType">
+            <summary>
+            交易类型，1：消费，2：退货
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryResponse.TotalAmount">
+            <summary>
+            分账总金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryResponse.SettleResults">
+            <summary>
+            分账结果
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountType">
+            <summary>
+            分账类型
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountType.Pay">
+            <summary>
+            消费分账
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountType.Refund">
+            <summary>
+            退货分账
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest">
+            <summary>
+            分账提现请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.PayeeId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.OutTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.CustomerFee">
+            <summary>
+            客户自付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.MerchantFee">
+            <summary>
+            商户代付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyResponse">
+            <summary>
+            申请分账提现响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyResponse.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyResponse.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyResponse.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AmountFromCentJsonConverter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.AmountFromCentJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Decimal,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            将快钱返回的分转成元
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="hasExistingValue"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.AmountFromCentJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Decimal,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.AmountToCentJsonConverter">
+            <summary>
+            金额元转换成分
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.AmountToCentJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Decimal,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            读取元
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="hasExistingValue"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.AmountToCentJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Decimal,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            将元写成分
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.CommonWithdrawRequest">
+            <summary>
+            通用提现请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.CommonWithdrawRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.CommonWithdrawRequest.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.CommonWithdrawRequest.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.CommonWithdrawRequest.SettlePeriod">
+            <summary>
+            结算周期，T+0或D+0
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalBindCardStatusQueryRequest">
+            <summary>
+            个人提现绑卡状态查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalBindCardStatusQueryRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalBindCardStatusQueryRequest.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalBindCardStatusQueryResponse">
+            <summary>
+            个人提现绑卡状态查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalBindCardStatusQueryResponse.BindCards">
+            <summary>
+            绑卡列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalBoundCardListQueryRequest">
+            <summary>
+            个人账户已绑定的银行卡列表查询请求
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalBoundCardListQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalBoundCardListQueryRequest.PayeeId">
+            <summary>
+            用户ID 
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalBoundCardListQueryResponse">
+            <summary>
+            个人账户已绑定银行卡列表查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalBoundCardListQueryResponse.BindCards">
+            <summary>
+            提现绑卡列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalCancelBoundCardRequest">
+            <summary>
+            个人账户取消绑卡请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalCancelBoundCardRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalCancelBoundCardRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalCancelBoundCardResponse">
+            <summary>
+            个人账户取消绑卡响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryRequest">
+            <summary>
+            个人账户信息查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse">
+            <summary>
+            个人账户信息查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse.IDCardType">
+            <summary>
+            证件类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse.IDCardNo">
+            <summary>
+            证件号码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse.RealName">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryResponse.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoRegisterStatus">
+            <summary>
+            个人账户信息审核状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoRegisterStatus.WAITFORAUDIT">
+            <summary>
+            待审核
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoRegisterStatus.WAITFORREVIEW">
+            <summary>
+            待复审
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoRegisterStatus.SUCCESS">
+            <summary>
+            开户成功
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateRequest">
+            <summary>
+            个人账户信息更新请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateRequest.UID">
+            <summary>
+            荷花平台用户Id，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateRequest.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateRequest.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateResponse">
+            <summary>
+            个人信息更新响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest">
+            <summary>
+            个人账户开户请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.IDCardType">
+            <summary>
+            证件类型，身份证：101
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.IDCardNo">
+            <summary>
+            证件号码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.RealName">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterResponse">
+            <summary>
+            个人账户注册响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterResponse.OpenId">
+            <summary>
+            快钱测用户Id
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest">
+            <summary>
+            个人账户提现绑卡请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest.AppId">
+            <summary>
+            分配给接入平台Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest.BankCardNo">
+            <summary>
+            银行卡号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest.Mobile">
+            <summary>
+            银行预留手机号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest.SecondAccountFlag">
+            <summary>
+            二类账户标识，0表示非二类账户，1表示是二类账户，默认为0，可选
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardResponse">
+            <summary>
+            个人账户提现绑卡响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardResponse.MemberBankAccountId">
+            <summary>
+            银行卡主键Id信息，绑卡成功时返回
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest">
+            <summary>
+            个人账户提现重新绑卡请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest.PayeeId">
+            <summary>
+            收款人Id，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest.BankCardNo">
+            <summary>
+            银行卡号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest.Mobile">
+            <summary>
+            银行预留手机号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest.SecondAccountFlag">
+            <summary>
+            二类账户标识，0表示非二类账户，1表示是二类账户，默认为0，可选
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardResponse">
+            <summary>
+            个人账户提现重新绑卡响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardResponse.MemberBankAccountId">
+            <summary>
+            银行卡主键Id信息，绑卡成功时返回
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceInfo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceInfo.accountBalanceType">
+            <summary>
+            账户余额类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceInfo.accountName">
+            <summary>
+            账户名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceInfo.balance">
+            <summary>
+            账户余额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceInfo.availableBalance">
+            <summary>
+            账户可用余额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceQueryRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceQueryRequest.uId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceQueryRequest.accountBalanceType">
+            <summary>
+            账户余额类型
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceQueryResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAccountBalanceQueryResponse.accountBalanceList">
+            <summary>
+            账户余额列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountPayRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountPayRequest.outOrderNo">
+            <summary>
+            外部订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountPayRequest.totalAmount">
+            <summary>
+            分账总金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountPayRequest.settleData">
+            <summary>
+            分账数据
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountPayResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountRefundRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountRefundRequest.outOrderNo">
+            <summary>
+            外部订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountRefundRequest.origOutOrderNo">
+            <summary>
+            申请分账时的外部订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountRefundRequest.totalAmount">
+            <summary>
+            分账总金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountRefundRequest.settleData">
+            <summary>
+            分账数据
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawAllotAmountRefundResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBindCardStatusQueryRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBindCardStatusQueryRequest.uId">
+            <summary>
+            平台用户Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBindCardStatusQueryRequest.bankAcctId">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBindCardStatusQueryResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBindCardStatusQueryResponse.BindCards">
+            <summary>
+            绑卡列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBoundCardListQueryRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBoundCardListQueryRequest.PayeeId">
+            <summary>
+            用户ID 
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBoundCardListQueryResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalBoundCardListQueryResponse.BindCards">
+            <summary>
+            提现绑卡列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse.IDCardType">
+            <summary>
+            证件类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse.IDCardNo">
+            <summary>
+            证件号码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse.RealName">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoQueryResponse.AuditStatus">
+            <summary>
+            审核状态，01：待审核，02：待复审，03：审核通过
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalInfoUpdateResponse">
+            <summary>
+            个人账户信息更新响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest">
+            <summary>
+            原始个人账户开户请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest.uId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest.idCardType">
+            <summary>
+            证件类型，身份证：101
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest.idCardNumber">
+            <summary>
+            证件号码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest.name">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest.mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterRequest.email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterResponse">
+            <summary>
+            原始个人账户注册响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterResponse.OpenId">
+            <summary>
+            蝶巢侧用户 id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalRegisterResponse.AuditStatus">
+            <summary>
+            审核状态
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardRequest">
+            <summary>
+            原始个人账户提现绑卡请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardRequest.uId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardRequest.bankAcctId">
+            <summary>
+            银行卡号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardRequest.mobile">
+            <summary>
+            银行预留手机号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardRequest.secondAcct">
+            <summary>
+            二类账户标识，0表示非二类账户，1表示是二类账户，默认为0，可选
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardResponse">
+            <summary>
+            原始个人账户提现绑卡响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawBindCardResponse.memberBankAcctId">
+            <summary>
+            银行卡主键Id信息，绑卡成功时返回
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardRequest.uId">
+            <summary>
+            平台用户 id，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardRequest.bankAcctId">
+            <summary>
+            银行卡号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardRequest.mobile">
+            <summary>
+            银行预留手机号，必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardRequest.secondAcct">
+            <summary>
+            二类账户标识，0表示非二类账户，1表示是二类账户，默认为0，可选
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardResponse">
+            <summary>
+            原始个人账户提现重新绑卡响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawPersonalWithdrawRebindCardResponse.MemberBankAccountId">
+            <summary>
+            银行卡主键Id信息，绑卡成功时返回
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawSettleData">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawSettleData.merchantUid">
+            <summary>
+            收款账户Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawSettleData.outSubOrderNo">
+            <summary>
+            外部子单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawSettleData.origOutSubOrderNo">
+            <summary>
+            原消费分账时的分账子订单编号，退款分账时必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawSettleData.amount">
+            <summary>
+            分账金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawSettleData.settlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawBindCardQueryStatusRequest">
+            <summary>
+            提现绑卡状态查询
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawBindCardQueryStatusRequest.uId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawBindCardQueryStatusRequest.bankAcctId">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawBindCardQueryStatusResponse">
+            <summary>
+            提现绑卡状态查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawBindCardQueryStatusResponse.BindCards">
+            <summary>
+            绑卡状态列表
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryFeeRequest">
+            <summary>
+            提现手续费查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryFeeRequest.uId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryFeeRequest.amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryFeeResponse">
+            <summary>
+            提现手续费查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryFeeResponse.Fee">
+            <summary>
+            手续费
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryRequest">
+            <summary>
+            账户提现查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryRequest.uId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryRequest.outTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse">
+            <summary>
+            账户提现查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.CustomerFee">
+            <summary>
+            客户自付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.MerchantFee">
+            <summary>
+            商户代付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.MemberBankAcctId">
+            <summary>
+            银行卡主键 Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.Memo">
+            <summary>
+            交易摘要
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.Status">
+            <summary>
+            交易状态，1：成功，2：失败，3：处理中
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawQueryResponse.Msg">
+            <summary>
+            交易描述
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawRequest.uId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawRequest.outTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawRequest.amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawRequest.customerFee">
+            <summary>
+            客户自付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawRequest.merchantFee">
+            <summary>
+            商户代付手续费
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawResponse">
+            <summary>
+            快钱返回的提现响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawResponse.dealId">
+            <summary>
+            盈账通内部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.RawWithdrawResponse.status">
+            <summary>
+            订单状态
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.SettleData">
+            <summary>
+            分账数据实体类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleData.MerchantUid">
+            <summary>
+            收款账户Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleData.OutSubOrderNo">
+            <summary>
+            外部子单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleData.Amount">
+            <summary>
+            分账金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleData.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.SettleData.Validate">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.SettleDataToArrayJsonConverter">
+            <summary>
+            SettleData转成SettleData[]格式的转换器
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.SettleDataToArrayJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,CPI.Common.Domain.SettleDomain.Bill99.SettleData,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="hasExistingValue"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.SettleDataToArrayJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,CPI.Common.Domain.SettleDomain.Bill99.SettleData,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyRequest">
+            <summary>
+            修改分账周期请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyRequest.OutOrderNo">
+            <summary>
+            外部订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyRequest.OutSubOrderNo">
+            <summary>
+            外部子订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyRequest.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyResponse">
+            <summary>
+            修改分账周期响应类
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.SettleResult">
+            <summary>
+            分账结果
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleResult.OutSubOrderNo">
+            <summary>
+            外部子订单号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleResult.TxnType">
+            <summary>
+            交易类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleResult.Amount">
+            <summary>
+            分账金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleResult.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.SettleResult.SettleStatus">
+            <summary>
+            结算状态，0：初始化, 8：结算失败, 9：结算成功
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo">
+            <summary>
+            提现绑卡的银行卡信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.MemberBankAcctId">
+            <summary>
+            银行卡主键Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.CardHolder">
+            <summary>
+            持卡人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.BankNo">
+            <summary>
+            银行编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.BankCode">
+            <summary>
+            银行编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.AccountType">
+            <summary>
+            账户类型，默认0，出入金。
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.IsPrimaryCard">
+            <summary>
+            是否是主卡，1表示主卡，0表示非主卡
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardInfo.Status">
+            <summary>
+            银行卡状态，0：未验，1：已验证，2：验证中，9：注销 
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusRequest">
+            <summary>
+            提现绑卡状态查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusRequest.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusResponse">
+            <summary>
+            提现绑卡状态查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusResponse.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusResponse.MemberBankAcctId">
+            <summary>
+            银行卡主键Id
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardStatus">
+            <summary>
+            提现绑卡状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardStatus.PROCESSING">
+            <summary>
+            处理中
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardStatus.WAITFORAUDIT">
+            <summary>
+            待审核
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardStatus.SUCCESS">
+            <summary>
+            成功
+            </summary>
+        </member>
+        <member name="F:CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardStatus.FAILURE">
+            <summary>
+            失败
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeRequest">
+            <summary>
+            提现手续费查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeRequest.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeRequest.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeResponse">
+            <summary>
+            提现手续费查询响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeResponse.Fee">
+            <summary>
+            手续费
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryRequest.PayeeId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryRequest.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.CustomerFee">
+            <summary>
+            客户自付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.MerchantFee">
+            <summary>
+            商户代付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.MemberBankAcctId">
+            <summary>
+            银行卡主键 Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryResponse.Memo">
+            <summary>
+            交易摘要
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest">
+            <summary>
+            账户提现请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.PayeeId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.OutTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.CustomerFee">
+            <summary>
+            客户自付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.MerchantFee">
+            <summary>
+            商户代付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawResponse">
+            <summary>
+            账户提现响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawResponse.DealId">
+            <summary>
+            盈账通内部交易编号
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest">
+            <summary>
+            提现状态查询请求类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest.PageIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest.PageSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest.OutTradeNo">
+            <summary>
+            外部交易号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest.From">
+            <summary>
+            查询订单的起始时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest.To">
+            <summary>
+            查询订单的结束时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryResult">
+            <summary>
+            提现状态查询结果类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryResult.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryResult.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryResult.ApplyTime">
+            <summary>
+            申请时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Domain.SettleDomain.Bill99.YZTCommonResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Domain.SettleDomain.Bill99.YZTCommonResponse.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.YZTCommonResponse.ResponseCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Domain.SettleDomain.Bill99.YZTCommonResponse.ResponseMessage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.ErrorCodes.AgreePayErrorCode">
+            <summary>
+            协议支付错误码，取值范围：[2001,3000]
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCodes.AgreePayErrorCode.NO_BANKCARD_BOUND">
+            <summary>
+            未绑卡
+            </summary>
+        </member>
+        <member name="T:CPI.Common.ErrorCode">
+            <summary>
+            通用错误码，取值范围：[0,2000]
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.SUCCESS">
+            <summary>
+            表示成功
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.FAILURE">
+            <summary>
+            表示失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.NULL_REFERENCE">
+            <summary>
+            表示空引用
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.INVALID_ARGUMENT">
+            <summary>
+            表示无效的参数
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.INVALID_CAST">
+            <summary>
+            表示无效的转换
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.INVALID_OPERATION">
+            <summary>
+            表示无效的操作
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.UNAUTHORIZED_ACCESS">
+            <summary>
+            表示未授权的访问
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.SUBMIT_REPEAT">
+            <summary>
+            表示重复提交
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.REMOTE_RETURN_NOTHING">
+            <summary>
+            表示远程未返回任何数据
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.SIGN_FAILED">
+            <summary>
+            表示签名失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.SERIALIZE_FAILED">
+            <summary>
+            表示序列化失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.DB_UPDATE_FAILED">
+            <summary>
+            更新数据失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.DESERIALIZE_FAILED">
+            <summary>
+            表示反序列化失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.DEPENDENT_API_CALL_FAILED">
+            <summary>
+            依赖的API调用失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.RSAKEY_NOT_FOUND">
+            <summary>
+            RSA密钥未找到
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.SIGN_VERIFY_FAILED">
+            <summary>
+            签名验签失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.METHOD_NOT_SUPPORT">
+            <summary>
+            不支持该方法
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.METHOD_INVOKE_FAILED">
+            <summary>
+            调用失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.OUT_TRADE_NO_EXISTED">
+            <summary>
+            外部交易编号重复
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.OUT_TRADE_NO_NOT_EXIST">
+            <summary>
+            外部交易编号不存在
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED">
+            <summary>
+            BizContent参数解析失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.REQUEST_TIMEOUT">
+            <summary>
+            请求超时
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.UNKNOW_ERROR">
+            <summary>
+            未知错误
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.INFO_EXISTED">
+            <summary>
+            信息已存在
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.INFO_NOT_EXIST">
+            <summary>
+            信息不存在
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.DB_QUERY_FAILED">
+            <summary>
+            数据查询失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.XML_ELEMENT_NOT_EXIST">
+            <summary>
+            XML元素不存在
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.DECODE_FAILED">
+            <summary>
+            解码失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.RESPONSE_READ_FAILED">
+            <summary>
+            读取响应数据失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.XML_PARSE_FAILED">
+            <summary>
+            XML解析失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.ENCRYPT_FAILED">
+            <summary>
+            加密失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.DECRYPT_FAILED">
+            <summary>
+            解密失败
+            </summary>
+        </member>
+        <member name="F:CPI.Common.ErrorCode.TASK_EXECUTE_FAILED">
+            <summary>
+            任务执行失败
+            </summary>
+        </member>
+        <member name="T:CPI.Common.SettleErrorCode">
+            <summary>
+            分账提现错误码类，取值范围：[6001-7000]
+            </summary>
+        </member>
+        <member name="F:CPI.Common.SettleErrorCode.UN_REGISTERED">
+            <summary>
+            未开户
+            </summary>
+        </member>
+        <member name="F:CPI.Common.SettleErrorCode.NO_BANKCARD_BOUND">
+            <summary>
+            未绑卡
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Exceptions.DbQueryException">
+            <summary>
+            表示数据库查询异常
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Exceptions.DbQueryException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:CPI.Common.Exceptions.DbQueryException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:CPI.Common.Exceptions.DbUpdateException">
+            <summary>
+            表示数据库更新异常
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Exceptions.DbUpdateException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:CPI.Common.Exceptions.DbUpdateException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:CPI.Common.Exceptions.RemoteException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Exceptions.RemoteException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:CPI.Common.Exceptions.RemoteException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:CPI.Common.Exceptions.RequestException">
+            <summary>
+            请求异常
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Exceptions.RequestException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:CPI.Common.Exceptions.RequestException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:CPI.Common.Exceptions.SignException">
+            <summary>
+            签名异常类
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Exceptions.SignException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:CPI.Common.Exceptions.SignException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="innerEx"></param>
+        </member>
+        <member name="T:CPI.Common.EnumExtensions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.EnumExtensions.GetDescription(System.Enum)">
+            <summary>
+            获取枚举类的描述信息
+            </summary>
+            <param name="eo"></param>
+        </member>
+        <member name="T:CPI.Common.GatewayCommonRequest">
+            <summary>
+            通用请求实体类
+            </summary>
+        </member>
+        <member name="M:CPI.Common.GatewayCommonRequest.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.GatewayCommonRequest.#ctor(Microsoft.AspNetCore.Http.IFormCollection)">
+            <summary>
+            
+            </summary>
+            <param name="collection"></param>
+        </member>
+        <member name="M:CPI.Common.GatewayCommonRequest.#ctor(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.AppId">
+            <summary>
+            应用ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.Method">
+            <summary>
+            接口名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.Version">
+            <summary>
+            调用的接口版本，固定为：1.0
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.Timestamp">
+            <summary>
+            发送请求的时间，格式"yyyy-MM-dd HH:mm:ss"
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.NotifyUrl">
+            <summary>
+            服务器主动通知商户服务器里指定页面的http/https路径
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.BizContent">
+            <summary>
+            请求参数集合的Json字符串，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递，具体参照各产品快速接入文档
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.SignType">
+            <summary>
+            商户生成签名字符串所使用的签名算法类型，目前支持RSA2和RSA，推荐使用RSA2
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonRequest.Sign">
+            <summary>
+            商户请求参数的签名字符串
+            </summary>
+        </member>
+        <member name="T:CPI.Common.GatewayCommonResponse">
+            <summary>
+            通用响应类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonResponse.Status">
+            <summary>
+            状态码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonResponse.Msg">
+            <summary>
+            状态描述
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonResponse.Content">
+            <summary>
+            响应的内容对象
+            </summary>
+        </member>
+        <member name="P:CPI.Common.GatewayCommonResponse.Sign">
+            <summary>
+            签名
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Int64ToStringJsonConverter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.Int64ToStringJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Int64,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="hasExistingValue"></param>
+            <param name="serializer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CPI.Common.Int64ToStringJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Int64,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="T:CPI.Common.Models.AgreePayBankCardBindInfo">
+            <summary>
+            银行卡绑卡信息表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.PayerId">
+            <summary>
+            付款人ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.BankCardId">
+            <summary>
+            银行卡Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.PayChannelCode">
+            <summary>
+            支付通道编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.PayToken">
+            <summary>
+            支付令牌
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.BindStatus">
+            <summary>
+            绑定状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardBindInfo.ApplyTime">
+            <summary>
+            申请绑定时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.AgreePayBankCardInfo">
+            <summary>
+            银行卡信息表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.RealName">
+            <summary>
+            付款人真实姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.IDCardNo">
+            <summary>
+            付款人身份证号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.Mobile">
+            <summary>
+            银行绑定手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.BankCode">
+            <summary>
+            银行编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AgreePayBankCardInfo.UpdateTime">
+            <summary>
+            更新时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.AllotAmountOrder">
+            <summary>
+            分账订单
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.Id">
+            <summary>
+            主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.TradeNo">
+            <summary>
+            内部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.PayeeId">
+            <summary>
+            分账收款方ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.WithdrawOutTradeNo">
+            <summary>
+            提现单外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.OutTradeNo">
+            <summary>
+            外部跟踪编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.OriginalOutTradeNo">
+            <summary>
+            原消费分账的外部交易编号，当分账类型为退款分账时此字段必填
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.TotalAmount">
+            <summary>
+            分账总金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.AllotType">
+            <summary>
+            分账类型：消费分账，退货分账
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.Status">
+            <summary>
+            分账状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.ApplyTime">
+            <summary>
+            分账申请时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountOrder.CompleteTime">
+            <summary>
+            分账完成时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.AllotAmountWithdrawOrder">
+            <summary>
+            分账提现订单
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.Id">
+            <summary>
+            主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.TradeNo">
+            <summary>
+            内部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.PayeeId">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.OutTradeNo">
+            <summary>
+            外部订单编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.Amount">
+            <summary>
+            提现金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.SettlePeriod">
+            <summary>
+            结算周期
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.CustomerFee">
+            <summary>
+            会员自付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.MerchantFee">
+            <summary>
+            商户代付手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.Status">
+            <summary>
+            提现状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.DealId">
+            <summary>
+            快钱内部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.ApplyTime">
+            <summary>
+            提现申请时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AllotAmountWithdrawOrder.CompleteTime">
+            <summary>
+            提现完成时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.AppChannelRoute">
+            <summary>
+            通道路由表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AppChannelRoute.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AppChannelRoute.AppId">
+            <summary>
+            应用的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.AppChannelRoute.PayChannelCode">
+            <summary>
+            支付通道编码
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.BankBaseInfo">
+            <summary>
+            银行基本信息表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankBaseInfo.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankBaseInfo.BankCode">
+            <summary>
+            银行编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankBaseInfo.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankBaseInfo.BankShortName">
+            <summary>
+            银行缩写
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.BankCardBin">
+            <summary>
+            银行卡Bin表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankCardBin.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankCardBin.CardBin">
+            <summary>
+            银行卡Bin号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankCardBin.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankCardBin.BankCode">
+            <summary>
+            银行编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.BankCardBin.CardName">
+            <summary>
+            银行卡名称
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.FundOutOrder">
+            <summary>
+            代付订单
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.Id">
+            <summary>
+            主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.TradeNo">
+            <summary>
+            内部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.OutTradeNo">
+            <summary>
+            外部交易编号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.RealName">
+            <summary>
+            收款人姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.Mobile">
+            <summary>
+            收款人手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.Amount">
+            <summary>
+            收款金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.Fee">
+            <summary>
+            手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.PayStatus">
+            <summary>
+            支付状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.FeeAction">
+            <summary>
+            手续费付费方式
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.BankName">
+            <summary>
+            银行名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.ApplyTime">
+            <summary>
+            申请时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.EndTime">
+            <summary>
+            结束时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.FundOutOrder.UpdateTime">
+            <summary>
+            更新时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.PayChannel">
+            <summary>
+            支付通道表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayChannel.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayChannel.ChannelCode">
+            <summary>
+            通道编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayChannel.ChannelName">
+            <summary>
+            通道名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayChannel.PayRate">
+            <summary>
+            通道支付费率
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayChannel.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.PayOrder">
+            <summary>
+            支付订单实体类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.TradeNo">
+            <summary>
+            内部交易编号，CPI系统内部全局唯一
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.PayerId">
+            <summary>
+            付款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.OutTradeNo">
+            <summary>
+            外部交易编号（订单编号）
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.PayAmount">
+            <summary>
+            支付金额
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.Fee">
+            <summary>
+            手续费
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.PayStatus">
+            <summary>
+            支付状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.PayType">
+            <summary>
+            支付类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.PayChannelCode">
+            <summary>
+            支付通道编码
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PayOrder.UpdateTime">
+            <summary>
+            最近一次更新时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.PersonalSubAccount">
+            <summary>
+            分账个人账户实体类
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.UID">
+            <summary>
+            平台用户ID
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.IDCardNo">
+            <summary>
+            身份证号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.IDCardType">
+            <summary>
+            银行卡类型
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.RealName">
+            <summary>
+            用户姓名
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.Mobile">
+            <summary>
+            银行预留手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.Status">
+            <summary>
+            开户状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.OpenId">
+            <summary>
+            快钱返回的OpenId
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.PersonalSubAccount.UpdateTime">
+            <summary>
+            更新时间
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.SysApp">
+            <summary>
+            系统应用表
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.SysApp.Id">
+            <summary>
+            系统主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.SysApp.AppId">
+            <summary>
+            应用的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.SysApp.AppName">
+            <summary>
+            应用的名称
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.SysApp.AppRSAPublicKey">
+            <summary>
+            应用系统的RSA公钥
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.SysApp.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:CPI.Common.Models.WithdrawBankCardBindInfo">
+            <summary>
+            提现绑卡信息
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.Id">
+            <summary>
+            主键
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.AppId">
+            <summary>
+            分配给接入平台的Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.PayeeId">
+            <summary>
+            收款人Id
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.BankCardNo">
+            <summary>
+            银行卡号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.Mobile">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.BankCardFlag">
+            <summary>
+            银行卡标记，0表示一类卡，1表示二类卡
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.BindStatus">
+            <summary>
+            绑定状态
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.ApplyTime">
+            <summary>
+            申请绑卡时间
+            </summary>
+        </member>
+        <member name="P:CPI.Common.Models.WithdrawBankCardBindInfo.MemberBankAccountId">
+            <summary>
+            快钱侧的银行卡主键Id，绑卡成功时返回
+            </summary>
+        </member>
+        <member name="T:CPI.Common.PayStatus">
+            <summary>
+            支付状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.PayStatus.APPLY">
+            <summary>
+            付款申请
+            </summary>
+        </member>
+        <member name="F:CPI.Common.PayStatus.PROCESSING">
+            <summary>
+            付款处理中
+            </summary>
+        </member>
+        <member name="F:CPI.Common.PayStatus.SUCCESS">
+            <summary>
+            付款成功，此状态为最终状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.PayStatus.FAILURE">
+            <summary>
+            支付失败， 此状态为最终状态
+            </summary>
+        </member>
+        <member name="T:CPI.Common.PayType">
+            <summary>
+            支付类型
+            </summary>
+        </member>
+        <member name="F:CPI.Common.PayType.AGREEMENTPAY">
+            <summary>
+            协议支付
+            </summary>
+        </member>
+        <member name="F:CPI.Common.PayType.ENTRUSTPAY">
+            <summary>
+            代扣
+            </summary>
+        </member>
+        <member name="T:CPI.Common.StatusToStringJsonConverter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CPI.Common.StatusToStringJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Int32,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="hasExistingValue"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:CPI.Common.StatusToStringJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Int32,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
+        <member name="T:CPI.Common.TraceType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.TraceType.API">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.TraceType.ROUTE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.TraceType.SCHEDULE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.TraceType.BLL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.TraceType.DAL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:CPI.Common.TraceType.UTIL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CPI.Common.WithdrawOrderStatus">
+            <summary>
+            提现订单状态
+            </summary>
+        </member>
+        <member name="F:CPI.Common.WithdrawOrderStatus.APPLY">
+            <summary>
+            申请提现
+            </summary>
+        </member>
+        <member name="F:CPI.Common.WithdrawOrderStatus.PROCESSING">
+            <summary>
+            处理中
+            </summary>
+        </member>
+        <member name="F:CPI.Common.WithdrawOrderStatus.SUCCESS">
+            <summary>
+            提现成功
+            </summary>
+        </member>
+        <member name="F:CPI.Common.WithdrawOrderStatus.FAILURE">
+            <summary>
+            提现失败
+            </summary>
+        </member>
+    </members>
+</doc>
