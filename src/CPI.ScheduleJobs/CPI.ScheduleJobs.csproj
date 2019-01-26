@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{04774CC3-7255-472E-A94E-F18CC35A48CD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CPI.ScheduleJobs</RootNamespace>
+    <AssemblyName>CPI.ScheduleJobs</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>6108394FAE2F592FE1CA99DAEF83D512AF17A71F</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>CPI.ScheduleJobs_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AgreePay\Bill99AgreepayPayResultPullJob.cs" />
+    <Compile Include="CPIJob.cs" />
+    <Compile Include="FundOut\Bill99PaymentResultPullJob.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settle\Bill99FireAllotAmountJob.cs" />
+    <Compile Include="Settle\Bill99FireWithdrawJob.cs" />
+    <Compile Include="Settle\Bill99PullAllotAmountResultJob.cs" />
+    <Compile Include="Settle\Bill99PullRegisterAuditResultJob.cs" />
+    <Compile Include="Settle\Bill99PullWithdrawResultJob.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="CPI.ScheduleJobs.Development.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="CPI.ScheduleJobs.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="CPI.ScheduleJobs.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Lotus.Logging">
+      <Version>1.1.17</Version>
+    </PackageReference>
+    <PackageReference Include="Lotus.Schedule">
+      <Version>1.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Quartz">
+      <Version>3.0.7</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CPI.Common\CPI.Common.csproj">
+      <Project>{744ce24a-cadf-4415-aeff-a9643306bca8}</Project>
+      <Name>CPI.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Config\CPI.Config.csproj">
+      <Project>{bef356ea-97d1-4ebe-9ab7-b9b85b63647c}</Project>
+      <Name>CPI.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Data.PostgreSQL\CPI.Data.PostgreSQL.csproj">
+      <Project>{74603d38-4b6b-4f7a-9f1e-8a3a0a393dee}</Project>
+      <Name>CPI.Data.PostgreSQL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.IData\CPI.IData.csproj">
+      <Project>{c33c5eb2-2d88-48ac-a507-4b554439d007}</Project>
+      <Name>CPI.IData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.IService\CPI.IService.csproj">
+      <Project>{0e38dd33-b3ad-46ca-8410-2ab6af05149a}</Project>
+      <Name>CPI.IService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Providers\CPI.Providers.csproj">
+      <Project>{ba118b32-ec0f-4c48-bf83-dd759e9f1a90}</Project>
+      <Name>CPI.Providers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Security\CPI.Security.csproj">
+      <Project>{e764adb0-44e1-4faf-9330-cbda5fdcb82e}</Project>
+      <Name>CPI.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Services\CPI.Services.csproj">
+      <Project>{4e051618-4120-4442-b073-597a70eb43e3}</Project>
+      <Name>CPI.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Utils\CPI.Utils.csproj">
+      <Project>{e53b4dd3-e9a3-4091-825a-603c217b0725}</Project>
+      <Name>CPI.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

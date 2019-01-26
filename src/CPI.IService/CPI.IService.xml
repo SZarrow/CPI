@@ -1,0 +1,332 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CPI.IService</name>
+    </assembly>
+    <members>
+        <member name="T:CPI.IService.AgreePay.IAgreementPaymentService">
+            <summary>
+            协议支付服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.AgreePay.IAgreementPaymentService.Apply(CPI.Common.Domain.AgreePay.CPIAgreePayApplyRequest)">
+            <summary>
+            申请支付请求
+            </summary>
+            <param name="request">申请请求参数</param>
+        </member>
+        <member name="M:CPI.IService.AgreePay.IAgreementPaymentService.BindCard(CPI.Common.Domain.AgreePay.CPIAgreePayBindCardRequest)">
+            <summary>
+            绑卡
+            </summary>
+            <param name="request">绑卡请求参数</param>
+        </member>
+        <member name="M:CPI.IService.AgreePay.IAgreementPaymentService.Pay(CPI.Common.Domain.AgreePay.CPIAgreePayPaymentRequest)">
+            <summary>
+            支付
+            </summary>
+            <param name="request">支付请求参数</param>
+        </member>
+        <member name="M:CPI.IService.AgreePay.IAgreementPaymentService.Query(CPI.Common.Domain.AgreePay.CPIAgreePayQueryRequest)">
+            <summary>
+            支付单查询
+            </summary>
+            <param name="request">查询请求参数</param>
+        </member>
+        <member name="M:CPI.IService.AgreePay.IAgreementPaymentService.Pull(System.Int32)">
+            <summary>
+            从快钱拉取支付结果
+            </summary>
+            <param name="count">拉取的个数</param>
+        </member>
+        <member name="T:CPI.IService.AgreePay.IAgreePayBankCardBindInfoService">
+            <summary>
+            协议支付绑卡信息服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.AgreePay.IAgreePayBankCardBindInfoService.GetBankCardBindDetails(System.String,System.String,System.String)">
+            <summary>
+            根据外部跟踪编号获取绑卡信息
+            </summary>
+            <param name="payerId">付款人ID</param>
+            <param name="bankCardNo">银行卡号</param>
+            <param name="payChannelCode">支付通道编码</param>
+        </member>
+        <member name="T:CPI.IService.BaseServices.IAppChannelRouteService">
+            <summary>
+            系统应用通道路由服务
+            </summary>
+        </member>
+        <member name="M:CPI.IService.BaseServices.IAppChannelRouteService.GetPayChannel(System.String)">
+            <summary>
+            根据appid获取路由表中配置的通道编码
+            </summary>
+            <param name="appid">AppId</param>
+        </member>
+        <member name="T:CPI.IService.BaseServices.IBankCardBinService">
+            <summary>
+            银行卡BIN服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.BaseServices.IBankCardBinService.GetBankCardBin(System.String)">
+            <summary>
+            获取指定银行卡号的BIN信息
+            </summary>
+            <param name="bankCardNo">银行卡号</param>
+        </member>
+        <member name="T:CPI.IService.BaseServices.IPayChannelService">
+            <summary>
+            支付通道服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.BaseServices.IPayChannelService.GetAllChannels">
+            <summary>
+            获取所有通道数据
+            </summary>
+        </member>
+        <member name="T:CPI.IService.BaseServices.ISysAppService">
+            <summary>
+            应用系统基本信息服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.BaseServices.ISysAppService.GetRSAPublicKey(System.String)">
+            <summary>
+            根据AppId获取RSA公钥
+            </summary>
+            <param name="appid">CPI分配给应用系统的Id</param>
+        </member>
+        <member name="T:CPI.IService.EntrustPay.IEntrustPaymentService">
+            <summary>
+            委托代收接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.EntrustPay.IEntrustPaymentService.Pay(CPI.Common.Domain.EntrustPay.CPIEntrustPayPaymentRequest)">
+            <summary>
+            支付
+            </summary>
+            <param name="request">支付请求参数</param>
+        </member>
+        <member name="M:CPI.IService.EntrustPay.IEntrustPaymentService.Query(CPI.Common.Domain.EntrustPay.CPIEntrustPayQueryRequest)">
+            <summary>
+            查询
+            </summary>
+            <param name="request">查询请求参数</param>
+        </member>
+        <member name="T:CPI.IService.FundOut.IBill99SinglePaymentService">
+            <summary>
+            快钱单笔代付接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.FundOut.IBill99SinglePaymentService.Pay(CPI.Common.Domain.FundOut.Bill99.SingleSettlementPaymentApplyRequest)">
+            <summary>
+            单笔代付
+            </summary>
+            <param name="request">单笔代付支付请求参数</param>
+        </member>
+        <member name="M:CPI.IService.FundOut.IBill99SinglePaymentService.Query(CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest)">
+            <summary>
+            单笔代付查询
+            </summary>
+            <param name="request">单笔代付查询请求参数</param>
+        </member>
+        <member name="M:CPI.IService.FundOut.IBill99SinglePaymentService.QueryStatus(CPI.Common.Domain.FundOut.Bill99.SingleSettlementQueryRequest)">
+            <summary>
+            单笔代付查询订单状态
+            </summary>
+            <param name="request">单笔代付查询请求参数</param>
+        </member>
+        <member name="M:CPI.IService.FundOut.IBill99SinglePaymentService.Pull(System.Int32)">
+            <summary>
+            拉取处理中的订单，然后更新状态
+            </summary>
+            <param name="count">拉取的数量，范围[1,20]</param>
+        </member>
+        <member name="T:CPI.IService.FundOut.IEPay95SinglePaymentService">
+            <summary>
+            双乾单笔代付服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.FundOut.IEPay95SinglePaymentService.Pay(CPI.Common.Domain.FundOut.EPay95.PayRequest)">
+            <summary>
+            代付
+            </summary>
+            <param name="request">请求参数</param>
+        </member>
+        <member name="M:CPI.IService.FundOut.IEPay95SinglePaymentService.UpdatePayStatus(CPI.Common.Domain.FundOut.EPay95.PayNotifyResult)">
+            <summary>
+            更新代付结果
+            </summary>
+            <param name="result">请求参数</param>
+        </member>
+        <member name="M:CPI.IService.FundOut.IEPay95SinglePaymentService.QueryStatus(CPI.Common.Domain.FundOut.EPay95.QueryRequest)">
+            <summary>
+            查询代付状态
+            </summary>
+            <param name="request">请求参数</param>
+        </member>
+        <member name="M:CPI.IService.FundOut.IEPay95SinglePaymentService.QueryDetails(CPI.Common.Domain.FundOut.EPay95.QueryRequest)">
+            <summary>
+            查询代付结果明细
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CPI.IService.SettleServices.IAccountService">
+            <summary>
+            账户服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAccountService.GetBalance(CPI.Common.Domain.SettleDomain.Bill99.AccountBalanceQueryRequest)">
+            <summary>
+            查询账户余额
+            </summary>
+            <param name="request">账户余额查询请求参数</param>
+        </member>
+        <member name="T:CPI.IService.SettleServices.IAllotAmountService">
+            <summary>
+            分账服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountService.Pay(CPI.Common.Domain.SettleDomain.Bill99.AllotAmountPayRequest)">
+            <summary>
+            消费分账
+            </summary>
+            <param name="request">分账请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountService.Refund(CPI.Common.Domain.SettleDomain.Bill99.AllotAmountRefundRequest)">
+            <summary>
+            退货分账
+            </summary>
+            <param name="request">退货请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountService.Query(CPI.Common.Domain.SettleDomain.Bill99.AllotAmountResultQueryRequest)">
+            <summary>
+            查询分账结果
+            </summary>
+            <param name="request">查询请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountService.ModifySettlePeriod(CPI.Common.Domain.SettleDomain.Bill99.SettlementPeriodModifyRequest)">
+            <summary>
+            修改结算周期
+            </summary>
+            <param name="request">请求参数</param>
+        </member>
+        <member name="T:CPI.IService.SettleServices.IAllotAmountWithdrawService">
+            <summary>
+            提现分账服务接口，调用此接口进行提现会先进行分账。
+            </summary>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountWithdrawService.Apply(CPI.Common.Domain.SettleDomain.Bill99.AllotAmountWithdrawApplyRequest)">
+            <summary>
+            申请提现
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountWithdrawService.FireAllotAmount(System.Int32)">
+            <summary>
+            发起分账
+            </summary>
+            <param name="count">每次处理的分账个数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountWithdrawService.PullAllotAmountResult(System.Int32)">
+            <summary>
+            拉取分账结果
+            </summary>
+            <param name="count">每次拉取的个数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountWithdrawService.FireWithdraw(System.Int32)">
+            <summary>
+            发起提现
+            </summary>
+            <param name="count">每次处理的提现个数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IAllotAmountWithdrawService.PullWithdrawResult(System.Int32)">
+            <summary>
+            拉取提现结果
+            </summary>
+            <param name="count">每次拉取的个数</param>
+        </member>
+        <member name="T:CPI.IService.SettleServices.IPersonalService">
+            <summary>
+            个人账户服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.Register(CPI.Common.Domain.SettleDomain.Bill99.PersonalRegisterRequest)">
+            <summary>
+            分账开户
+            </summary>
+            <param name="request">开户请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.UpdateAccountInfo(CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoUpdateRequest)">
+            <summary>
+            更新个人账户信息
+            </summary>
+            <param name="request">更新请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.GetAccountInfo(CPI.Common.Domain.SettleDomain.Bill99.PersonalInfoQueryRequest)">
+            <summary>
+            获取个人账户信息
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.QueryBindCardStatus(CPI.Common.Domain.SettleDomain.Bill99.WithdrawBindCardQueryStatusRequest)">
+            <summary>
+            查询绑卡状态
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.WithdrawBindCard(CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawBindCardRequest)">
+            <summary>
+            提现绑卡
+            </summary>
+            <param name="request">绑卡请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.WithdrawRebindCard(CPI.Common.Domain.SettleDomain.Bill99.PersonalWithdrawRebindCardRequest)">
+            <summary>
+            提现重新绑卡
+            </summary>
+            <param name="request">重新绑卡请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.CancelBoundCard(CPI.Common.Domain.SettleDomain.Bill99.PersonalCancelBoundCardRequest)">
+            <summary>
+            取消绑卡
+            </summary>
+            <param name="request">取消绑卡请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IPersonalService.GetBoundCards(CPI.Common.Domain.SettleDomain.Bill99.PersonalBoundCardListQueryRequest)">
+            <summary>
+            获取个人账户已绑定的银行卡列表
+            </summary>
+            <param name="request">绑卡列表查询请求参数</param>
+        </member>
+        <member name="T:CPI.IService.SettleServices.IWithdrawService">
+            <summary>
+            提现服务接口
+            </summary>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IWithdrawService.Withdraw(CPI.Common.Domain.SettleDomain.Bill99.WithdrawRequest)">
+            <summary>
+            发起提现操作
+            </summary>
+            <param name="request">提现请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IWithdrawService.QueryDetails(CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryRequest)">
+            <summary>
+            查询提现明细
+            </summary>
+            <param name="request">查询请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IWithdrawService.QueryFee(CPI.Common.Domain.SettleDomain.Bill99.WithdrawQueryFeeRequest)">
+            <summary>
+            查询提现手续费
+            </summary>
+            <param name="request">查询请求参数</param>
+        </member>
+        <member name="M:CPI.IService.SettleServices.IWithdrawService.QueryStatus(CPI.Common.Domain.SettleDomain.Bill99.WithdrawStatusQueryRequest)">
+            <summary>
+            查询提现结果状态
+            </summary>
+            <param name="request">查询请求参数</param>
+        </member>
+    </members>
+</doc>

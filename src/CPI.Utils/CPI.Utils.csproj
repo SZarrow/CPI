@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lotus.Logging" Version="1.1.17" />
+    <PackageReference Include="Lotus.Net" Version="1.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CPI.Common\CPI.Common.csproj" />
+    <ProjectReference Include="..\CPI.Config\CPI.Config.csproj" />
+    <ProjectReference Include="..\CPI.Security\CPI.Security.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lotus.Core" Version="1.0.47" />
+    <PackageReference Include="Lotus.Payment.Bill99" Version="1.0.11" />
+    <PackageReference Include="Lotus.Security" Version="1.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CPI.Data.PostgreSQL\CPI.Data.PostgreSQL.csproj" />
+    <ProjectReference Include="..\CPI.IData\CPI.IData.csproj" />
+    <ProjectReference Include="..\CPI.IService\CPI.IService.csproj" />
+    <ProjectReference Include="..\CPI.Providers\CPI.Providers.csproj" />
+    <ProjectReference Include="..\CPI.Security\CPI.Security.csproj" />
+    <ProjectReference Include="..\CPI.Utils\CPI.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

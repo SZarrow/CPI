@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CPI.IData</name>
+    </assembly>
+    <members>
+        <member name="T:CPI.IData.BaseRepositories.IAgreePayBankCardBindInfoRepository">
+            <summary>
+            银行卡绑卡表数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IAgreePayBankCardInfoRepository">
+            <summary>
+            用户银行卡表数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IAllotAmountOrderRepository">
+            <summary>
+            分账订单数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IAllotAmountWithdrawOrderRepository">
+            <summary>
+            分账提现订单数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IAppChannelRouteRepository">
+            <summary>
+            系统应用通道路由表的数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IBankCardBinRepository">
+            <summary>
+            银行卡BIN数据查询接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IFundOutOrderRepository">
+            <summary>
+            代付订单数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IPayChannelRepository">
+            <summary>
+            支付通道表的数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IPayOrderRepository">
+            <summary>
+            支付单数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IPersonalSubAccountRepository">
+            <summary>
+            分账个人账户数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.ISysAppRepository">
+            <summary>
+            应用系统基本信息数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.BaseRepositories.IWithdrawBankCardBindInfoRepository">
+            <summary>
+            提现绑卡信息数据访问接口
+            </summary>
+        </member>
+        <member name="T:CPI.IData.IUnitOfWork`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Add(`0)">
+            <summary>
+            添加一个实体到数据库
+            </summary>
+            <param name="entity">要添加的实体</param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Add(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            批量添加实体到数据库
+            </summary>
+            <param name="entities">要添加的实体</param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Remove(`0)">
+            <summary>
+            从数据库中删除实体
+            </summary>
+            <param name="entity">要删除的实体</param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Remove(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            从数据库中删除实体
+            </summary>
+            <param name="entity">要删除的实体</param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Update(`0)">
+            <summary>
+            更新实体到数据库
+            </summary>
+            <param name="entity">要更新的实体</param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Update(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            批量更新实体到数据库，注意：实体的主键字段必须不为null，否则会更新失败
+            </summary>
+            <param name="entities">要更新的实体</param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.Exists(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            判断满足指定条件的记录是否存在
+            </summary>
+            <param name="predicates">条件表达式</param>
+        </member>
+        <member name="P:CPI.IData.IUnitOfWork`1.QueryProvider">
+            <summary>
+            获取数据库查询接口
+            </summary>
+        </member>
+        <member name="P:CPI.IData.IUnitOfWork`1.Database">
+            <summary>
+            获取数据库访问接口
+            </summary>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.ExecuteSql(System.FormattableString)">
+            <summary>
+            执行SQL语句
+            </summary>
+            <param name="sql"></param>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.SaveChanges">
+            <summary>
+            提交所有更改到数据库
+            </summary>
+            <returns>返回受影响的行数</returns>
+        </member>
+        <member name="M:CPI.IData.IUnitOfWork`1.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+            提交所有更改到数据库
+            </summary>
+            <param name="cancellationToken">任务取消令牌</param>
+            <returns>返回受影响的行数</returns>
+        </member>
+    </members>
+</doc>
