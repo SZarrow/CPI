@@ -104,7 +104,16 @@ namespace CPI.Config
                 return 2.2m;
             }
         }
-
+        /// <summary>
+        /// 获取快钱进件1.0平台代码
+        /// </summary>
+        public static String X99bill_COE_v1_PlatformCode
+        {
+            get
+            {
+                return Configuration["X-99bill-COE-v1.0:Hehua-PlatformCode"];
+            }
+        }
         /// <summary>
         /// 获取快钱分账荷花平台编码
         /// </summary>

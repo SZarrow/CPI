@@ -59,6 +59,39 @@ namespace CPI.Config
         }
 
         /// <summary>
+        /// 快钱进件1.0快钱公钥
+        /// </summary>
+        public static String Bill99_COE_v1_PublicKey
+        {
+            get
+            {
+                return Configuration["X-99bill-COE-v1.0:COE-PublicKey"];
+            }
+        }
+
+        /// <summary>
+        /// 快钱进件1.0荷花公钥
+        /// </summary>
+        public static String Bill99_COE_v1_Hehua_PublicKey
+        {
+            get
+            {
+                return Configuration["X-99bill-COE-v1.0:Hehua-PublicKey"];
+            }
+        }
+
+        /// <summary>
+        /// 快钱进件1.0荷花私钥
+        /// </summary>
+        public static String Bill99_COE_v1_Hehua_PrivateKey
+        {
+            get
+            {
+                return Configuration["X-99bill-COE-v1.0:Hehua-PrivateKey"];
+            }
+        }
+
+        /// <summary>
         /// 快钱协议支付私钥文件路径
         /// </summary>
         public static String Bill99_AgreePay_PrivateKeyFilePath

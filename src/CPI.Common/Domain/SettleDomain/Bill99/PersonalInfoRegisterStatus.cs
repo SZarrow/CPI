@@ -24,6 +24,16 @@ namespace CPI.Common.Domain.SettleDomain.Bill99
         /// 开户成功
         /// </summary>
         [Description("开户成功")]
-        SUCCESS
+        SUCCESS,
+        /// <summary>
+        /// 处理中
+        /// </summary>
+        [Description("处理中")]
+        PROCESSING,
+        /// <summary>
+        /// 开户失败
+        /// </summary>
+        [Description("开户失败")]
+        FAILURE
     }
 }
