@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lotus.Core" Version="1.0.47" />
+    <PackageReference Include="Lotus.Core" Version="1.1.1" />
     <PackageReference Include="Lotus.Web.Mvc" Version="1.0.7.6" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
