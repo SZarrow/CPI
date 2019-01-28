@@ -32,6 +32,18 @@ namespace CPI.Config
                 return Configuration["X-99bill-YZT:RequestUrl"];
             }
         }
+
+        /// <summary>
+        /// 快钱进件1.0请求地址
+        /// </summary>
+        public static String Bill99_COE_v1_RequestUrl
+        {
+            get
+            {
+                return Configuration["X-99bill-COE-v1.0:RequestUrl"];
+            }
+        }
+
         /// <summary>
         /// 快钱协议支付申请绑卡请求地址
         /// </summary>

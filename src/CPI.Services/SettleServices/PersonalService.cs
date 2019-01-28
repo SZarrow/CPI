@@ -383,7 +383,7 @@ namespace CPI.Services.SettleServices
 
                 if (!execResult.Success || execResult.Value == null)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "个人开户失败", execResult.FirstException, execResult);
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "个人开户失败", execResult.FirstException, execResult.Value);
 
                     _personalSubAccountRepository.Remove(newAccount);
                     saveResult = _personalSubAccountRepository.SaveChanges();
