@@ -671,7 +671,7 @@ namespace CPI.Services.FundOut
             catch (Exception ex)
             {
                 _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "Convert.FromBase64String(...)", "signedData不是有效的Base64字符串", ex);
-                return new XResult<String>(null, ErrorCode.DESERIALIZE_FAILED, new RemoteException("signedData不是有效的Base64字符串"));
+                return new XResult<String>(null, ErrorCode.DECODE_FAILED, new RemoteException("signedData不是有效的Base64字符串"));
             }
 
             Byte[] signContent = decryptedResult.Value;

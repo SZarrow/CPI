@@ -37,7 +37,7 @@ namespace CPI.Services.SettleServices
                 return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var requestHash = $"register:{request.PayeeId}".GetHashCode();
+            var requestHash = $"register:{request.UserId}".GetHashCode();
 
             if (_lockProvider.Exists(requestHash))
             {
@@ -51,7 +51,7 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
                 }
 
-                var existedRegisterInfo = _personalSubAccountRepository.QueryProvider.Where(x => x.AppId == request.AppId && x.UID == request.PayeeId).Count() > 0;
+                var existedRegisterInfo = _personalSubAccountRepository.QueryProvider.Where(x => x.AppId == request.AppId && x.UID == request.UserId).Count() > 0;
                 if (existedRegisterInfo)
                 {
                     return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.INFO_EXISTED, new RequestException("开户信息已存在"));
@@ -62,7 +62,7 @@ namespace CPI.Services.SettleServices
                 {
                     Id = newId,
                     AppId = request.AppId,
-                    UID = request.PayeeId,
+                    UID = request.UserId,
                     IDCardNo = request.IDCardNo,
                     IDCardType = request.IDCardType,
                     RealName = request.RealName,
@@ -87,10 +87,11 @@ namespace CPI.Services.SettleServices
                 var execResult = Bill99UtilV1.Execute<RawPersonalRegisterRequestV1, RawPersonalRegisterResponseV1>("/personalSeller/register", new RawPersonalRegisterRequestV1()
                 {
                     requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
-                    uId = request.PayeeId,
+                    uId = request.UserId,
                     email = request.Email,
                     idCardNumber = request.IDCardNo,
                     idCardType = request.IDCardType,
+                    userFlag = "1",
                     mobile = request.Mobile,
                     platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
                     name = request.RealName
@@ -131,7 +132,7 @@ namespace CPI.Services.SettleServices
                 var resp = new PersonalRegisterResponseV1()
                 {
                     Status = newAccount.Status,
-                    PayeeId = newAccount.OpenId,
+                    UserId = newAccount.OpenId,
                     Msg = GetRegisterAuditStatusMsg(newAccount.Status)
                 };
 

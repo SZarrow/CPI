@@ -12,6 +12,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// <summary>
         /// 收款人Id
         /// </summary>
-        public String PayeeId { get; set; }
+        public String UserId { get; set; }
     }
 }

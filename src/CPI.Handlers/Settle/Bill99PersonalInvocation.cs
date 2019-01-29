@@ -44,6 +44,8 @@ namespace CPI.Handlers.Settle
                     return QueryInfo_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.bindcard.1.0":
                     return BindCard_1_0(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.acceptbankcard.1.1":
+                    return AcceptBankCard_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.rebindcard.1.0":
                     return ReBindCard_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.cancelbindcard.1.0":
@@ -231,6 +233,26 @@ namespace CPI.Handlers.Settle
             var regResult = _serviceV1.Register(regRequest.Value);
 
             _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人开户", regResult.Value);
+
+            return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
+        }
+
+        private ObjectResult AcceptBankCard_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var request = JsonUtil.DeserializeObject<QueryBankCardAcceptRequestV1>(_request.BizContent);
+            if (!request.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", request.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            request.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.QueryBankCardAccept(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始调用查询银行卡受理能力接口", request.Value);
+
+            var regResult = _serviceV1.QueryBankCardAccept(request.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束调用查询银行卡受理能力接口", regResult.Value);
 
             return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
         }

@@ -179,5 +179,10 @@ namespace CPI.Common
         /// </summary>
         [Description("任务执行失败")]
         public const Int32 TASK_EXECUTE_FAILED = 1031;
+        /// <summary>
+        /// 编码失败
+        /// </summary>
+        [Description("编码失败")]
+        public const Int32 ENCODE_FAILED = 1032;
     }
 }
