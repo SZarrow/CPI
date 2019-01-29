@@ -21,8 +21,8 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// <summary>
         /// 收款人Id
         /// </summary>
-        [Required(ErrorMessage = "PayeeId字段必需")]
-        public String PayeeId { get; set; }
+        [Required(ErrorMessage = "UserId字段必需")]
+        public String UserId { get; set; }
 
         /// <summary>
         /// 银行卡号，必填

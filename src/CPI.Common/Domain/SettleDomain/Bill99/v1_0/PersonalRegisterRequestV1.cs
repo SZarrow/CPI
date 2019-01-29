@@ -21,9 +21,9 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// <summary>
         /// 收款人Id
         /// </summary>
-        [Required(ErrorMessage = "PayeeId字段必需")]
-        [StringLength(128, ErrorMessage = "PayeeId字段最大长度为128")]
-        public String PayeeId { get; set; }
+        [Required(ErrorMessage = "UserId字段必需")]
+        [StringLength(128, ErrorMessage = "UserId字段最大长度为128")]
+        public String UserId { get; set; }
 
         /// <summary>
         /// 证件类型，身份证：101
