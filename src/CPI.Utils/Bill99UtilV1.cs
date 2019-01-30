@@ -43,22 +43,51 @@ namespace CPI.Utils
                 return new XResult<TResponse>(default(TResponse), serializeResult.FirstException);
             }
 
-            String postData = serializeResult.Value;
+            String postBody = serializeResult.Value;
 
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, "postData", LogPhase.ACTION, "请求消息体明文", postData);
+            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, "postBody", LogPhase.ACTION, "请求消息体明文", postBody);
 
-            var encryptedResult = Encrypt(postData, CryptoHelper.GenerateRandomKey());
+            Byte[] postData = Encoding.UTF8.GetBytes(postBody);
+
+            //签名数据
+            var signedResult = SignUtil.MakeSign(postData, KeyConfig.Bill99_COE_v1_Hehua_PrivateKey, PrivateKeyFormat.PKCS8, "RSA");
+            if (!signedResult.Success)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "signedResult", "生成签名数据失败", signedResult.FirstException, postBody);
+                return null;
+            }
+
+            var encryptKey = CryptoHelper.GenerateRandomKey();
+
+            //密文
+            var encryptedResult = CryptoHelper.AESEncrypt(postData, encryptKey);
             if (!encryptedResult.Success)
             {
-                return new XResult<TResponse>(default(TResponse), ErrorCode.ENCRYPT_FAILED, encryptedResult.FirstException);
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "encryptedResult", "生成密文失败", encryptedResult.FirstException, postBody);
+                return null;
             }
+
+            //数字信封
+            var digResult = CryptoHelper.RSAEncrypt(encryptKey, KeyConfig.Bill99_COE_v1_PublicKey);
+            if (!digResult.Success)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "digResult", "生成数字信封失败", digResult.FirstException);
+                return null;
+            }
+
+            var dic = new Dictionary<String, String>(3);
+            dic["envelope"] = Convert.ToBase64String(digResult.Value);
+            dic["encryptedData"] = Convert.ToBase64String(encryptedResult.Value);
+            dic["signature"] = Convert.ToBase64String(signedResult.Value);
+
+            String postJson = JsonUtil.SerializeObject(dic).Value;
 
             String requestUrl = $"{ApiConfig.Bill99_COE_v1_RequestUrl}{interfaceUrl}";
             String traceMethod = $"{nameof(client)}.PostJson(...)";
 
-            _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "快钱COE：开始请求快钱COE接口", new Object[] { requestUrl, encryptedResult.Value });
+            _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "快钱COE：开始请求快钱COE接口", new Object[] { requestUrl, postJson });
 
-            var result = client.PostJson(requestUrl, encryptedResult.Value);
+            var result = client.PostJson(requestUrl, postJson);
 
             _logger.Trace(TraceType.UTIL.ToString(), (result.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "快钱COE：结束请求快钱COE接口");
 

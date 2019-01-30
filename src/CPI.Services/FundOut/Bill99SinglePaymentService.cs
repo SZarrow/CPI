@@ -835,7 +835,7 @@ namespace CPI.Services.FundOut
             var digResult = CryptoHelper.RSAEncrypt(this.EncryptKey, KeyConfig.Bill99FOPublicKey);
             if (!digResult.Success)
             {
-                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "digResult", "生成数字信封失败", digResult.FirstException, this.EncryptKey);
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "digResult", "生成数字信封失败", digResult.FirstException);
                 return null;
             }
 
