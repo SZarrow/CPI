@@ -46,6 +46,8 @@ namespace CPI.Handlers.Settle
                     return BindCard_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.acceptbankcard.1.1":
                     return AcceptBankCard_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.applybindcard.1.1":
+                    return ApplyBindCard_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.rebindcard.1.0":
                     return ReBindCard_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.cancelbindcard.1.0":
@@ -250,11 +252,31 @@ namespace CPI.Handlers.Settle
             traceMethod = $"{_serviceV1.GetType().FullName}.QueryBankCardAccept(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始调用查询银行卡受理能力接口", request.Value);
 
-            var regResult = _serviceV1.QueryBankCardAccept(request.Value);
+            var acceptResult = _serviceV1.QueryBankCardAccept(request.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束调用查询银行卡受理能力接口", regResult.Value);
+            _logger.Trace(TraceType.ROUTE.ToString(), (acceptResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束调用查询银行卡受理能力接口", acceptResult.Value);
 
-            return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
+            return acceptResult.Success ? new ObjectResult(acceptResult.Value) : new ObjectResult(null, acceptResult.ErrorCode, acceptResult.FirstException);
+        }
+
+        private ObjectResult ApplyBindCard_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var applyRequest = JsonUtil.DeserializeObject<PersonalApplyBindCardRequestV1>(_request.BizContent);
+            if (!applyRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", applyRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            applyRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_service.GetType().FullName}.ApplyBindCard_1_1(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始申请个人提现绑卡", applyRequest.Value);
+
+            var applyResult = _serviceV1.ApplyBindCard(applyRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (applyResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束申请个人提现绑卡", applyResult.Value);
+
+            return applyResult.Success ? new ObjectResult(applyResult.Value) : new ObjectResult(null, applyResult.ErrorCode, applyResult.FirstException);
         }
     }
 }

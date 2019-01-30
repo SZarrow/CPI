@@ -80,7 +80,7 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                 }
 
-                String traceMethod = "Bill99Util.Execute(/personalSeller/register)";
+                String traceMethod = "Bill99UtilV1.Execute(/personalSeller/register)";
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱个人开户接口", request);
 
@@ -91,7 +91,7 @@ namespace CPI.Services.SettleServices
                     email = request.Email,
                     idCardNumber = request.IDCardNo,
                     idCardType = request.IDCardType,
-                    userFlag = "1",
+                    //userFlag = "1",
                     mobile = request.Mobile,
                     platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
                     name = request.RealName
@@ -146,11 +146,77 @@ namespace CPI.Services.SettleServices
 
         public XResult<QueryBankCardAcceptResponseV1> QueryBankCardAccept(QueryBankCardAcceptRequestV1 request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                return new XResult<QueryBankCardAcceptResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.QueryBankCardAccept(...)";
+
+            if (!request.IsValid)
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(request)}.IsValid", LogPhase.ACTION, $"请求参数验证失败：{request.ErrorMessage}", request);
+                return new XResult<QueryBankCardAcceptResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            String traceMethod = "Bill99UtilV1.Execute(/person/bankcard/accept)";
+
+            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱检测银行卡受理能力接口", request);
+
+            var execResult = Bill99UtilV1.Execute<RawQueryBankCardAcceptRequestV1, RawQueryBankCardAcceptResponseV1>("/person/bankcard/accept", new RawQueryBankCardAcceptRequestV1()
+            {
+                requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
+                uId = request.UserId,
+                bankAcctId = request.BankCardNo,
+                platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode
+            });
+
+            _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱检测银行卡受理能力接口", request);
+
+            if (!execResult.Success || execResult.Value == null)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "调用快钱检测银行卡受理能力接口失败", execResult.FirstException, execResult.Value);
+                return new XResult<QueryBankCardAcceptResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+            }
+
+            var respResult = execResult.Value;
+            if (respResult.ResponseCode != "0000")
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, "检测银行卡受理能力返回结果", $"{respResult.ResponseCode}:{respResult.ResponseMessage}");
+                return new XResult<QueryBankCardAcceptResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respResult.ResponseMessage));
+            }
+
+            var resp = new QueryBankCardAcceptResponseV1()
+            {
+                UserId = execResult.Value.uId,
+                BankCode = execResult.Value.bankId,
+                BankName = execResult.Value.bankName,
+                CardType = execResult.Value.cardType,
+                RequestId = execResult.Value.requestId,
+                Status = CommonStatus.SUCCESS.ToString(),
+                Msg = CommonStatus.SUCCESS.GetDescription()
+            };
+
+            return new XResult<QueryBankCardAcceptResponseV1>(resp);
         }
 
         public XResult<PersonalApplyBindCardResponseV1> ApplyBindCard(PersonalApplyBindCardRequestV1 request)
         {
+            if (request == null)
+            {
+                return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.ApplyBindCard(...)";
+
+            if (!request.IsValid)
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(request)}.IsValid", LogPhase.ACTION, $"请求参数验证失败：{request.ErrorMessage}", request);
+                return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var lockHash = $"ApplyBindCard:{request.UserId}".GetHashCode();
+
             throw new NotImplementedException();
         }
 
