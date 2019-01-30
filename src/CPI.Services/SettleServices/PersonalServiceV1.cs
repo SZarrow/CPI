@@ -215,9 +215,76 @@ namespace CPI.Services.SettleServices
                 return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var lockHash = $"ApplyBindCard:{request.UserId}".GetHashCode();
+            var requestHash = $"ApplyBindCard:{request.UserId}".GetHashCode();
 
-            throw new NotImplementedException();
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                if (!_lockProvider.Lock(requestHash))
+                {
+                    return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+                }
+
+                String traceMethod = $"{nameof(Bill99UtilV1)}.Execute(/person/bankcard/auth)";
+
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱银行卡鉴权接口", request);
+
+                DateTime applyTime = DateTime.Now;
+
+                var execResult = Bill99UtilV1.Execute<RawPersonalApplyBindCardRequestV1, RawPersonalApplyBindCardResponseV1>("/person/bankcard/auth", new RawPersonalApplyBindCardRequestV1()
+                {
+                    uId = request.UserId,
+                    requestId = request.OutTradeNo,
+                    platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
+                    idCardNumber = request.IDCardNo,
+                    idCardType = request.IDCardType,
+                    bankAcctId = request.BankCardNo,
+                    bankName = request.BankName,
+                    name = request.RealName,
+                    mobile = request.Mobile
+                });
+
+                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱银行卡鉴权接口", request);
+
+                if (!execResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "银行卡鉴权失败", execResult.FirstException, request);
+                    return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+                }
+
+                if (execResult.Value == null)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "快钱未返回任何数据");
+                    return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.REMOTE_RETURN_NOTHING);
+                }
+
+                var resp = execResult.Value;
+                if (resp.ResponseCode != "0000")
+                {
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{resp.ResponseCode}:{resp.ResponseMessage}");
+                    return new XResult<PersonalApplyBindCardResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(resp.ResponseMessage));
+                }
+
+                var respResult = new PersonalApplyBindCardResponseV1()
+                {
+                    OutTradeNo = resp.requestId,
+                    UserId = resp.uId,
+                    ApplyToken = resp.token,
+                    ApplyTime = applyTime,
+                    Status = CommonStatus.SUCCESS.ToString(),
+                    Msg = CommonStatus.SUCCESS.GetDescription()
+                };
+
+                return new XResult<PersonalApplyBindCardResponseV1>(respResult);
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
+            }
         }
 
         public XResult<PersonalWithdrawBindCardResponseV1> WithdrawBindCard(PersonalWithdrawBindCardRequestV1 request)
