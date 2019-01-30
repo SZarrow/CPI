@@ -188,10 +188,22 @@ namespace CPI.Services.FundOut
 
                 //记录请求结束时间
                 fundoutOrder.EndTime = DateTime.Now;
-                //修改支付状态为正在处理中
-                fundoutOrder.PayStatus = PayStatus.PROCESSING.ToString();
-                fundoutOrder.UpdateTime = DateTime.Now;
 
+                switch (respResult.ResultCode)
+                {
+                    case "88":
+                    case "90":
+                    case "15":
+                        //修改支付状态为正在处理中
+                        fundoutOrder.PayStatus = PayStatus.PROCESSING.ToString();
+                        break;
+                    default:
+                        //修改支付状态为正在处理中
+                        fundoutOrder.PayStatus = PayStatus.FAILURE.ToString();
+                        break;
+                }
+
+                fundoutOrder.UpdateTime = DateTime.Now;
                 _fundOutOrderRepository.Update(fundoutOrder);
                 var updateResult = _fundOutOrderRepository.SaveChanges();
                 if (!updateResult.Success)
