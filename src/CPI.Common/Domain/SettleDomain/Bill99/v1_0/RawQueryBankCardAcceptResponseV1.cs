@@ -10,18 +10,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     public class RawQueryBankCardAcceptResponseV1 : COECommonResponse
     {
         /// <summary>
-        /// 
-        /// </summary>
-        public String requestId { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public String platformCode { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public String uId { get; set; }
-        /// <summary>
         /// 卡类型
         /// </summary>
         public String cardType { get; set; }

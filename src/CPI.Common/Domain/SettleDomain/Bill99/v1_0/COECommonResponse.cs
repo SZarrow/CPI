@@ -16,6 +16,22 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         protected COECommonResponse() { }
 
         /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("requestId")]
+        public String OutTradeNo { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("platformCode")]
+        public String PlatformCode { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("uId")]
+        public String UserId { get; set; }
+
+        /// <summary>
         /// 快钱返回的错误码
         /// </summary>
         [JsonProperty("code")]
