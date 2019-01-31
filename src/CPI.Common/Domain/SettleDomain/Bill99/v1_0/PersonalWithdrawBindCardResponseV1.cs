@@ -11,9 +11,12 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     public class PersonalWithdrawBindCardResponseV1 : CommonResponse
     {
         /// <summary>
-        /// 银行卡主键Id信息，绑卡成功时返回
+        /// 
         /// </summary>
-        [JsonProperty("memberBankAcctId")]
-        public String MemberBankAccountId { get; set; }
+        public String UserId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public String OutTradeNo { get; set; }
     }
 }

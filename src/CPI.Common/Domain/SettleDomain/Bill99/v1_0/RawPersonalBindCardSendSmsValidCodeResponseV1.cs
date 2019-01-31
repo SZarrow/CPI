@@ -7,11 +7,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     /// <summary>
     /// 
     /// </summary>
-    public class RawPersonalApplyBindCardResponseV1 : COECommonResponse
+    public class RawPersonalBindCardSendSmsValidCodeResponseV1 : COECommonResponse
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public String token { get; set; }
     }
 }

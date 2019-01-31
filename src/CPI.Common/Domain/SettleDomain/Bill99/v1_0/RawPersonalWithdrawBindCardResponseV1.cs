@@ -10,9 +10,5 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     /// </summary>
     public class RawPersonalWithdrawBindCardResponseV1 : COECommonResponse
     {
-        /// <summary>
-        /// 银行卡主键Id信息，绑卡成功时返回
-        /// </summary>
-        public String memberBankAcctId { get; set; }
     }
 }

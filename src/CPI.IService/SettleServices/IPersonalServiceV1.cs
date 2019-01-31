@@ -32,5 +32,10 @@ namespace CPI.IService.SettleServices
         /// </summary>
         /// <param name="request">绑卡请求参数</param>
         XResult<PersonalWithdrawBindCardResponseV1> WithdrawBindCard(PersonalWithdrawBindCardRequestV1 request);
+        /// <summary>
+        /// 发送短信验证码
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalBindCardSendSmsValidCodeResponseV1> MobileCheck(PersonalBindCardSendSmsValidCodeRequestV1 request);
     }
 }
