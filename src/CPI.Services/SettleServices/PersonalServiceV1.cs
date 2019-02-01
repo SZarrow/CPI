@@ -197,7 +197,6 @@ namespace CPI.Services.SettleServices
                 BankCode = execResult.Value.bankId,
                 BankName = execResult.Value.bankName,
                 CardType = execResult.Value.cardType,
-                OutTradeNo = execResult.Value.OutTradeNo,
                 Status = CommonStatus.SUCCESS.ToString(),
                 Msg = CommonStatus.SUCCESS.GetDescription()
             };
@@ -243,7 +242,7 @@ namespace CPI.Services.SettleServices
                 var execResult = Bill99UtilV1.Execute<RawPersonalApplyBindCardRequestV1, RawPersonalApplyBindCardResponseV1>("/person/bankcard/auth", new RawPersonalApplyBindCardRequestV1()
                 {
                     uId = request.UserId,
-                    requestId = request.OutTradeNo,
+                    requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
                     platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
                     idCardNumber = request.IDCardNo,
                     idCardType = request.IDCardType,
@@ -276,7 +275,6 @@ namespace CPI.Services.SettleServices
 
                 var respResult = new PersonalApplyBindCardResponseV1()
                 {
-                    OutTradeNo = resp.OutTradeNo,
                     UserId = resp.UserId,
                     ApplyToken = resp.token,
                     ApplyTime = applyTime,
@@ -354,7 +352,7 @@ namespace CPI.Services.SettleServices
 
                     var execResult = Bill99UtilV1.Execute<RawPersonalWithdrawBindCardRequestV1, RawPersonalWithdrawBindCardResponseV1>("/person/bankcard/bind", new RawPersonalWithdrawBindCardRequestV1()
                     {
-                        requestId = request.OutTradeNo,
+                        requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
                         uId = request.UserId,
                         platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
                         idCardNumber = request.IDCardNo,
@@ -400,7 +398,6 @@ namespace CPI.Services.SettleServices
                     var respResult = new PersonalWithdrawBindCardResponseV1()
                     {
                         UserId = execResult.Value.UserId,
-                        OutTradeNo = execResult.Value.OutTradeNo,
                         Status = CommonStatus.SUCCESS.ToString(),
                         Msg = $"绑卡{CommonStatus.SUCCESS.GetDescription()}"
                     };
@@ -453,7 +450,7 @@ namespace CPI.Services.SettleServices
                     name = request.RealName,
                     phonNumber = request.Mobile,
                     platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
-                    requestId = request.OutTradeNo,
+                    requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
                     requestTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                     uId = request.UserId
                 });
@@ -480,10 +477,197 @@ namespace CPI.Services.SettleServices
                 return new XResult<PersonalBindCardSendSmsValidCodeResponseV1>(new PersonalBindCardSendSmsValidCodeResponseV1()
                 {
                     UserId = execResult.Value.UserId,
-                    OutTradeNo = execResult.Value.OutTradeNo,
                     Status = CommonStatus.SUCCESS.ToString(),
                     Msg = CommonStatus.SUCCESS.GetDescription()
                 });
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        public XResult<PersonalRegisterContractInfoQueryResponseV1> QueryContract(PersonalRegisterContractInfoQueryRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalRegisterContractInfoQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.QueryContract(...)";
+
+            if (!request.IsValid)
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(request)}.IsValid", LogPhase.ACTION, $"请求参数验证失败：{request.ErrorMessage}", request);
+                return new XResult<PersonalRegisterContractInfoQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            String traceMethod = "Bill99UtilV1.Execute(/econtractQuery)";
+
+            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用合同查询接口", request);
+
+            var execResult = Bill99UtilV1.Execute<RawPersonalRegisterContractInfoQueryRequestV1, RawPersonalRegisterContractInfoQueryResponseV1>("/econtractQuery", new RawPersonalRegisterContractInfoQueryRequestV1()
+            {
+                requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
+                applyId = request.UserId,
+                platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode
+            });
+
+            _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用合同查询接口", request);
+
+            if (!execResult.Success || execResult.Value == null)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "调用合同查询接口失败", execResult.FirstException, execResult.Value);
+                return new XResult<PersonalRegisterContractInfoQueryResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+            }
+
+            var respResult = execResult.Value;
+            if (respResult.code != "0000")
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, "合同查询返回结果", $"{respResult.code}:{respResult.errorMsg}");
+                return new XResult<PersonalRegisterContractInfoQueryResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respResult.errorMsg));
+            }
+
+            var resp = new PersonalRegisterContractInfoQueryResponseV1()
+            {
+                UserId = execResult.Value.applyId,
+                ContractNo = execResult.Value.contractNum,
+                FileId = execResult.Value.fssId,
+                SignDate = execResult.Value.submitDate
+            };
+
+            switch (respResult.signStatus)
+            {
+                case "0":
+                    resp.Status = PersonalRegisterContractSignStatus.WAIT_FOR_SIGN.ToString();
+                    resp.Msg = PersonalRegisterContractSignStatus.WAIT_FOR_SIGN.GetDescription();
+                    break;
+                case "1":
+                    resp.Status = PersonalRegisterContractSignStatus.SUCCESS.ToString();
+                    resp.Msg = PersonalRegisterContractSignStatus.SUCCESS.GetDescription();
+                    break;
+                case "2":
+                    resp.Status = PersonalRegisterContractSignStatus.FAILURE.ToString();
+                    resp.Msg = PersonalRegisterContractSignStatus.FAILURE.GetDescription();
+                    break;
+                case "3":
+                    resp.Status = PersonalRegisterContractSignStatus.WAIT_FOR_ACTIVE.ToString();
+                    resp.Msg = PersonalRegisterContractSignStatus.WAIT_FOR_ACTIVE.GetDescription();
+                    break;
+            }
+
+            return new XResult<PersonalRegisterContractInfoQueryResponseV1>(resp);
+        }
+
+        public XResult<PersonalRegisterContractSignResponseV1> SignContract(PersonalRegisterContractSignRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.SignContract(...)";
+
+            if (!request.IsValid)
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(request)}.IsValid", LogPhase.ACTION, $"请求参数验证失败：{request.ErrorMessage}", request);
+                return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var requestHash = $"SignContract:{request.UserId}".GetHashCode();
+
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                if (!_lockProvider.Lock(requestHash))
+                {
+                    return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+                }
+
+                String traceMethod = $"{nameof(Bill99UtilV1)}.Execute(/signContract)";
+
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱合同签约接口", request);
+
+                DateTime applyTime = DateTime.Now;
+
+                var execResult = Bill99UtilV1.Execute<RawPersonalRegisterContractSignRequestV1, RawPersonalRegisterContractSignResponseV1>("/signContract", new RawPersonalRegisterContractSignRequestV1()
+                {
+                    applyId = request.UserId,
+                    requestId = IDGenerator.GenerateID().ToString().Substring(0, 10),
+                    platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
+                    signType = "1"
+                });
+
+                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱合同签约接口", request);
+
+                if (!execResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "合同签约失败", execResult.FirstException, request);
+                    return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+                }
+
+                if (execResult.Value == null)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "快钱未返回任何数据");
+                    return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.REMOTE_RETURN_NOTHING);
+                }
+
+                var resp = execResult.Value;
+                if (resp.code != "0000")
+                {
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{resp.code}:{resp.errorMsg}");
+                    return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(resp.errorMsg));
+                }
+
+                var respResult = new PersonalRegisterContractSignResponseV1()
+                {
+                    UserId = resp.applyId,
+                    StartDate = resp.startDate,
+                    EndDate = resp.endDate,
+                    SignDate = resp.submitDate
+                };
+
+                switch (resp.signStatus)
+                {
+                    case "-1":
+                        respResult.Status = PersonalRegisterContractSignStatus.FAILURE.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.CONTRACT_NOT_EXIST.GetDescription();
+                        break;
+                    case "0":
+                        respResult.Status = PersonalRegisterContractSignStatus.WAIT_FOR_SIGN.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.WAIT_FOR_SIGN.GetDescription();
+                        break;
+                    case "1":
+                        respResult.Status = PersonalRegisterContractSignStatus.SUCCESS.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.SUCCESS.GetDescription();
+                        break;
+                    case "2":
+                        respResult.Status = PersonalRegisterContractSignStatus.FAILURE.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.SIGN_REFUSE.GetDescription();
+                        break;
+                    case "3":
+                        respResult.Status = PersonalRegisterContractSignStatus.FAILURE.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.WAIT_FOR_ACTIVE.GetDescription();
+                        break;
+                    case "4":
+                        respResult.Status = PersonalRegisterContractSignStatus.WAIT_FOR_CONVERT_TO_PDF.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.WAIT_FOR_CONVERT_TO_PDF.GetDescription();
+                        break;
+                    case "6":
+                        respResult.Status = PersonalRegisterContractSignStatus.SIGNING.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.SIGNING.GetDescription();
+                        break;
+                    case "7":
+                        respResult.Status = PersonalRegisterContractSignStatus.FAILURE.ToString();
+                        respResult.Msg = PersonalRegisterContractSignStatus.FAILURE.GetDescription();
+                        break;
+                }
+
+                return new XResult<PersonalRegisterContractSignResponseV1>(respResult);
             }
             finally
             {

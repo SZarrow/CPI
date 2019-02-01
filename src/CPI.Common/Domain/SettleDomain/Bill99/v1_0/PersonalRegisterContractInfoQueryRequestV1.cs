@@ -9,7 +9,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     /// <summary>
     /// 
     /// </summary>
-    public class QueryBankCardAcceptRequestV1 : ValidateModel
+    public class PersonalRegisterContractInfoQueryRequestV1 : ValidateModel
     {
         /// <summary>
         /// 
@@ -21,11 +21,5 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// </summary>
         [Required(ErrorMessage = "UserId字段必需")]
         public String UserId { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Required(ErrorMessage = "BankCardNo字段必需")]
-        public String BankCardNo { get; set; }
     }
 }

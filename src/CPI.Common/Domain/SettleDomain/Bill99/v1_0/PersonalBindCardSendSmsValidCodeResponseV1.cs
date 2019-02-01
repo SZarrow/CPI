@@ -13,9 +13,5 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// 
         /// </summary>
         public String UserId { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public String OutTradeNo { get; set; }
     }
 }

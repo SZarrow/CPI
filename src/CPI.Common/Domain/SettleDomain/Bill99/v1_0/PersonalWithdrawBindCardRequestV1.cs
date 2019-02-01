@@ -25,12 +25,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         public String UserId { get; set; }
 
         /// <summary>
-        /// 外部交易编号，必填
-        /// </summary>
-        [Required(ErrorMessage = "OutTradeNo字段必需")]
-        public String OutTradeNo { get; set; }
-
-        /// <summary>
         /// 
         /// </summary>
         [Required(ErrorMessage = "ApplyToken字段必需")]
