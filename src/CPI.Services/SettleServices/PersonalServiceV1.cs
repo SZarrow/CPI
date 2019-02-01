@@ -99,7 +99,7 @@ namespace CPI.Services.SettleServices
                     name = request.RealName
                 });
 
-                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱开户接口", request);
+                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱个人开户接口", request);
 
                 if (!execResult.Success || execResult.Value == null)
                 {
