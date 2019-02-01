@@ -34,22 +34,15 @@ namespace CPI.Handlers.Settle
 
             switch (requestService)
             {
+                #region #v1.0
                 case "cpi.settle.personal.register.1.0":
                     return Register_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.register.1.1":
-                    return Register_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.updateinfo.1.0":
                     return UpdateInfo_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.info.1.0":
                     return QueryInfo_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.bindcard.1.0":
                     return BindCard_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.bindcard.1.1":
-                    return BindCard_1_1(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.acceptbankcard.1.1":
-                    return AcceptBankCard_1_1(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.applybindcard.1.1":
-                    return ApplyBindCard_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.rebindcard.1.0":
                     return ReBindCard_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.cancelbindcard.1.0":
@@ -58,11 +51,26 @@ namespace CPI.Handlers.Settle
                     return BindCardList_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.bindcard.querystatus.1.0":
                     return QueryStatus_1_0(traceService, requestService, ref traceMethod);
+                #endregion
+
+                #region #v1.1
+                case "cpi.settle.personal.register.1.1":
+                    return Register_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.contractinfo.1.1":
+                    return ContractInfo_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.acceptbankcard.1.1":
+                    return AcceptBankCard_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.applybindcard.1.1":
+                    return ApplyBindCard_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.bindcard.1.1":
+                    return BindCard_1_1(traceService, requestService, ref traceMethod);
+                    #endregion
             }
 
             return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{ _request.Method }\" not support"));
         }
 
+        #region #v1.0
         private ObjectResult QueryStatus_1_0(String traceService, String requestService, ref String traceMethod)
         {
             var queryStatusRequest = JsonUtil.DeserializeObject<WithdrawBindCardQueryStatusRequest>(_request.BizContent);
@@ -161,26 +169,6 @@ namespace CPI.Handlers.Settle
             return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
         }
 
-        private ObjectResult BindCard_1_1(String traceService, String requestService, ref String traceMethod)
-        {
-            var bindRequest = JsonUtil.DeserializeObject<PersonalWithdrawBindCardRequestV1>(_request.BizContent);
-            if (!bindRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            bindRequest.Value.AppId = _request.AppId;
-
-            traceMethod = $"{_serviceV1.GetType().FullName}.WithdrawBindCard_1_1(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现绑卡", bindRequest.Value);
-
-            var bindResult = _serviceV1.WithdrawBindCard(bindRequest.Value);
-
-            _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现绑卡", bindResult.Value);
-
-            return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
-        }
-
         private ObjectResult QueryInfo_1_0(String traceService, String requestService, ref String traceMethod)
         {
             var queryInfoRequest = JsonUtil.DeserializeObject<PersonalInfoQueryRequest>(_request.BizContent);
@@ -240,7 +228,9 @@ namespace CPI.Handlers.Settle
 
             return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
         }
+        #endregion
 
+        #region #v1.1
         private ObjectResult Register_1_1(String traceService, String requestService, ref String traceMethod)
         {
             var regRequest = JsonUtil.DeserializeObject<PersonalRegisterRequestV1>(_request.BizContent);
@@ -257,6 +247,26 @@ namespace CPI.Handlers.Settle
             var regResult = _serviceV1.Register(regRequest.Value);
 
             _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人开户", regResult.Value);
+
+            return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
+        }
+
+        private ObjectResult ContractInfo_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var regRequest = JsonUtil.DeserializeObject<PersonalRegisterContractInfoQueryRequestV1>(_request.BizContent);
+            if (!regRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", regRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            regRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.QueryContract(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询合同", regRequest.Value);
+
+            var regResult = _serviceV1.QueryContract(regRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询合同", regResult.Value);
 
             return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
         }
@@ -300,5 +310,26 @@ namespace CPI.Handlers.Settle
 
             return applyResult.Success ? new ObjectResult(applyResult.Value) : new ObjectResult(null, applyResult.ErrorCode, applyResult.FirstException);
         }
+
+        private ObjectResult BindCard_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var bindRequest = JsonUtil.DeserializeObject<PersonalWithdrawBindCardRequestV1>(_request.BizContent);
+            if (!bindRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            bindRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.WithdrawBindCard_1_1(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现绑卡", bindRequest.Value);
+
+            var bindResult = _serviceV1.WithdrawBindCard(bindRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现绑卡", bindResult.Value);
+
+            return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
+        }
+        #endregion
     }
 }

@@ -51,11 +51,6 @@ namespace CPI.Common
                     this.Timestamp = timestamp;
                 }
 
-                if (collection.TryGetValue(nameof(NotifyUrl), out StringValues notifyUrl))
-                {
-                    this.NotifyUrl = notifyUrl;
-                }
-
                 if (collection.TryGetValue(nameof(BizContent), out StringValues bizContent))
                 {
                     this.BizContent = bizContent;
@@ -88,7 +83,6 @@ namespace CPI.Common
                     this.Method = req.Method;
                     this.Version = req.Version;
                     this.Timestamp = req.Timestamp;
-                    this.NotifyUrl = req.NotifyUrl;
                     this.BizContent = req.BizContent;
                     this.SignType = req.SignType;
                     this.Sign = req.Sign;
@@ -128,10 +122,6 @@ namespace CPI.Common
         [Required(ErrorMessage = "参数Timestamp必需")]
         [RegularExpression(@"^\d{4}\-\d{2}\-\d{2}\s\d{2}:\d{2}:\d{2}$", ErrorMessage = "参数Timestamp格式错误")]
         public String Timestamp { get; set; }
-        /// <summary>
-        /// 服务器主动通知商户服务器里指定页面的http/https路径
-        /// </summary>
-        public String NotifyUrl { get; set; }
         /// <summary>
         /// 请求参数集合的Json字符串，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递，具体参照各产品快速接入文档
         /// </summary>

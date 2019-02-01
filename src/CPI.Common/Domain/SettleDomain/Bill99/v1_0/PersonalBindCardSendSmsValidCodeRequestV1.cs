@@ -19,11 +19,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// <summary>
         /// 
         /// </summary>
-        [Required(ErrorMessage = "OutTradeNo字段必需")]
-        public String OutTradeNo { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
         [Required(ErrorMessage = "UserId字段必需")]
         public String UserId { get; set; }
         /// <summary>

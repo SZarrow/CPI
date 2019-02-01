@@ -12,10 +12,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// <summary>
         /// 
         /// </summary>
-        public String OutTradeNo { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
         public String UserId { get; set; }
         /// <summary>
         /// 卡类型

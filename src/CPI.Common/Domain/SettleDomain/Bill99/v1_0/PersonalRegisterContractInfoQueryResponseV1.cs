@@ -7,7 +7,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     /// <summary>
     /// 
     /// </summary>
-    public class PersonalApplyBindCardResponseV1 : CommonResponse
+    public class PersonalRegisterContractInfoQueryResponseV1 : CommonResponse
     {
         /// <summary>
         /// 
@@ -16,10 +16,14 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// <summary>
         /// 
         /// </summary>
-        public String ApplyToken { get; set; }
+        public String SignDate { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public DateTime ApplyTime { get; set; }
+        public String ContractNo { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public String FileId { get; set; }
     }
 }

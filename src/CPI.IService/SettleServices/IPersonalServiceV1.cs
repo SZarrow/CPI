@@ -33,9 +33,19 @@ namespace CPI.IService.SettleServices
         /// <param name="request">绑卡请求参数</param>
         XResult<PersonalWithdrawBindCardResponseV1> WithdrawBindCard(PersonalWithdrawBindCardRequestV1 request);
         /// <summary>
-        /// 发送短信验证码
+        /// 手机号验证
         /// </summary>
         /// <param name="request"></param>
         XResult<PersonalBindCardSendSmsValidCodeResponseV1> MobileCheck(PersonalBindCardSendSmsValidCodeRequestV1 request);
+        /// <summary>
+        /// 合同查询
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalRegisterContractInfoQueryResponseV1> QueryContract(PersonalRegisterContractInfoQueryRequestV1 request);
+        /// <summary>
+        /// 合同签约
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalRegisterContractSignResponseV1> SignContract(PersonalRegisterContractSignRequestV1 request);
     }
 }

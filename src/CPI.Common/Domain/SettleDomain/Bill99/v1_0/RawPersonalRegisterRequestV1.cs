@@ -21,11 +21,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         public String uId { get; set; }
 
         /// <summary>
-        /// 用户标识
-        /// </summary>
-        public String userFlag { get; set; }
-
-        /// <summary>
         /// 平台代码
         /// </summary>
         public String platformCode { get; set; }

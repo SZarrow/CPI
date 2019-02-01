@@ -7,19 +7,19 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     /// <summary>
     /// 
     /// </summary>
-    public class PersonalApplyBindCardResponseV1 : CommonResponse
+    public class RawPersonalRegisterContractInfoQueryRequestV1
     {
         /// <summary>
         /// 
         /// </summary>
-        public String UserId { get; set; }
+        public String requestId { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public String ApplyToken { get; set; }
+        public String platformCode { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public DateTime ApplyTime { get; set; }
+        public String applyId { get; set; }
     }
 }
