@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CPI.Common;
 using Lotus.Logging;
@@ -16,8 +17,8 @@ namespace CPI.WebAPI.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            String ip = $"{context.HttpContext.Connection.RemoteIpAddress}:{context.HttpContext.Connection.RemotePort}";
-            _logger.StartTrace("CPI.WebAPI", Activity.Current?.Id ?? context.HttpContext.TraceIdentifier, ip);
+            String ipAndPort = $"{context.HttpContext.Connection.RemoteIpAddress.ToIPString()}:{context.HttpContext.Connection.RemotePort}";
+            _logger.StartTrace("CPI.WebAPI", Activity.Current?.Id ?? context.HttpContext.TraceIdentifier, ipAndPort);
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
