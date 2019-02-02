@@ -93,7 +93,7 @@ namespace CPI.Services.SettleServices
                     email = request.Email,
                     idCardNumber = request.IDCardNo,
                     idCardType = request.IDCardType,
-                    //userFlag = "1",
+                    userFlag = "1",
                     mobile = request.Mobile,
                     platformCode = GlobalConfig.X99bill_COE_v1_PlatformCode,
                     name = request.RealName
@@ -101,10 +101,22 @@ namespace CPI.Services.SettleServices
 
                 _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱个人开户接口", request);
 
+                Boolean needRollback = false;
+
                 if (!execResult.Success || execResult.Value == null)
                 {
                     _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "个人开户失败", execResult.FirstException, execResult.Value);
+                    needRollback = true;
+                }
 
+                if (execResult.Value.ResponseCode != "0000")
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"{execResult.Value.ResponseCode}:{execResult.Value.ResponseMessage}", null, execResult.Value);
+                    needRollback = true;
+                }
+
+                if (needRollback)
+                {
                     _personalSubAccountRepository.Remove(newAccount);
                     saveResult = _personalSubAccountRepository.SaveChanges();
                     if (!saveResult.Success)
@@ -116,16 +128,8 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
                 }
 
-                if (execResult.Value.ResponseCode == "0000")
-                {
-                    newAccount.Status = PersonalInfoRegisterStatus.SUCCESS.ToString();
-                    newAccount.OpenId = execResult.Value.UserId;
-                }
-                else
-                {
-                    newAccount.Status = PersonalInfoRegisterStatus.FAILURE.ToString();
-                }
-
+                newAccount.Status = PersonalInfoRegisterStatus.SUCCESS.ToString();
+                newAccount.OpenId = execResult.Value.UserId;
                 _personalSubAccountRepository.Update(newAccount);
                 var updateResult = _personalSubAccountRepository.SaveChanges();
                 if (!updateResult.Success)

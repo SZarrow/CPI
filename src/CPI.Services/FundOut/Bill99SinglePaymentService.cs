@@ -410,7 +410,7 @@ namespace CPI.Services.FundOut
 
                 StringBuilder sb = new StringBuilder();
 
-                if (!queryResult.Success && queryResult.Exceptions.Count > 0)
+                if (!queryResult.Success && queryResult.FirstException != null)
                 {
                     //如果快钱返回Q0018:没有查询到结果，且订单创建时间超过了2小时
                     //说明该订单没有在快钱创建成功，则将该订单状态设置为失败
