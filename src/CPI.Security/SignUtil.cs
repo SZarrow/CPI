@@ -77,7 +77,7 @@ namespace CPI.Security
                     var md5Result = CryptoHelper.GetMD5(signContent);
                     if (!md5Result.Success)
                     {
-                        return new XResult<Byte[]>(null, md5Result.Exceptions.ToArray());
+                        return new XResult<Byte[]>(null, md5Result.FirstException);
                     }
                     rgbHash = md5Result.Value;
                     break;
@@ -86,7 +86,7 @@ namespace CPI.Security
                     var sha1Result = CryptoHelper.GetSHA1(signContent);
                     if (!sha1Result.Success)
                     {
-                        return new XResult<Byte[]>(null, sha1Result.Exceptions.ToArray());
+                        return new XResult<Byte[]>(null, sha1Result.FirstException);
                     }
                     rgbHash = sha1Result.Value;
                     break;
