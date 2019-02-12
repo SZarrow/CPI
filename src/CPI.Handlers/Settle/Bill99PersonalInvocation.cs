@@ -58,6 +58,8 @@ namespace CPI.Handlers.Settle
                     return Register_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.contractinfo.1.1":
                     return ContractInfo_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.signcontract.1.1":
+                    return SignContract_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.acceptbankcard.1.1":
                     return AcceptBankCard_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.applybindcard.1.1":
@@ -67,7 +69,7 @@ namespace CPI.Handlers.Settle
                     #endregion
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{ _request.Method }\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
         }
 
         #region #v1.0
@@ -249,6 +251,26 @@ namespace CPI.Handlers.Settle
             _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人开户", regResult.Value);
 
             return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
+        }
+
+        private ObjectResult SignContract_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var signRequest = JsonUtil.DeserializeObject<PersonalRegisterContractSignRequestV1>(_request.BizContent);
+            if (!signRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", signRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            signRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.SignContract(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始合同签约", signRequest.Value);
+
+            var signResult = _serviceV1.SignContract(signRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (signResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束合同签约", signResult.Value);
+
+            return signResult.Success ? new ObjectResult(signResult.Value) : new ObjectResult(null, signResult.ErrorCode, signResult.FirstException);
         }
 
         private ObjectResult ContractInfo_1_1(String traceService, String requestService, ref String traceMethod)

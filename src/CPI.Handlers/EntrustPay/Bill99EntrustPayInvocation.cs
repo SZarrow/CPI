@@ -84,7 +84,7 @@ namespace CPI.Handlers.EntrustPay
                     return entrustPayResult.Success ? new ObjectResult(entrustPayResult.Value) : new ObjectResult(null, entrustPayResult.ErrorCode, entrustPayResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{ _request.Method }\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
         }
 
         private XResult<CPIEntrustPayPaymentRequest> BuildCPIEntrustPayPaymentRequest(CommonPayRequest request)

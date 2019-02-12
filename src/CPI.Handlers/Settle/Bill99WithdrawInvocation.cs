@@ -138,7 +138,7 @@ namespace CPI.Handlers.Settle
                     return queryFeeResult.Success ? new ObjectResult(queryFeeResult.Value) : new ObjectResult(null, queryFeeResult.ErrorCode, queryFeeResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{ _request.Method }\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
         }
 
         private XResult<AllotAmountWithdrawApplyRequest> BuildWithdrawRequest(CommonWithdrawRequest request)
