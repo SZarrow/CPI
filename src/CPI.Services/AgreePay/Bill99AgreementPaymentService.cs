@@ -405,6 +405,7 @@ namespace CPI.Services.AgreePay
                 //添加分账记录
                 var allotAmountOrder = new AllotAmountOrder()
                 {
+                    Id = newId,
                     AppId = request.AppId,
                     PayeeId = request.PayerId,
                     TradeNo = tradeNo,

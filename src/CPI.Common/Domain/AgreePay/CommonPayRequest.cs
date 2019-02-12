@@ -33,6 +33,32 @@ namespace CPI.Common.Domain.AgreePay
         public String BankCardNo { get; set; }
 
         /// <summary>
+        /// 分账类型
+        /// </summary>
+        [Required(ErrorMessage = "SharingType字段必需")]
+        [RegularExpression("^0|1$", ErrorMessage = "SharingType字段格式错误")]
+        public String SharingType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required(ErrorMessage = "FeePayerId字段必需")]
+        public String FeePayerId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required(ErrorMessage = "Fee字段必需")]
+        public Decimal Fee { get; set; }
+
+        /// <summary>
+        /// 分账周期
+        /// </summary>
+        [Required(ErrorMessage = "SharingPeriod字段必需")]
+        [RegularExpression(@"^T\+\d$", ErrorMessage = "SharingPeriod字段格式错误")]
+        public String SharingPeriod { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         public Decimal GetPayAmount()
