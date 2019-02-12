@@ -101,7 +101,7 @@ namespace CPI.Handlers.FundOut
                         : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{ _request.Method }\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
         }
     }
 }

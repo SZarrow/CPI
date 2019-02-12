@@ -98,7 +98,7 @@ namespace CPI.Handlers.Settle
                     return modifyResult.Success ? new ObjectResult(modifyResult.Value) : new ObjectResult(null, modifyResult.ErrorCode, modifyResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{ _request.Method }\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
         }
     }
 }
