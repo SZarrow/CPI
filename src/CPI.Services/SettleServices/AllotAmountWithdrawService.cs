@@ -239,7 +239,7 @@ namespace CPI.Services.SettleServices
 
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN);
 
-                    var respResult = Bill99Util.Execute<AllotAmountResultQueryRequest, AllotAmountResultQueryResponse>("/settle/detail", request);
+                    var respResult = Bill99UtilYZT.Execute<AllotAmountResultQueryRequest, AllotAmountResultQueryResponse>("/settle/detail", request);
 
                     _logger.Trace(TraceType.BLL.ToString(), (respResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.BEGIN);
 
@@ -413,7 +413,7 @@ namespace CPI.Services.SettleServices
 
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN);
 
-                    var respResult = Bill99Util.Execute<RawWithdrawQueryRequest, RawWithdrawQueryResponse>("/withdraw/query", request);
+                    var respResult = Bill99UtilYZT.Execute<RawWithdrawQueryRequest, RawWithdrawQueryResponse>("/withdraw/query", request);
 
                     _logger.Trace(TraceType.BLL.ToString(), (respResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END);
 

@@ -45,6 +45,17 @@ namespace CPI.Config
         }
 
         /// <summary>
+        /// 快钱HAT平台请求地址
+        /// </summary>
+        public static String Bill99_HAT_RequestUrl
+        {
+            get
+            {
+                return Configuration["X-99bill-HAT:RequestUrl"];
+            }
+        }
+
+        /// <summary>
         /// 快钱协议支付申请绑卡请求地址
         /// </summary>
         public static String Bill99_AgreePay_ApplyBindCard_RequestUrl

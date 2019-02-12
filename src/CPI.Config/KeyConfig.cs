@@ -92,6 +92,39 @@ namespace CPI.Config
         }
 
         /// <summary>
+        /// 快钱HAT平台公钥
+        /// </summary>
+        public static String Bill99_HAT_PublicKey
+        {
+            get
+            {
+                return Configuration["X-99bill-HAT:HAT-PublicKey"];
+            }
+        }
+
+        /// <summary>
+        /// 快钱HAT平台荷花公钥
+        /// </summary>
+        public static String Bill99_HAT_Hehua_PublicKey
+        {
+            get
+            {
+                return Configuration["X-99bill-HAT:Hehua-PublicKey"];
+            }
+        }
+
+        /// <summary>
+        /// 快钱HAT平台荷花私钥
+        /// </summary>
+        public static String Bill99_HAT_Hehua_PrivateKey
+        {
+            get
+            {
+                return Configuration["X-99bill-HAT:Hehua-PrivateKey"];
+            }
+        }
+
+        /// <summary>
         /// 快钱协议支付私钥文件路径
         /// </summary>
         public static String Bill99_AgreePay_PrivateKeyFilePath

@@ -115,6 +115,16 @@ namespace CPI.Config
             }
         }
         /// <summary>
+        /// 快钱HAT平台商户号
+        /// </summary>
+        public static String X99bill_HAT_PlatformCode
+        {
+            get
+            {
+                return Configuration["X-99bill-HAT:Hehua-PlatformCode"];
+            }
+        }
+        /// <summary>
         /// 获取快钱分账荷花平台编码
         /// </summary>
         public static String X99bill_YZT_PlatformCode
