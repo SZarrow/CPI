@@ -31,6 +31,13 @@ namespace CPI.Common.Domain.AgreePay
         public Decimal Amount { get; set; }
 
         /// <summary>
+        /// 分账类型
+        /// </summary>
+        [Required(ErrorMessage = "SharingType字段必需")]
+        [RegularExpression("^0|1$", ErrorMessage = "SharingType字段格式错误")]
+        public String SharingType { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         [Required(ErrorMessage = "FeePayerId字段必需")]

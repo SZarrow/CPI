@@ -30,7 +30,7 @@ namespace CPI.Services.SettleServices
         private readonly IWithdrawBankCardBindInfoRepository _withdrawBankCardBindInfoRepository = null;
 
         private readonly IAllotAmountService _allotAmountService = null;
-        private readonly IWithdrawService _withdrawService = null;
+        //private readonly IWithdrawService _withdrawService = null;
 
         public XResult<AllotAmountWithdrawApplyResponse> Apply(AllotAmountWithdrawApplyRequest request)
         {
@@ -296,69 +296,71 @@ namespace CPI.Services.SettleServices
 
         public XResult<Int32> FireWithdraw(Int32 count = 10)
         {
-            if (count <= 0)
-            {
-                return new XResult<Int32>(0);
-            }
+            //if (count <= 0)
+            //{
+            //    return new XResult<Int32>(0);
+            //}
 
-            String service = $"{this.GetType().FullName}.FireWithdraw()";
+            //String service = $"{this.GetType().FullName}.FireWithdraw()";
 
-            var hashKey = $"firewithdraw:{DateTime.Now.ToString("yyMMddHH")}".GetHashCode();
+            //var hashKey = $"firewithdraw:{DateTime.Now.ToString("yyMMddHH")}".GetHashCode();
 
-            if (_lockProvider.Exists(hashKey))
-            {
-                return new XResult<Int32>(0, ErrorCode.SUBMIT_REPEAT);
-            }
+            //if (_lockProvider.Exists(hashKey))
+            //{
+            //    return new XResult<Int32>(0, ErrorCode.SUBMIT_REPEAT);
+            //}
 
-            try
-            {
-                if (!_lockProvider.Lock(hashKey))
-                {
-                    return new XResult<Int32>(0, ErrorCode.SUBMIT_REPEAT);
-                }
+            //try
+            //{
+            //    if (!_lockProvider.Lock(hashKey))
+            //    {
+            //        return new XResult<Int32>(0, ErrorCode.SUBMIT_REPEAT);
+            //    }
 
-                //查出分账成功的提现单
-                var withdrawOrders = (from t0 in _allotAmountWithdrawOrderRepository.QueryProvider
-                                      join t1 in _allotAmountOrderRepository.QueryProvider
-                                      on t0.OutTradeNo equals t1.WithdrawOutTradeNo
-                                      where t0.Status == WithdrawOrderStatus.APPLY.ToString()
-                                      && t1.Status == AllotAmountOrderStatus.SUCCESS.ToString()
-                                      orderby t0.ApplyTime
-                                      select t0).Take(count).ToList();
+            //    //查出分账成功的提现单
+            //    var withdrawOrders = (from t0 in _allotAmountWithdrawOrderRepository.QueryProvider
+            //                          join t1 in _allotAmountOrderRepository.QueryProvider
+            //                          on t0.OutTradeNo equals t1.WithdrawOutTradeNo
+            //                          where t0.Status == WithdrawOrderStatus.APPLY.ToString()
+            //                          && t1.Status == AllotAmountOrderStatus.SUCCESS.ToString()
+            //                          orderby t0.ApplyTime
+            //                          select t0).Take(count).ToList();
 
-                if (withdrawOrders == null || withdrawOrders.Count == 0)
-                {
-                    return new XResult<Int32>(0);
-                }
+            //    if (withdrawOrders == null || withdrawOrders.Count == 0)
+            //    {
+            //        return new XResult<Int32>(0);
+            //    }
 
-                var tasks = new List<Task>(withdrawOrders.Count);
-                var successCount = 0;
+            //    var tasks = new List<Task>(withdrawOrders.Count);
+            //    var successCount = 0;
 
-                foreach (var withdrawOrder in withdrawOrders)
-                {
-                    var result = _withdrawService.Withdraw(new WithdrawRequest()
-                    {
-                        AppId = withdrawOrder.AppId,
-                        PayeeId = withdrawOrder.PayeeId,
-                        OutTradeNo = withdrawOrder.OutTradeNo,
-                        Amount = withdrawOrder.Amount,
-                        CustomerFee = withdrawOrder.CustomerFee,
-                        MerchantFee = withdrawOrder.MerchantFee,
-                        SettlePeriod = withdrawOrder.SettlePeriod
-                    });
+            //    foreach (var withdrawOrder in withdrawOrders)
+            //    {
+            //        var result = _withdrawService.Withdraw(new WithdrawRequest()
+            //        {
+            //            AppId = withdrawOrder.AppId,
+            //            PayeeId = withdrawOrder.PayeeId,
+            //            OutTradeNo = withdrawOrder.OutTradeNo,
+            //            Amount = withdrawOrder.Amount,
+            //            CustomerFee = withdrawOrder.CustomerFee,
+            //            MerchantFee = withdrawOrder.MerchantFee,
+            //            SettlePeriod = withdrawOrder.SettlePeriod
+            //        });
 
-                    if (result.Success)
-                    {
-                        successCount++;
-                    }
-                }
+            //        if (result.Success)
+            //        {
+            //            successCount++;
+            //        }
+            //    }
 
-                return new XResult<Int32>(successCount);
-            }
-            finally
-            {
-                _lockProvider.UnLock(hashKey);
-            }
+            //    return new XResult<Int32>(successCount);
+            //}
+            //finally
+            //{
+            //    _lockProvider.UnLock(hashKey);
+            //}
+
+            throw new NotImplementedException();
         }
 
         public XResult<Int32> PullWithdrawResult(Int32 count = 20)
