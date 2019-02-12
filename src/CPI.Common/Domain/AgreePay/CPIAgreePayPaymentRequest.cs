@@ -31,6 +31,25 @@ namespace CPI.Common.Domain.AgreePay
         public Decimal Amount { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        [Required(ErrorMessage = "FeePayerId字段必需")]
+        public String FeePayerId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required(ErrorMessage = "Fee字段必需")]
+        public Decimal Fee { get; set; }
+
+        /// <summary>
+        /// 分账周期
+        /// </summary>
+        [Required(ErrorMessage = "SharingPeriod字段必需")]
+        [RegularExpression(@"^T\+\d$", ErrorMessage = "SharingPeriod字段格式错误")]
+        public String SharingPeriod { get; set; }
+
+        /// <summary>
         /// 支付外部交易号
         /// </summary>
         [Required(ErrorMessage = "OutTradeNo字段必需")]
