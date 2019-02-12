@@ -106,32 +106,32 @@ namespace CPI.Handlers
                 // 然后得到费用最小的一个通道，
                 // 然后对于这个费用最小的通道，通道费用大于阈值的用代扣，否则用协议支付。
 
-                var paymentRequest = JsonUtil.DeserializeObject<CommonPayRequest>(request.BizContent);
-                if (!paymentRequest.Success)
-                {
-                    _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), service, tag, "解析支付金额失败", paymentRequest.FirstException, request);
-                    return null;
-                }
+                //var paymentRequest = JsonUtil.DeserializeObject<CommonPayRequest>(request.BizContent);
+                //if (!paymentRequest.Success)
+                //{
+                //    _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), service, tag, "解析支付金额失败", paymentRequest.FirstException, request);
+                //    return null;
+                //}
 
-                var payChannelService = XDI.Resolve<IPayChannelService>();
-                var channels = payChannelService.GetAllChannels();
-                if (channels != null && channels.Count() > 0)
-                {
-                    var cheapestChannel = (from ch in channels
-                                           let cost = paymentRequest.Value.GetPayAmount() * ch.PayRate
-                                           orderby cost
-                                           select new
-                                           {
-                                               ch.ChannelCode,
-                                               Cost = cost
-                                           }).FirstOrDefault();
+                //var payChannelService = XDI.Resolve<IPayChannelService>();
+                //var channels = payChannelService.GetAllChannels();
+                //if (channels != null && channels.Count() > 0)
+                //{
+                //    var cheapestChannel = (from ch in channels
+                //                           let cost = paymentRequest.Value.GetPayAmount() * ch.PayRate
+                //                           orderby cost
+                //                           select new
+                //                           {
+                //                               ch.ChannelCode,
+                //                               Cost = cost
+                //                           }).FirstOrDefault();
 
-                    if (cheapestChannel.Cost > GlobalConfig.PayChannelFeeThreshold)
-                    {
-                        _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99EntrustPayInvocation");
-                        return new Bill99EntrustPayInvocation(request);
-                    }
-                }
+                //    if (cheapestChannel.Cost > GlobalConfig.PayChannelFeeThreshold)
+                //    {
+                //        _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99EntrustPayInvocation");
+                //        return new Bill99EntrustPayInvocation(request);
+                //    }
+                //}
 
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
                 return new Bill99AgreePayInvocation(request);
