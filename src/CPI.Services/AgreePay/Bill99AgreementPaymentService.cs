@@ -340,7 +340,12 @@ namespace CPI.Services.AgreePay
 
             if (request.Amount < GlobalConfig.X99bill_AgreePay_PayMinAmount)
             {
-                return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付金额必须大于{GlobalConfig.X99bill_AgreePay_PayMinAmount.ToString()}"));
+                return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付总金额必须大于{GlobalConfig.X99bill_AgreePay_PayMinAmount.ToString()}"));
+            }
+
+            if (request.Amount - request.Fee <= 0)
+            {
+                return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付总金额必须大于手续费"));
             }
 
             String service = $"{this.GetType().FullName}.Pay(...)";
@@ -403,6 +408,13 @@ namespace CPI.Services.AgreePay
 
                 var tradeTime = DateTime.Now;
 
+                //构造分账数据
+                var sharingDic = new Dictionary<String, String>(5);
+                sharingDic["sharingFlag"] = "1";
+                sharingDic["feeMode"] = "0";
+                sharingDic["feePayer"] = request.FeePayerId;
+                sharingDic["sharingData"] = $"2^{request.PayerId}^{(request.Amount - request.Fee).ToString("0.00")}^{request.SharingPeriod}^主分账方|2^{request.FeePayerId}^{request.Fee.ToString("0.00")}^{request.SharingPeriod}^手续费分账方";
+
                 var payRequest = new AgreementPayRequest()
                 {
                     Version = "1.0",
@@ -423,6 +435,10 @@ namespace CPI.Services.AgreePay
                                 new ExtDate() {
                                     Key = "phone",
                                     Value = request.Mobile
+                                },
+                                new ExtDate() {
+                                    Key = "sharingInfo",
+                                    Value = JsonUtil.SerializeObject(sharingDic).Value
                                 }
                             }
                         }
