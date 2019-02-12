@@ -153,7 +153,7 @@ namespace CPI.Services.SettleServices
 
         public XResult<AllotAmountResultQueryResponse> Query(AllotAmountResultQueryRequest request)
         {
-            return Bill99Util.Execute<AllotAmountResultQueryRequest, AllotAmountResultQueryResponse>("/settle/detail", request);
+            return Bill99UtilYZT.Execute<AllotAmountResultQueryRequest, AllotAmountResultQueryResponse>("/settle/detail", request);
         }
 
         public XResult<AllotAmountRefundResponse> Refund(AllotAmountRefundRequest request)
@@ -289,7 +289,7 @@ namespace CPI.Services.SettleServices
 
         public XResult<SettlementPeriodModifyResponse> ModifySettlePeriod(SettlementPeriodModifyRequest request)
         {
-            return Bill99Util.Execute<SettlementPeriodModifyRequest, SettlementPeriodModifyResponse>("/settle/period/modify", request);
+            return Bill99UtilYZT.Execute<SettlementPeriodModifyRequest, SettlementPeriodModifyResponse>("/settle/period/modify", request);
         }
 
         private String GetAllotAmountOrderStatusMsg(String status)

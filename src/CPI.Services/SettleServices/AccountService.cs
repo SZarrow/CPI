@@ -15,7 +15,7 @@ namespace CPI.Services.SettleServices
     {
         public XResult<AccountBalanceQueryResponse> GetBalance(AccountBalanceQueryRequest request)
         {
-            var queryResult = Bill99Util.Execute<RawAccountBalanceQueryRequest, RawAccountBalanceQueryResponse>("/account/balance/query", new RawAccountBalanceQueryRequest()
+            var queryResult = Bill99UtilYZT.Execute<RawAccountBalanceQueryRequest, RawAccountBalanceQueryResponse>("/account/balance/query", new RawAccountBalanceQueryRequest()
             {
                 accountBalanceType = request.AccountBalanceTypes,
                 uId = request.PayeeId

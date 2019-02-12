@@ -32,7 +32,7 @@ namespace CPI.Services.SettleServices
 
         public XResult<PersonalCancelBoundCardResponse> CancelBoundCard(PersonalCancelBoundCardRequest request)
         {
-            return Bill99Util.Execute<PersonalCancelBoundCardRequest, PersonalCancelBoundCardResponse>("/person/bankcard/cancel", request);
+            return Bill99UtilYZT.Execute<PersonalCancelBoundCardRequest, PersonalCancelBoundCardResponse>("/person/bankcard/cancel", request);
         }
 
         public XResult<PersonalInfoQueryResponse> GetAccountInfo(PersonalInfoQueryRequest request)
@@ -72,7 +72,7 @@ namespace CPI.Services.SettleServices
 
                 if (existedRegisterInfo.Status != PersonalInfoRegisterStatus.SUCCESS.ToString())
                 {
-                    var queryResult = Bill99Util.Execute<RawPersonalInfoQueryRequest, RawPersonalInfoQueryResponse>("/person/info", new RawPersonalInfoQueryRequest()
+                    var queryResult = Bill99UtilYZT.Execute<RawPersonalInfoQueryRequest, RawPersonalInfoQueryResponse>("/person/info", new RawPersonalInfoQueryRequest()
                     {
                         PayeeId = request.PayeeId
                     });
@@ -138,7 +138,7 @@ namespace CPI.Services.SettleServices
                 var existedBoundInfos = _withdrawBankCardBindInfoRepository.QueryProvider.Where(x => x.PayeeId == request.PayeeId).ToList();
                 if (existedBoundInfos == null || existedBoundInfos.Count == 0)
                 {
-                    var queryResult = Bill99Util.Execute<RawPersonalBoundCardListQueryRequest, RawPersonalBoundCardListQueryResponse>("/person/bankcard/list", new RawPersonalBoundCardListQueryRequest()
+                    var queryResult = Bill99UtilYZT.Execute<RawPersonalBoundCardListQueryRequest, RawPersonalBoundCardListQueryResponse>("/person/bankcard/list", new RawPersonalBoundCardListQueryRequest()
                     {
                         PayeeId = request.PayeeId
                     });
@@ -159,7 +159,7 @@ namespace CPI.Services.SettleServices
                 var unConfirmBoundInfos = existedBoundInfos.Where(x => x.BindStatus != WithdrawBindCardStatus.SUCCESS.ToString() && x.BindStatus != WithdrawBindCardStatus.FAILURE.ToString());
                 if (unConfirmBoundInfos.Count() > 0)
                 {
-                    var queryResult = Bill99Util.Execute<RawPersonalBoundCardListQueryRequest, RawPersonalBoundCardListQueryResponse>("/person/bankcard/list", new RawPersonalBoundCardListQueryRequest()
+                    var queryResult = Bill99UtilYZT.Execute<RawPersonalBoundCardListQueryRequest, RawPersonalBoundCardListQueryResponse>("/person/bankcard/list", new RawPersonalBoundCardListQueryRequest()
                     {
                         PayeeId = request.PayeeId
                     });
@@ -253,7 +253,7 @@ namespace CPI.Services.SettleServices
                     return new XResult<WithdrawBindCardQueryStatusResponse>(null, ErrorCode.SUBMIT_REPEAT);
                 }
 
-                var queryResult = Bill99Util.Execute<RawWithdrawBindCardQueryStatusRequest, RawWithdrawBindCardQueryStatusResponse>("/bankacct/queryStatus", new RawWithdrawBindCardQueryStatusRequest()
+                var queryResult = Bill99UtilYZT.Execute<RawWithdrawBindCardQueryStatusRequest, RawWithdrawBindCardQueryStatusResponse>("/bankacct/queryStatus", new RawWithdrawBindCardQueryStatusRequest()
                 {
                     uId = request.PayeeId,
                     bankAcctId = request.BankCardNo
@@ -369,7 +369,7 @@ namespace CPI.Services.SettleServices
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱个人开户接口", request);
 
-                var execResult = Bill99Util.Execute<RawPersonalRegisterRequest, RawPersonalRegisterResponse>("/person/register", new RawPersonalRegisterRequest()
+                var execResult = Bill99UtilYZT.Execute<RawPersonalRegisterRequest, RawPersonalRegisterResponse>("/person/register", new RawPersonalRegisterRequest()
                 {
                     uId = request.PayeeId,
                     email = request.Email,
@@ -533,7 +533,7 @@ namespace CPI.Services.SettleServices
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始更新个人账户信息", request);
 
-                var execResult = Bill99Util.Execute<PersonalInfoUpdateRequest, RawPersonalInfoUpdateResponse>("/person/updateMember", request);
+                var execResult = Bill99UtilYZT.Execute<PersonalInfoUpdateRequest, RawPersonalInfoUpdateResponse>("/person/updateMember", request);
 
                 _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, "结束更新个人账户信息", execResult.Value);
 
@@ -628,7 +628,7 @@ namespace CPI.Services.SettleServices
 
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN);
 
-                    var execResult = Bill99Util.Execute<RawPersonalWithdrawBindCardRequest, RawPersonalWithdrawBindCardResponse>("/person/bankcard/bind", new RawPersonalWithdrawBindCardRequest()
+                    var execResult = Bill99UtilYZT.Execute<RawPersonalWithdrawBindCardRequest, RawPersonalWithdrawBindCardResponse>("/person/bankcard/bind", new RawPersonalWithdrawBindCardRequest()
                     {
                         uId = request.PayeeId,
                         bankAcctId = request.BankCardNo,
@@ -746,7 +746,7 @@ namespace CPI.Services.SettleServices
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN);
 
-                var execResult = Bill99Util.Execute<RawPersonalWithdrawRebindCardRequest, RawPersonalWithdrawRebindCardResponse>("/person/bankcard/rebind", new RawPersonalWithdrawRebindCardRequest()
+                var execResult = Bill99UtilYZT.Execute<RawPersonalWithdrawRebindCardRequest, RawPersonalWithdrawRebindCardResponse>("/person/bankcard/rebind", new RawPersonalWithdrawRebindCardRequest()
                 {
                     bankAcctId = request.BankCardNo,
                     mobile = request.Mobile,

@@ -42,7 +42,7 @@ namespace CPI.Services.SettleServices
             var existedInfo = _allotAmountWithdrawOrderRepository.QueryProvider.FirstOrDefault(x => x.PayeeId == request.PayeeId && x.OutTradeNo == request.OutTradeNo);
             if (existedInfo == null)
             {
-                var queryResult = Bill99Util.Execute<RawWithdrawQueryRequest, RawWithdrawQueryResponse>("/withdraw/query", new RawWithdrawQueryRequest()
+                var queryResult = Bill99UtilYZT.Execute<RawWithdrawQueryRequest, RawWithdrawQueryResponse>("/withdraw/query", new RawWithdrawQueryRequest()
                 {
                     uId = request.PayeeId,
                     outTradeNo = request.OutTradeNo
@@ -61,7 +61,7 @@ namespace CPI.Services.SettleServices
 
             if (existedInfo.Status != WithdrawOrderStatus.SUCCESS.ToString() && existedInfo.Status != WithdrawOrderStatus.FAILURE.ToString())
             {
-                var queryResult = Bill99Util.Execute<RawWithdrawQueryRequest, RawWithdrawQueryResponse>("/withdraw/query", new RawWithdrawQueryRequest()
+                var queryResult = Bill99UtilYZT.Execute<RawWithdrawQueryRequest, RawWithdrawQueryResponse>("/withdraw/query", new RawWithdrawQueryRequest()
                 {
                     uId = request.PayeeId,
                     outTradeNo = request.OutTradeNo
@@ -126,7 +126,7 @@ namespace CPI.Services.SettleServices
                 return new XResult<WithdrawQueryFeeResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var queryResult = Bill99Util.Execute<RawWithdrawQueryFeeRequest, RawWithdrawQueryFeeResponse>("/withdraw/queryFee", new RawWithdrawQueryFeeRequest()
+            var queryResult = Bill99UtilYZT.Execute<RawWithdrawQueryFeeRequest, RawWithdrawQueryFeeResponse>("/withdraw/queryFee", new RawWithdrawQueryFeeRequest()
             {
                 uId = request.PayeeId,
                 amount = request.Amount
@@ -288,7 +288,7 @@ namespace CPI.Services.SettleServices
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN);
 
-                var execResult = Bill99Util.Execute<RawWithdrawRequest, RawWithdrawResponse>("/account/withdraw", new RawWithdrawRequest()
+                var execResult = Bill99UtilYZT.Execute<RawWithdrawRequest, RawWithdrawResponse>("/account/withdraw", new RawWithdrawRequest()
                 {
                     uId = request.PayeeId,
                     outTradeNo = request.OutTradeNo,
