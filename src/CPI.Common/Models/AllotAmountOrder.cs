@@ -34,25 +34,25 @@ namespace CPI.Common.Models
         [Column("payee_id")]
         public String PayeeId { get; set; }
         /// <summary>
-        /// 提现单外部交易编号
-        /// </summary>
-        [Column("withdraw_out_trade_no")]
-        public String WithdrawOutTradeNo { get; set; }
-        /// <summary>
         /// 外部跟踪编号
         /// </summary>
         [Column("out_trade_no")]
         public String OutTradeNo { get; set; }
         /// <summary>
-        /// 原消费分账的外部交易编号，当分账类型为退款分账时此字段必填
-        /// </summary>
-        [Column("original_out_trade_no")]
-        public String OriginalOutTradeNo { get; set; }
-        /// <summary>
         /// 分账总金额
         /// </summary>
         [Column("total_amount")]
         public Decimal TotalAmount { get; set; }
+        /// <summary>
+        /// 手续费分账方Id
+        /// </summary>
+        [Column("fee_payer_id")]
+        public String FeePayerId { get; set; }
+        /// <summary>
+        /// 手续费
+        /// </summary>
+        [Column("fee")]
+        public Decimal Fee { get; set; }
         /// <summary>
         /// 结算周期
         /// </summary>

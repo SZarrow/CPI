@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using CPI.Common;
 using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.Common;
+using CPI.Common.Domain.SettleDomain.Bill99;
 using CPI.Common.ErrorCodes;
 using CPI.Common.Exceptions;
 using CPI.Common.Models;
@@ -38,6 +39,7 @@ namespace CPI.Services.AgreePay
         private readonly IAgreePayBankCardBindInfoRepository _bankCardBindInfoRepository = null;
         private readonly IAgreePayBankCardInfoRepository _bankCardInfoRepository = null;
         private readonly IPayOrderRepository _payOrderRepository = null;
+        private readonly IAllotAmountOrderRepository _allotAmountOrderRepository = null;
 
         private static AgreementPaymentApi CreateAgreementPaymentApi()
         {
@@ -364,13 +366,6 @@ namespace CPI.Services.AgreePay
                     return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.SUBMIT_REPEAT);
                 }
 
-                ////检查是否已绑卡
-                //if (!_bankCardBindInfoRepository.Exists(x => x.PayToken == request.PayToken && x.PayerId == request.PayerId))
-                //{
-                //    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "__CheckBankCardBindInfo(...)", LogPhase.ACTION, "该用户尚未绑卡", request);
-                //    return new XResult<CPIAgreePayPaymentResponse>(null, AgreePayErrorCode.NO_BANKCARD_BOUND);
-                //}
-
                 // 保证外部交易号不重复
                 var existsOutTradeNo = _payOrderRepository.Exists(x => x.AppId == request.AppId && x.OutTradeNo == request.OutTradeNo);
                 if (existsOutTradeNo)
@@ -381,6 +376,7 @@ namespace CPI.Services.AgreePay
                 //生成全局唯一的ID号
                 Int64 newId = IDGenerator.GenerateID();
                 String tradeNo = newId.ToString();
+                var tradeTime = DateTime.Now;
 
                 // 添加支付单记录
                 var newOrder = new PayOrder()
@@ -395,7 +391,7 @@ namespace CPI.Services.AgreePay
                     PayChannelCode = GlobalConfig.X99bill_PayChannelCode,
                     PayStatus = PayStatus.APPLY.ToString(),
                     PayType = PayType.AGREEMENTPAY.ToString(),
-                    CreateTime = DateTime.Now
+                    CreateTime = tradeTime
                 };
 
                 _payOrderRepository.Add(newOrder);
@@ -406,14 +402,63 @@ namespace CPI.Services.AgreePay
                     return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                 }
 
-                var tradeTime = DateTime.Now;
+                //添加分账记录
+                var allotAmountOrder = new AllotAmountOrder()
+                {
+                    AppId = request.AppId,
+                    PayeeId = request.PayerId,
+                    TradeNo = tradeNo,
+                    OutTradeNo = request.OutTradeNo,
+                    TotalAmount = request.Amount,
+                    AllotType = request.SharingType == "0" ? AllotAmountType.Pay.ToString() : AllotAmountType.Refund.ToString(),
+                    SettlePeriod = request.SharingPeriod,
+                    ApplyTime = tradeTime,
+                    FeePayerId = request.FeePayerId,
+                    Fee = request.Fee,
+                    Status = AllotAmountOrderStatus.APPLY.ToString()
+                };
 
-                //构造分账数据
-                var sharingDic = new Dictionary<String, String>(5);
-                sharingDic["sharingFlag"] = "1";
-                sharingDic["feeMode"] = "0";
-                sharingDic["feePayer"] = request.FeePayerId;
-                sharingDic["sharingData"] = $"2^{request.PayerId}^{(request.Amount - request.Fee).ToString("0.00")}^{request.SharingPeriod}^主分账方|2^{request.FeePayerId}^{request.Fee.ToString("0.00")}^{request.SharingPeriod}^手续费分账方";
+                _allotAmountOrderRepository.Add(allotAmountOrder);
+                saveResult = _allotAmountOrderRepository.SaveChanges();
+
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "分账数据保存失败", saveResult.FirstException, allotAmountOrder);
+                    return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
+                }
+
+                //构造分账参数
+                ExtDate sharingExtDate = null;
+                if (request.SharingType == "0")
+                {
+                    //构造消费分账数据
+                    var sharingDic = new Dictionary<String, String>(5);
+                    sharingDic["sharingFlag"] = "1";
+                    sharingDic["feeMode"] = "0";
+                    sharingDic["feePayer"] = request.FeePayerId;
+                    sharingDic["sharingData"] = $"2^{request.PayerId}^{(request.Amount - request.Fee).ToString("0.00")}^{request.SharingPeriod}^主分账方|2^{request.FeePayerId}^{request.Fee.ToString("0.00")}^{request.SharingPeriod}^手续费分账方";
+
+                    sharingExtDate = new ExtDate()
+                    {
+                        Key = "sharingInfo",
+                        Value = JsonUtil.SerializeObject(sharingDic).Value
+                    };
+                }
+                else if (request.SharingType == "1")
+                {
+                    //构造退款分账数据
+                    var sharingDic = new Dictionary<String, String>(5);
+                    sharingDic["sharingFlag"] = "1";
+                    sharingDic["feeMode"] = "0";
+                    sharingDic["feePayer"] = request.FeePayerId;
+                    sharingDic["sharingData"] = $"2^{request.PayerId}^{(request.Amount - request.Fee).ToString("0.00")}^主分账方|2^{request.FeePayerId}^{request.Fee.ToString("0.00")}^手续费分账方";
+
+                    sharingExtDate = new ExtDate()
+                    {
+                        Key = "refundSharingInfo",
+                        Value = JsonUtil.SerializeObject(sharingDic).Value
+                    };
+                }
 
                 var payRequest = new AgreementPayRequest()
                 {
@@ -436,10 +481,7 @@ namespace CPI.Services.AgreePay
                                     Key = "phone",
                                     Value = request.Mobile
                                 },
-                                new ExtDate() {
-                                    Key = "sharingInfo",
-                                    Value = JsonUtil.SerializeObject(sharingDic).Value
-                                }
+                                sharingExtDate
                             }
                         }
                     }
