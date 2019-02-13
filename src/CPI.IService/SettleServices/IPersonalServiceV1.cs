@@ -33,6 +33,11 @@ namespace CPI.IService.SettleServices
         /// <param name="request">绑卡请求参数</param>
         XResult<PersonalWithdrawBindCardResponseV1> WithdrawBindCard(PersonalWithdrawBindCardRequestV1 request);
         /// <summary>
+        /// 申请提现
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalWithdrawResponseV1> ApplyWithdraw(PersonalWithdrawRequestV1 request);
+        /// <summary>
         /// 手机号验证
         /// </summary>
         /// <param name="request"></param>
@@ -47,5 +52,7 @@ namespace CPI.IService.SettleServices
         /// </summary>
         /// <param name="request"></param>
         XResult<PersonalRegisterContractSignResponseV1> SignContract(PersonalRegisterContractSignRequestV1 request);
+
+        XResult<> QueryAccountBalance();
     }
 }

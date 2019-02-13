@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
 {
-    public class RawPersonalWithdrawRequest
+    public class RawPersonalWithdrawRequestV1
     {
         public String functionCode { get; set; }
         public String outTradeNo { get; set; }
@@ -17,5 +17,8 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         public Decimal amount { get; set; }
         public String bankAcctId { get; set; }
         public String bankName { get; set; }
+        public String payMode { get; set; }
+        public String orderType { get; set; }
+
     }
 }

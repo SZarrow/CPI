@@ -66,6 +66,10 @@ namespace CPI.Handlers.Settle
                     return ApplyBindCard_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.bindcard.1.1":
                     return BindCard_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.withdraw.1.1":
+                    return Withdraw_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.accountbalance.1.1":
+                    return AccountBalance_1_1(traceService, requestService, ref traceMethod);
                     #endregion
             }
 
@@ -351,6 +355,46 @@ namespace CPI.Handlers.Settle
             _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现绑卡", bindResult.Value);
 
             return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
+        }
+
+        private ObjectResult Withdraw_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var withdrawRequest = JsonUtil.DeserializeObject<PersonalWithdrawRequestV1>(_request.BizContent);
+            if (!withdrawRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", withdrawRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            withdrawRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.Withdraw_1_1(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现", withdrawRequest.Value);
+
+            var withdrawResult = _serviceV1.ApplyWithdraw(withdrawRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (withdrawResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现", withdrawResult.Value);
+
+            return withdrawResult.Success ? new ObjectResult(withdrawResult.Value) : new ObjectResult(null, withdrawResult.ErrorCode, withdrawResult.FirstException);
+        }
+
+        private ObjectResult AccountBalance_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var queryRequest = JsonUtil.DeserializeObject<PersonalWithdrawRequestV1>(_request.BizContent);
+            if (!queryRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            queryRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.AccountBalance_1_1(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现", queryRequest.Value);
+
+            var queryResult = _serviceV1.(queryRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现", queryResult.Value);
+
+            return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
         }
         #endregion
     }
