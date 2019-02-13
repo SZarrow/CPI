@@ -184,5 +184,15 @@ namespace CPI.Common
         /// </summary>
         [Description("编码失败")]
         public const Int32 ENCODE_FAILED = 1032;
+        /// <summary>
+        /// 未绑卡
+        /// </summary>
+        [Description("未绑卡")]
+        public const Int32 NO_BANKCARD_BOUND = 1033;
+        /// <summary>
+        /// 未开户
+        /// </summary>
+        [Description("未开户")]
+        public const Int32 UN_REGISTERED = 1034;
     }
 }

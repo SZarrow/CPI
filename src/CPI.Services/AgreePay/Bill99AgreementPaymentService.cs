@@ -14,7 +14,6 @@ using CPI.Common;
 using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.Common;
 using CPI.Common.Domain.SettleDomain.Bill99;
-using CPI.Common.ErrorCodes;
 using CPI.Common.Exceptions;
 using CPI.Common.Models;
 using CPI.Config;

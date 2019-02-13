@@ -379,7 +379,7 @@ namespace CPI.Handlers.Settle
 
         private ObjectResult AccountBalance_1_1(String traceService, String requestService, ref String traceMethod)
         {
-            var queryRequest = JsonUtil.DeserializeObject<PersonalWithdrawRequestV1>(_request.BizContent);
+            var queryRequest = JsonUtil.DeserializeObject<PersonalAccountBalanceQueryRequestV1>(_request.BizContent);
             if (!queryRequest.Success)
             {
                 _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryRequest.FirstException, _request.BizContent);
@@ -390,7 +390,7 @@ namespace CPI.Handlers.Settle
             traceMethod = $"{_serviceV1.GetType().FullName}.AccountBalance_1_1(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现", queryRequest.Value);
 
-            var queryResult = _serviceV1.(queryRequest.Value);
+            var queryResult = _serviceV1.QueryAccountBalance(queryRequest.Value);
 
             _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现", queryResult.Value);
 

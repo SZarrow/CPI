@@ -70,14 +70,14 @@ namespace CPI.Services.SettleServices
                 if (!_personalSubAccountRepository.Exists(x => x.AppId == request.AppId && x.UID == request.PayeeId))
                 {
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "__CheckPersonalAccountRegisterInfo", LogPhase.ACTION, "该用户尚未开户", request);
-                    return new XResult<AllotAmountWithdrawApplyResponse>(null, SettleErrorCode.UN_REGISTERED);
+                    return new XResult<AllotAmountWithdrawApplyResponse>(null, ErrorCode.UN_REGISTERED);
                 }
 
                 //检查是否已绑卡
                 if (!_withdrawBankCardBindInfoRepository.Exists(x => x.AppId == request.AppId && x.PayeeId == request.PayeeId))
                 {
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "__CheckBankCardBindInfo", LogPhase.ACTION, "该用户尚未绑卡", request);
-                    return new XResult<AllotAmountWithdrawApplyResponse>(null, SettleErrorCode.NO_BANKCARD_BOUND);
+                    return new XResult<AllotAmountWithdrawApplyResponse>(null, ErrorCode.NO_BANKCARD_BOUND);
                 }
 
                 var existsOrder = _allotAmountWithdrawOrderRepository.Exists(x => x.OutTradeNo == request.OutTradeNo);

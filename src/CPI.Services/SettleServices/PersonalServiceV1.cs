@@ -23,6 +23,7 @@ namespace CPI.Services.SettleServices
 
         private readonly IPersonalSubAccountRepository _personalSubAccountRepository = null;
         private readonly IWithdrawBankCardBindInfoRepository _withdrawBankCardBindInfoRepository = null;
+        private readonly IAllotAmountWithdrawOrderRepository _withdrawOrderRepository = null;
 
         public XResult<PersonalRegisterResponseV1> Register(PersonalRegisterRequestV1 request)
         {
@@ -350,7 +351,7 @@ namespace CPI.Services.SettleServices
                         return new XResult<PersonalWithdrawBindCardResponseV1>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                     }
 
-                    String traceMethod = "Bill99UtilV1.Execute(/person/bankcard/bind)";
+                    String traceMethod = $"{nameof(Bill99UtilV1)}.Execute(/person/bankcard/bind)";
 
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN);
 
@@ -389,6 +390,7 @@ namespace CPI.Services.SettleServices
                         return new XResult<PersonalWithdrawBindCardResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(execResult.Value.ResponseMessage));
                     }
 
+                    newBindInfo.BankName = request.BankName;
                     newBindInfo.BindStatus = WithdrawBindCardStatus.SUCCESS.ToString();
                     var updateResult = _withdrawBankCardBindInfoRepository.SaveChanges();
                     if (!updateResult.Success)
@@ -708,6 +710,51 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
                 }
 
+                var withdrawOrderExisted = (from t0 in _withdrawOrderRepository.QueryProvider
+                                            where t0.OutTradeNo == request.OutTradeNo
+                                            select t0).Count() > 0;
+
+                if (withdrawOrderExisted)
+                {
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.OUT_TRADE_NO_EXISTED);
+                }
+
+                var userAccountInfo = _personalSubAccountRepository.QueryProvider.FirstOrDefault(x => x.UID == request.PayeeId);
+                if (userAccountInfo == null)
+                {
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.UN_REGISTERED);
+                }
+
+                var bindcardInfo = _withdrawBankCardBindInfoRepository.QueryProvider.FirstOrDefault(x => x.PayeeId == request.PayeeId);
+                if (bindcardInfo == null)
+                {
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.NO_BANKCARD_BOUND);
+                }
+
+                var newId = IDGenerator.GenerateID();
+                var newOrder = new AllotAmountWithdrawOrder()
+                {
+                    Id = newId,
+                    AppId = request.AppId,
+                    TradeNo = newId.ToString(),
+                    PayeeId = request.PayeeId,
+                    Amount = request.Amount,
+                    CustomerFee = GetCustomerWithdrawFee(request.Amount),
+                    MerchantFee = 0,
+                    OutTradeNo = request.OutTradeNo,
+                    ApplyTime = DateTime.Now,
+                    Status = WithdrawOrderStatus.APPLY.ToString()
+                };
+
+                _withdrawOrderRepository.Add(newOrder);
+                var saveResult = _withdrawOrderRepository.SaveChanges();
+
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "创建提现单失败", saveResult.FirstException, newOrder);
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
+                }
+
                 String traceMethod = $"{nameof(Bill99UtilHAT)}.Execute(/account/merchantWithdraw)";
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱HAT提现接口", request);
@@ -721,10 +768,10 @@ namespace CPI.Services.SettleServices
                     merchantName = request.MerchantName,
                     merchantUId = request.PayeeId,
                     isPlatformMerchant = request.IsPlatformMerchant,
-                    bankAcctName = request.PayeeRealName,
+                    bankAcctName = userAccountInfo.RealName,
                     amount = request.Amount,
-                    bankAcctId = request.BankCardNo,
-                    bankName = request.BankName,
+                    bankAcctId = bindcardInfo.BankCardNo,
+                    bankName = bindcardInfo.BankName,
                     payMode = request.PayMode,
                     orderType = request.OrderType
                 });
@@ -746,15 +793,34 @@ namespace CPI.Services.SettleServices
                 var resp = execResult.Value;
                 if (resp.ResponseCode != "0000")
                 {
+                    _withdrawOrderRepository.Remove(newOrder);
+                    saveResult = _withdrawOrderRepository.SaveChanges();
+                    if (!saveResult.Success)
+                    {
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "无法删除提交失败的提现单", saveResult.FirstException, newOrder);
+                    }
+                    else
+                    {
+                        _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", LogPhase.ACTION, "成功删除提交失败的提现单");
+                    }
+
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{resp.ResponseCode}:{resp.ResponseMessage}");
                     return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(resp.ResponseMessage));
+                }
+
+                newOrder.Status = WithdrawBindCardStatus.PROCESSING.ToString();
+                saveResult = _withdrawOrderRepository.SaveChanges();
+
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "更新提现单状态失败", saveResult.FirstException, newOrder);
                 }
 
                 var respResult = new PersonalWithdrawResponseV1()
                 {
                     OutTradeNo = resp.outTradeNo,
                     Status = CommonStatus.SUCCESS.ToString(),
-                    Msg = CommonStatus.SUCCESS.GetDescription()
+                    Msg = $"申请{CommonStatus.SUCCESS.GetDescription()}"
                 };
 
                 return new XResult<PersonalWithdrawResponseV1>(respResult);
@@ -763,6 +829,61 @@ namespace CPI.Services.SettleServices
             {
                 _lockProvider.UnLock(requestHash);
             }
+        }
+
+        public XResult<PersonalAccountBalanceQueryResponseV1> QueryAccountBalance(PersonalAccountBalanceQueryRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalAccountBalanceQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.QueryAccountBalance(...)";
+
+            if (!request.IsValid)
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(request)}.IsValid", LogPhase.ACTION, $"请求参数验证失败：{request.ErrorMessage}", request);
+                return new XResult<PersonalAccountBalanceQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            String traceMethod = $"{nameof(Bill99UtilHAT)}.Execute(/account/balance)";
+
+            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用余额查询接口", request);
+
+            var execResult = Bill99UtilHAT.Execute<RawPersonalAccountBalanceQueryRequestV1, RawPersonalAccountBalanceQueryResponseV1>("/account/balance", new RawPersonalAccountBalanceQueryRequestV1()
+            {
+                uId = request.UserId,
+                isPlatform = request.IsPlatform
+            });
+
+            _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用余额查询接口", request);
+
+            if (!execResult.Success || execResult.Value == null)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "调用余额查询接口失败", execResult.FirstException, execResult.Value);
+                return new XResult<PersonalAccountBalanceQueryResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+            }
+
+            var respResult = execResult.Value;
+            if (respResult.ResponseCode != "0000")
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, "余额查询返回结果", $"{respResult.ResponseCode}:{respResult.ResponseMessage}");
+                return new XResult<PersonalAccountBalanceQueryResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respResult.ResponseMessage));
+            }
+
+            var resp = new PersonalAccountBalanceQueryResponseV1()
+            {
+                AccountBalanceList = respResult.accountBalanceList,
+                Status = CommonStatus.SUCCESS.ToString(),
+                Msg = CommonStatus.SUCCESS.GetDescription()
+            };
+
+            return new XResult<PersonalAccountBalanceQueryResponseV1>(resp);
+        }
+
+        private Decimal GetCustomerWithdrawFee(Decimal amount)
+        {
+            return 0;
         }
 
         private String GetRegisterAuditStatusMsg(String status)
