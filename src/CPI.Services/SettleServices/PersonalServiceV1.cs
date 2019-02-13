@@ -679,6 +679,92 @@ namespace CPI.Services.SettleServices
             }
         }
 
+        public XResult<PersonalWithdrawResponseV1> ApplyWithdraw(PersonalWithdrawRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.ApplyWithdraw(...)";
+
+            if (!request.IsValid)
+            {
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(request)}.IsValid", LogPhase.ACTION, $"请求参数验证失败：{request.ErrorMessage}", request);
+                return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var requestHash = $"ApplyWithdraw:{request.PayeeId}".GetHashCode();
+
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                if (!_lockProvider.Lock(requestHash))
+                {
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+                }
+
+                String traceMethod = $"{nameof(Bill99UtilHAT)}.Execute(/account/merchantWithdraw)";
+
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱HAT提现接口", request);
+
+                DateTime applyTime = DateTime.Now;
+
+                var execResult = Bill99UtilHAT.Execute<RawPersonalWithdrawRequestV1, RawPersonalWithdrawResponseV1>("/account/merchantWithdraw", new RawPersonalWithdrawRequestV1()
+                {
+                    functionCode = request.FunctionCode,
+                    outTradeNo = request.OutTradeNo,
+                    merchantName = request.MerchantName,
+                    merchantUId = request.PayeeId,
+                    isPlatformMerchant = request.IsPlatformMerchant,
+                    bankAcctName = request.PayeeRealName,
+                    amount = request.Amount,
+                    bankAcctId = request.BankCardNo,
+                    bankName = request.BankName,
+                    payMode = request.PayMode,
+                    orderType = request.OrderType
+                });
+
+                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱HAT提现接口", request);
+
+                if (!execResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "提现失败", execResult.FirstException, request);
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+                }
+
+                if (execResult.Value == null)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "快钱未返回任何数据");
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.REMOTE_RETURN_NOTHING);
+                }
+
+                var resp = execResult.Value;
+                if (resp.ResponseCode != "0000")
+                {
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{resp.ResponseCode}:{resp.ResponseMessage}");
+                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(resp.ResponseMessage));
+                }
+
+                var respResult = new PersonalWithdrawResponseV1()
+                {
+                    OutTradeNo = resp.outTradeNo,
+                    Status = CommonStatus.SUCCESS.ToString(),
+                    Msg = CommonStatus.SUCCESS.GetDescription()
+                };
+
+                return new XResult<PersonalWithdrawResponseV1>(respResult);
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
+            }
+        }
+
         private String GetRegisterAuditStatusMsg(String status)
         {
             switch (status)
