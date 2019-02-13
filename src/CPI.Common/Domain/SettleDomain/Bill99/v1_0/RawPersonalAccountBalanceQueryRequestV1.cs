@@ -6,5 +6,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
 {
     public class RawPersonalAccountBalanceQueryRequestV1
     {
+        public String uId { get; set; }
+        public String isPlatform { get; set; }
     }
 }

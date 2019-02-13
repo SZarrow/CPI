@@ -52,7 +52,10 @@ namespace CPI.IService.SettleServices
         /// </summary>
         /// <param name="request"></param>
         XResult<PersonalRegisterContractSignResponseV1> SignContract(PersonalRegisterContractSignRequestV1 request);
-
-        XResult<> QueryAccountBalance();
+        /// <summary>
+        /// 查询余额
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalAccountBalanceQueryResponseV1> QueryAccountBalance(PersonalAccountBalanceQueryRequestV1 request);
     }
 }

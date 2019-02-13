@@ -67,7 +67,7 @@ namespace CPI.Services.SettleServices
                 var existedRegisterInfo = _personalSubAccountRepository.QueryProvider.FirstOrDefault(x => x.UID == request.PayeeId);
                 if (existedRegisterInfo == null)
                 {
-                    return new XResult<PersonalInfoQueryResponse>(null, SettleErrorCode.UN_REGISTERED);
+                    return new XResult<PersonalInfoQueryResponse>(null, ErrorCode.UN_REGISTERED);
                 }
 
                 if (existedRegisterInfo.Status != PersonalInfoRegisterStatus.SUCCESS.ToString())
@@ -277,7 +277,7 @@ namespace CPI.Services.SettleServices
                 var bindcards = queryResult.Value.BindCards;
                 if (bindcards == null || bindcards.Count() == 0)
                 {
-                    return new XResult<WithdrawBindCardQueryStatusResponse>(null, SettleErrorCode.NO_BANKCARD_BOUND);
+                    return new XResult<WithdrawBindCardQueryStatusResponse>(null, ErrorCode.NO_BANKCARD_BOUND);
                 }
 
                 var first = bindcards.FirstOrDefault();

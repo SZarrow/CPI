@@ -40,28 +40,10 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         public String IsPlatformMerchant { get; set; }
 
         /// <summary>
-        /// 收款人真实姓名
-        /// </summary>
-        [Required(ErrorMessage = "PayeeRealName字段必需")]
-        public String PayeeRealName { get; set; }
-
-        /// <summary>
         /// 收款金额
         /// </summary>
         [Required(ErrorMessage = "Amount字段必需")]
         public Decimal Amount { get; set; }
-
-        /// <summary>
-        /// 收款银行卡号
-        /// </summary>
-        [Required(ErrorMessage = "BankCardNo字段必需")]
-        public String BankCardNo { get; set; }
-
-        /// <summary>
-        /// 收款银行名称
-        /// </summary>
-        [Required(ErrorMessage = "BankName字段必需")]
-        public String BankName { get; set; }
 
         /// <summary>
         /// 支付方式，10：支付账户余额

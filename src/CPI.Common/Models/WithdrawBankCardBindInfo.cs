@@ -34,6 +34,11 @@ namespace CPI.Common.Models
         [Column("bankcard_no")]
         public String BankCardNo { get; set; }
         /// <summary>
+        /// 银行名称
+        /// </summary>
+        [Column("bank_name")]
+        public String BankName { get; set; }
+        /// <summary>
         /// 手机号
         /// </summary>
         [Column("mobile")]

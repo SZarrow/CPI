@@ -115,7 +115,7 @@ namespace CPI.WebAPI
             app.UseMvc();
 
             GlobalConfig.Environment = Configuration["Environment"];
-            ErrorCodeDescriptor.AddErrorCodeTypes(typeof(ErrorCode), typeof(SettleErrorCode));
+            ErrorCodeDescriptor.AddErrorCodeTypes(typeof(ErrorCode));
             XDI.Run();
         }
     }

@@ -98,7 +98,7 @@ namespace CPI.Services.SettleServices
             var bindcardinfo = _withdrawBankCardBindInfoRepository.QueryProvider.FirstOrDefault(x => x.PayeeId == request.PayeeId);
             if (bindcardinfo == null)
             {
-                return new XResult<WithdrawQueryResponse>(null, SettleErrorCode.NO_BANKCARD_BOUND);
+                return new XResult<WithdrawQueryResponse>(null, ErrorCode.NO_BANKCARD_BOUND);
             }
 
             return new XResult<WithdrawQueryResponse>(new WithdrawQueryResponse()

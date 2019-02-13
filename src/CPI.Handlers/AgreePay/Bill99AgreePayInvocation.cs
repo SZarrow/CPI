@@ -5,7 +5,6 @@ using System.Text;
 using CPI.Common;
 using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.Common;
-using CPI.Common.ErrorCodes;
 using CPI.Common.Exceptions;
 using CPI.Config;
 using CPI.IService.AgreePay;
@@ -153,7 +152,7 @@ namespace CPI.Handlers.AgreePay
                     request.BankCardNo,
                     PayChannelCode = GlobalConfig.X99bill_PayChannelCode
                 });
-                return new XResult<CPIAgreePayPaymentRequest>(null, AgreePayErrorCode.NO_BANKCARD_BOUND, new DbQueryException("未查询到该用户的绑卡信息"));
+                return new XResult<CPIAgreePayPaymentRequest>(null, ErrorCode.NO_BANKCARD_BOUND, new DbQueryException("未查询到该用户的绑卡信息"));
             }
 
             // 默认取第一条绑卡信息
