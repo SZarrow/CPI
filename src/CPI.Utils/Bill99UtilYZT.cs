@@ -43,7 +43,15 @@ namespace CPI.Utils
                 errorMessage = "响应头中无\"X-99Bill-Signature\"字段";
                 return false;
             }
-            var verifyResult = SignUtil.VerifySign(respSign.FirstOrDefault(), respString, KeyConfig.Bill99YZTPublicKey, "RSA");
+
+            String signString = respSign.FirstOrDefault();
+            if (signString.IsNullOrWhiteSpace())
+            {
+                errorMessage = "响应头中\"X-99Bill-Signature\"字段的值为空";
+                return false;
+            }
+
+            var verifyResult = SignUtil.VerifySign(signString, respString, KeyConfig.Bill99YZTPublicKey, "RSA");
             if (!verifyResult.Success)
             {
                 errorMessage = verifyResult.ErrorMessage;
