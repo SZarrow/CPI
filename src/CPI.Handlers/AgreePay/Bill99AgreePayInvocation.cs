@@ -166,10 +166,7 @@ namespace CPI.Handlers.AgreePay
                 BankCardNo = boundInfo.BankCardNo,
                 PayToken = boundInfo.PayToken,
                 Mobile = boundInfo.Mobile,
-                SharingType = request.SharingType,
-                SharingPeriod = request.SharingPeriod,
-                FeePayerId = request.FeePayerId,
-                Fee = request.Fee
+                SharingInfo = request.SharingInfo
             };
 
             return new XResult<CPIAgreePayPaymentRequest>(result);

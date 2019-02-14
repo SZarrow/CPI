@@ -184,8 +184,8 @@ namespace CPI.Utils
                 var verifyResult = CryptoHelper.VerifySign(sign, signContent, KeyConfig.Bill99_COE_v1_PublicKey, HashAlgorithmName.SHA1);
                 if (!verifyResult.Value)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "verifyResult", "验签失败", verifyResult.FirstException);
-                    return new XResult<TResponse>(default(TResponse), ErrorCode.SIGN_VERIFY_FAILED, new SignException("sign verify failed"));
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "verifyResult", "快钱返回的数据验签失败", verifyResult.FirstException);
+                    return new XResult<TResponse>(default(TResponse), ErrorCode.SIGN_VERIFY_FAILED, new SignException("快钱返回的数据验签失败"));
                 }
 
                 try

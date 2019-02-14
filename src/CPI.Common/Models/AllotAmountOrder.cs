@@ -49,20 +49,15 @@ namespace CPI.Common.Models
         [Column("fee_payer_id")]
         public String FeePayerId { get; set; }
         /// <summary>
-        /// 手续费
+        /// 分账信息
         /// </summary>
-        [Column("fee")]
-        public Decimal Fee { get; set; }
-        /// <summary>
-        /// 结算周期
-        /// </summary>
-        [Column("settle_period")]
-        public String SettlePeriod { get; set; }
+        [Column("sharing_info")]
+        public String SharingInfo { get; set; }
         /// <summary>
         /// 分账类型：消费分账，退货分账
         /// </summary>
-        [Column("allot_type")]
-        public String AllotType { get; set; }
+        [Column("sharing_type")]
+        public String SharingType { get; set; }
         /// <summary>
         /// 分账状态
         /// </summary>

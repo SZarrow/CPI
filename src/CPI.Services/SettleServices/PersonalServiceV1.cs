@@ -853,7 +853,8 @@ namespace CPI.Services.SettleServices
             var execResult = Bill99UtilHAT.Execute<RawPersonalAccountBalanceQueryRequestV1, RawPersonalAccountBalanceQueryResponseV1>("/account/balance", new RawPersonalAccountBalanceQueryRequestV1()
             {
                 uId = request.UserId,
-                isPlatform = request.IsPlatform
+                isPlatform = request.IsPlatform,
+                accountType = request.AccountType.Split(new Char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
             });
 
             _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用余额查询接口", request);

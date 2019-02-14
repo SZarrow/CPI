@@ -35,13 +35,19 @@ namespace CPI.Utils
             }
         }
 
-        public static Boolean VerifySign(HttpResponseMessage respMsg, String respString)
+        public static Boolean VerifySign(HttpResponseMessage respMsg, String respString, out String errorMessage)
         {
+            errorMessage = null;
             if (!respMsg.Headers.TryGetValues("X-99Bill-Signature", out IEnumerable<String> respSign))
             {
+                errorMessage = "响应头中无\"X-99Bill-Signature\"字段";
                 return false;
             }
             var verifyResult = SignUtil.VerifySign(respSign.FirstOrDefault(), respString, KeyConfig.Bill99YZTPublicKey, "RSA");
+            if (!verifyResult.Success)
+            {
+                errorMessage = verifyResult.ErrorMessage;
+            }
             return verifyResult.Success && verifyResult.Value;
         }
 
@@ -92,10 +98,11 @@ namespace CPI.Utils
 
                 _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "快钱盈帐通：快钱盈帐通返回结果", respString);
 
-                if (!VerifySign(result.Value, respString))
+                String verifySignError;
+                if (!VerifySign(result.Value, respString, out verifySignError))
                 {
-                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "VerifySign(...)", "快钱盈帐通：快钱返回的数据验签失败");
-                    return new XResult<TResponse>(default(TResponse), new SignException("验签失败"));
+                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "VerifySign(...)", "快钱盈帐通：快钱返回的数据验签失败", new SignException(verifySignError));
+                    return new XResult<TResponse>(default(TResponse), new SignException("快钱返回的数据验签失败"));
                 }
 
                 return JsonUtil.DeserializeObject<TResponse>(respString);

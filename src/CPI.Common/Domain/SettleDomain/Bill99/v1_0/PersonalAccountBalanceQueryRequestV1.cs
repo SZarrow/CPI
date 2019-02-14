@@ -19,5 +19,8 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// </summary>
         [Required(ErrorMessage = "IsPlatform字段必需")]
         public String IsPlatform { get; set; }
+
+        [Required]
+        public String AccountType { get; set; }
     }
 }

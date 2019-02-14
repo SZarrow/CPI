@@ -14,6 +14,7 @@ using CPI.Common;
 using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.Common;
 using CPI.Common.Domain.SettleDomain.Bill99;
+using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using CPI.Common.Exceptions;
 using CPI.Common.Models;
 using CPI.Config;
@@ -344,10 +345,13 @@ namespace CPI.Services.AgreePay
                 return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付总金额必须大于{GlobalConfig.X99bill_AgreePay_PayMinAmount.ToString()}"));
             }
 
-            if (request.Amount - request.Fee <= 0)
+            var parseSharingInfoResult = JsonUtil.DeserializeObject<SharingInfo>(request.SharingInfo);
+            if (!parseSharingInfoResult.Success)
             {
-                return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付总金额必须大于手续费"));
+                return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DESERIALIZE_FAILED, new ArgumentException("解析SharingInfo参数失败"));
             }
+
+            var sharingInfo = parseSharingInfoResult.Value;
 
             String service = $"{this.GetType().FullName}.Pay(...)";
 
@@ -410,11 +414,10 @@ namespace CPI.Services.AgreePay
                     TradeNo = tradeNo,
                     OutTradeNo = request.OutTradeNo,
                     TotalAmount = request.Amount,
-                    AllotType = request.SharingType == "0" ? AllotAmountType.Pay.ToString() : AllotAmountType.Refund.ToString(),
-                    SettlePeriod = request.SharingPeriod,
+                    FeePayerId = sharingInfo.FeePayerId,
+                    SharingType = sharingInfo.SharingType == "0" ? AllotAmountType.Pay.ToString() : AllotAmountType.Refund.ToString(),
+                    SharingInfo = sharingInfo.SharingData,
                     ApplyTime = tradeTime,
-                    FeePayerId = request.FeePayerId,
-                    Fee = request.Fee,
                     Status = AllotAmountOrderStatus.APPLY.ToString()
                 };
 
@@ -429,14 +432,14 @@ namespace CPI.Services.AgreePay
 
                 //构造分账参数
                 ExtDate sharingExtDate = null;
-                if (request.SharingType == "0")
+                if (sharingInfo.SharingType == "0")
                 {
                     //构造消费分账数据
                     var sharingDic = new Dictionary<String, String>(5);
                     sharingDic["sharingFlag"] = "1";
-                    sharingDic["feeMode"] = "0";
-                    sharingDic["feePayer"] = request.FeePayerId;
-                    sharingDic["sharingData"] = $"2^{request.PayerId}^{(request.Amount - request.Fee).ToString("0.00")}^{request.SharingPeriod}^主分账方|2^{request.FeePayerId}^{request.Fee.ToString("0.00")}^{request.SharingPeriod}^手续费分账方";
+                    sharingDic["feeMode"] = sharingInfo.FeeMode;
+                    sharingDic["feePayer"] = sharingInfo.FeePayerId;
+                    sharingDic["sharingData"] = sharingInfo.SharingData;
 
                     sharingExtDate = new ExtDate()
                     {
@@ -444,14 +447,14 @@ namespace CPI.Services.AgreePay
                         Value = JsonUtil.SerializeObject(sharingDic).Value
                     };
                 }
-                else if (request.SharingType == "1")
+                else if (sharingInfo.SharingType == "1")
                 {
                     //构造退款分账数据
                     var sharingDic = new Dictionary<String, String>(5);
                     sharingDic["sharingFlag"] = "1";
-                    sharingDic["feeMode"] = "0";
-                    sharingDic["feePayer"] = request.FeePayerId;
-                    sharingDic["sharingData"] = $"2^{request.PayerId}^{(request.Amount - request.Fee).ToString("0.00")}^主分账方|2^{request.FeePayerId}^{request.Fee.ToString("0.00")}^手续费分账方";
+                    sharingDic["feeMode"] = sharingInfo.FeeMode;
+                    sharingDic["feePayer"] = sharingInfo.FeePayerId;
+                    sharingDic["sharingData"] = sharingInfo.SharingData;
 
                     sharingExtDate = new ExtDate()
                     {
