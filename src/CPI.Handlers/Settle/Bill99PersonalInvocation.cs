@@ -388,11 +388,11 @@ namespace CPI.Handlers.Settle
             queryRequest.Value.AppId = _request.AppId;
 
             traceMethod = $"{_serviceV1.GetType().FullName}.AccountBalance_1_1(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现", queryRequest.Value);
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询账户余额", queryRequest.Value);
 
             var queryResult = _serviceV1.QueryAccountBalance(queryRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现", queryResult.Value);
+            _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询账户余额", queryResult.Value);
 
             return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
         }

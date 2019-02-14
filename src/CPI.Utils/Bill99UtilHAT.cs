@@ -25,23 +25,32 @@ namespace CPI.Utils
             _client.DefaultRequestHeaders.Add("X-99Bill-PlatformCode", GlobalConfig.X99bill_HAT_PlatformCode);
         }
 
-        public static void AddSign(HttpClient client, String signContent)
+        public static String AddSign(HttpClient client, String signContent)
         {
             var sign = SignUtil.MakeSign(signContent, KeyConfig.Bill99_HAT_Hehua_PrivateKey, PrivateKeyFormat.PKCS8, "RSA");
             if (sign.Success)
             {
                 client.DefaultRequestHeaders.Remove("X-99Bill-Signature");
                 client.DefaultRequestHeaders.Add("X-99Bill-Signature", sign.Value);
+                return sign.Value;
             }
+
+            return "生成签名失败";
         }
 
-        public static Boolean VerifySign(HttpResponseMessage respMsg, String respString)
+        public static Boolean VerifySign(HttpResponseMessage respMsg, String respString, out String errorMessage)
         {
+            errorMessage = null;
             if (!respMsg.Headers.TryGetValues("X-99Bill-Signature", out IEnumerable<String> respSign))
             {
+                errorMessage = "响应头中无\"X-99Bill-Signature\"字段";
                 return false;
             }
             var verifyResult = SignUtil.VerifySign(respSign.FirstOrDefault(), respString, KeyConfig.Bill99_HAT_PublicKey, "RSA");
+            if (!verifyResult.Success)
+            {
+                errorMessage = verifyResult.ErrorMessage;
+            }
             return verifyResult.Success && verifyResult.Value;
         }
 
@@ -63,12 +72,12 @@ namespace CPI.Utils
             }
 
             String postData = serializeResult.Value;
-            AddSign(client, postData);
+            String sign = AddSign(client, postData);
 
             String requestUrl = $"{ApiConfig.Bill99_HAT_RequestUrl}{interfaceUrl}";
             String traceMethod = $"{nameof(client)}.PostJson(...)";
 
-            _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "快钱HAT：开始请求快钱HAT接口", new Object[] { requestUrl, postData });
+            _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "快钱HAT：开始请求快钱HAT接口", new Object[] { requestUrl, postData, $"X-99Bill-Signature：{sign}" });
 
             var result = client.PostJson(requestUrl, postData);
 
@@ -92,10 +101,11 @@ namespace CPI.Utils
 
                 _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "快钱HAT：快钱HAT返回结果", respString);
 
-                if (!VerifySign(result.Value, respString))
+                String verifySignError = null;
+                if (!VerifySign(result.Value, respString, out verifySignError))
                 {
-                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "VerifySign(...)", "快钱HAT：快钱返回的数据验签失败");
-                    return new XResult<TResponse>(default(TResponse), new SignException("验签失败"));
+                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "VerifySign(...)", "快钱HAT：快钱返回的数据验签失败", new SignException(verifySignError));
+                    return new XResult<TResponse>(default(TResponse), new SignException("快钱返回的数据验签失败"));
                 }
 
                 return JsonUtil.DeserializeObject<TResponse>(respString);

@@ -8,5 +8,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     {
         public String uId { get; set; }
         public String isPlatform { get; set; }
+        public String[] accountType { get; set; }
     }
 }
