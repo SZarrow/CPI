@@ -877,9 +877,18 @@ namespace CPI.Services.SettleServices
                 return new XResult<PersonalAccountBalanceQueryResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respResult.ResponseMessage));
             }
 
+            var accountBalanceList = respResult.accountBalanceList;
+            if (accountBalanceList == null || accountBalanceList.Count() == 0)
+            {
+                return new XResult<PersonalAccountBalanceQueryResponseV1>(null, ErrorCode.INFO_NOT_EXIST, new ArgumentException("账户余额信息不存在"));
+            }
+
+            var balanceInfo = accountBalanceList.First();
+
             var resp = new PersonalAccountBalanceQueryResponseV1()
             {
-                AccountBalanceList = respResult.accountBalanceList,
+                AccountName = balanceInfo.accountName,
+                Balance = balanceInfo.balance,
                 Status = CommonStatus.SUCCESS.ToString(),
                 Msg = CommonStatus.SUCCESS.GetDescription()
             };

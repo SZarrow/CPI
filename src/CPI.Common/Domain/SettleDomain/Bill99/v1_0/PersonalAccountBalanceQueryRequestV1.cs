@@ -21,6 +21,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         public String IsPlatform { get; set; }
 
         [Required]
-        public String AccountType { get; set; }
+        public String AccountType { get; } = "DEF00001";
     }
 }
