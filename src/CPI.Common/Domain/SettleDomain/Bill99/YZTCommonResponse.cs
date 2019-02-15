@@ -16,7 +16,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99
         protected YZTCommonResponse() { }
 
         /// <summary>
-        /// 
+        /// 0000为调用成功
         /// </summary>
         [JsonProperty("rspCode")]
         public String ResponseCode { get; set; }
