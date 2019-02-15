@@ -57,5 +57,10 @@ namespace CPI.IService.SettleServices
         /// </summary>
         /// <param name="request"></param>
         XResult<PersonalAccountBalanceQueryResponseV1> QueryAccountBalance(PersonalAccountBalanceQueryRequestV1 request);
+        /// <summary>
+        /// 查询提现单
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<WithdrawOrderQueryResponseV1> QueryWithdrawOrder(WithdrawOrderQueryRequestV1 request);
     }
 }

@@ -56,5 +56,15 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         /// </summary>
         [Required(ErrorMessage = "OrderType字段必需")]
         public String OrderType { get; set; }
+
+        /// <summary>
+        /// 结算周期
+        /// </summary>
+        public String SettlePeriod { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public String Remark { get; set; }
     }
 }

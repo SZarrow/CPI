@@ -739,11 +739,16 @@ namespace CPI.Services.SettleServices
                     TradeNo = newId.ToString(),
                     PayeeId = request.PayeeId,
                     Amount = request.Amount,
+                    IsPlatformMerchant = request.IsPlatformMerchant,
                     CustomerFee = GetCustomerWithdrawFee(request.Amount),
                     MerchantFee = 0,
                     OutTradeNo = request.OutTradeNo,
                     ApplyTime = DateTime.Now,
-                    Status = WithdrawOrderStatus.APPLY.ToString()
+                    Status = WithdrawOrderStatus.APPLY.ToString(),
+                    SettlePeriod = request.SettlePeriod,
+                    OrderType = request.OrderType,
+                    PayMode = request.PayMode,
+                    Remark = request.Remark
                 };
 
                 _withdrawOrderRepository.Add(newOrder);
@@ -882,6 +887,137 @@ namespace CPI.Services.SettleServices
             return new XResult<PersonalAccountBalanceQueryResponseV1>(resp);
         }
 
+        public XResult<WithdrawOrderQueryResponseV1> QueryWithdrawOrder(WithdrawOrderQueryRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            String service = $"{this.GetType().FullName}.QueryWithdrawOrder(...)";
+
+            if (!request.IsValid)
+            {
+                return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var requestHash = $"QueryWithdrawOrder:{request.OutTradeNo}".GetHashCode();
+
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                var withdrawOrder = _withdrawOrderRepository.QueryProvider.FirstOrDefault(x => x.OutTradeNo == request.OutTradeNo);
+                if (withdrawOrder == null)
+                {
+                    return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.INFO_NOT_EXIST, new ArgumentException("提现单不存在"));
+                }
+
+                if (withdrawOrder.Status == WithdrawOrderStatus.SUCCESS.ToString()
+                    || withdrawOrder.Status == WithdrawOrderStatus.FAILURE.ToString()
+                    || request.QueryMode == "QUERY")
+                {
+                    return new XResult<WithdrawOrderQueryResponseV1>(new WithdrawOrderQueryResponseV1()
+                    {
+                        PayeeId = withdrawOrder.PayeeId,
+                        OrderAmount = withdrawOrder.Amount,
+                        OutTradeNo = withdrawOrder.OutTradeNo,
+                        IsPlatformPayee = withdrawOrder.IsPlatformPayee,
+                        OrderType = withdrawOrder.OrderType,
+                        PayMode = withdrawOrder.PayMode,
+                        Remark = withdrawOrder.Remark,
+                        TradeBeginTime = withdrawOrder.ApplyTime,
+                        TradeEndTime = withdrawOrder.CompleteTime,
+                        Status = withdrawOrder.Status,
+                        Msg = GetWithdrawOrderStatusDescription(withdrawOrder.Status)
+                    });
+                }
+
+                if (!_lockProvider.Lock(requestHash))
+                {
+                    return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+                }
+
+                String traceMethod = $"{nameof(Bill99UtilHAT)}.Execute(/order/detail)";
+
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱HAT查询提现订单详情接口", request);
+
+                var queryResult = Bill99UtilHAT.Execute<RawWithdrawOrderQueryRequestV1, RawWithdrawOrderQueryResponseV1>("/order/detail", new RawWithdrawOrderQueryRequestV1()
+                {
+                    outTradeNo = request.OutTradeNo
+                });
+
+                _logger.Trace(TraceType.BLL.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱HAT查询提现订单详情接口", queryResult.Value);
+
+                if (!queryResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "查询提现订单详情失败", queryResult.FirstException, new Object[] { request, queryResult.Value });
+                    return new XResult<WithdrawOrderQueryResponseV1>(null, queryResult.ErrorCode, queryResult.FirstException);
+                }
+
+                if (queryResult.Value == null)
+                {
+                    return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("快钱未返回任何数据"));
+                }
+
+                var respResult = queryResult.Value;
+
+                if (respResult.ResponseCode != "0000")
+                {
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{queryResult.Value.ResponseCode}:{queryResult.Value.ResponseMessage}");
+                    return new XResult<WithdrawOrderQueryResponseV1>(null, ErrorCode.FAILURE, new RemoteException($"{queryResult.Value.ResponseCode}:{queryResult.Value.ResponseMessage}"));
+                }
+
+                switch (respResult.orderStatus)
+                {
+                    case "0":
+                        withdrawOrder.Status = WithdrawOrderStatus.APPLY.ToString();
+                        break;
+                    case "3":
+                    case "8":
+                        withdrawOrder.Status = WithdrawOrderStatus.PROCESSING.ToString();
+                        break;
+                    case "1":
+                        withdrawOrder.Status = WithdrawOrderStatus.SUCCESS.ToString();
+                        break;
+                    default:
+                        withdrawOrder.Status = WithdrawOrderStatus.FAILURE.ToString();
+                        break;
+                }
+
+                withdrawOrder.IsPlatformPayee = respResult.isPlatformPayee;
+                withdrawOrder.CompleteTime = DateTime.Now;
+                _withdrawOrderRepository.Update(withdrawOrder);
+                var saveResult = _withdrawOrderRepository.SaveChanges();
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "无法更新提现单状态", saveResult.FirstException, withdrawOrder);
+                }
+
+                return new XResult<WithdrawOrderQueryResponseV1>(new WithdrawOrderQueryResponseV1()
+                {
+                    PayeeId = withdrawOrder.PayeeId,
+                    OrderAmount = withdrawOrder.Amount,
+                    OutTradeNo = withdrawOrder.OutTradeNo,
+                    IsPlatformPayee = withdrawOrder.IsPlatformPayee,
+                    OrderType = withdrawOrder.OrderType,
+                    PayMode = withdrawOrder.PayMode,
+                    Remark = withdrawOrder.Remark,
+                    TradeBeginTime = withdrawOrder.ApplyTime,
+                    TradeEndTime = withdrawOrder.CompleteTime,
+                    Status = withdrawOrder.Status,
+                    Msg = GetWithdrawOrderStatusDescription(withdrawOrder.Status)
+                });
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
+            }
+        }
+
         private Decimal GetCustomerWithdrawFee(Decimal amount)
         {
             return 0;
@@ -904,6 +1040,23 @@ namespace CPI.Services.SettleServices
             }
 
             return String.Empty;
+        }
+
+        private String GetWithdrawOrderStatusDescription(String status)
+        {
+            switch (status)
+            {
+                case nameof(WithdrawOrderStatus.APPLY):
+                    return WithdrawOrderStatus.APPLY.GetDescription();
+                case nameof(WithdrawOrderStatus.PROCESSING):
+                    return WithdrawOrderStatus.PROCESSING.GetDescription();
+                case nameof(WithdrawOrderStatus.SUCCESS):
+                    return WithdrawOrderStatus.SUCCESS.GetDescription();
+                case nameof(WithdrawOrderStatus.FAILURE):
+                    return WithdrawOrderStatus.FAILURE.GetDescription();
+            }
+
+            return "未知状态";
         }
     }
 }
