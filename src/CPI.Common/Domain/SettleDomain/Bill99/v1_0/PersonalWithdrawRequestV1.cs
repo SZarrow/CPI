@@ -34,7 +34,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         public String PayeeId { get; set; }
 
         /// <summary>
-        /// 商户是否是平台，0：是，1：否。
+        /// 商户是否是平台，0否，1是
         /// </summary>
         [Required(ErrorMessage = "IsPlatformMerchant字段必需")]
         public String IsPlatformMerchant { get; set; }
