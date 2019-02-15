@@ -918,7 +918,7 @@ namespace CPI.Services.SettleServices
 
                 if (withdrawOrder.Status == WithdrawOrderStatus.SUCCESS.ToString()
                     || withdrawOrder.Status == WithdrawOrderStatus.FAILURE.ToString()
-                    || request.QueryMode == "QUERY")
+                    || String.Compare(request.QueryMode, "QUERY", true) == 0)
                 {
                     return new XResult<WithdrawOrderQueryResponseV1>(new WithdrawOrderQueryResponseV1()
                     {
