@@ -10,15 +10,15 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
 {
     public class SharingInfo : ValidateModel
     {
-        [Required]
+        [Required(ErrorMessage = "SharingType字段必需")]
         [RegularExpression("^0|1$", ErrorMessage = "SharingType字段取值只能为0或1")]
         public String SharingType { get; set; }
-        [Required]
+        [Required(ErrorMessage = "FeeMode字段必需")]
         [RegularExpression("^0|1$", ErrorMessage = "FeeMode字段取值只能为0或1")]
         public String FeeMode { get; set; }
-        [Required]
+        [Required(ErrorMessage = "FeePayerId字段必需")]
         public String FeePayerId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "SharingData字段必需")]
         public String SharingData { get; set; }
     }
 }

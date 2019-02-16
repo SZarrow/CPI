@@ -29,13 +29,13 @@ namespace CPI.Common.Domain.AgreePay
         /// <summary>
         /// 银行卡号
         /// </summary>
-        [Required(ErrorMessage = "BankCardNo")]
+        [Required(ErrorMessage = "BankCardNo字段必需")]
         public String BankCardNo { get; set; }
 
         /// <summary>
         /// 分账信息
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "SharingInfo字段必需")]
         public String SharingInfo { get; set; }
 
         /// <summary>
