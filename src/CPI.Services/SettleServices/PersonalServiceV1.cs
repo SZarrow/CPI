@@ -110,7 +110,7 @@ namespace CPI.Services.SettleServices
                     needRollback = true;
                 }
 
-                if (execResult.Value.ResponseCode != "0000")
+                if (execResult.Value != null && execResult.Value.ResponseCode != "0000")
                 {
                     _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"{execResult.Value.ResponseCode}:{execResult.Value.ResponseMessage}", null, execResult.Value);
                     needRollback = true;
@@ -126,7 +126,7 @@ namespace CPI.Services.SettleServices
                     }
 
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.ACTION, "已删除开户失败的记录");
-                    return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+                    return new XResult<PersonalRegisterResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.Value != null ? new RemoteException(execResult.Value.ResponseMessage) : execResult.FirstException);
                 }
 
                 newAccount.Status = PersonalInfoRegisterStatus.SUCCESS.ToString();
