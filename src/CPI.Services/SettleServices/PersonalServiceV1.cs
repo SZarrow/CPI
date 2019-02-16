@@ -594,6 +594,13 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
                 }
 
+                //先判断是否开过户
+                var accountRegistered = _personalSubAccountRepository.QueryProvider.Count(x => x.UID == request.UserId) > 0;
+                if (!accountRegistered)
+                {
+                    return new XResult<PersonalRegisterContractSignResponseV1>(null, ErrorCode.UN_REGISTERED);
+                }
+
                 String traceMethod = $"{nameof(Bill99UtilV1)}.Execute(/signContract)";
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱合同签约接口", request);
