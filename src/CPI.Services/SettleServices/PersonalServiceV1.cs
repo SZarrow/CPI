@@ -12,6 +12,7 @@ using CPI.IService.SettleServices;
 using CPI.Providers;
 using CPI.Utils;
 using Lotus.Core;
+using Lotus.Core.Collections;
 using Lotus.Logging;
 
 namespace CPI.Services.SettleServices
@@ -1027,6 +1028,70 @@ namespace CPI.Services.SettleServices
             finally
             {
                 _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        public XResult<WithdrawOrderListQueryResponseV1> QueryWithdrawOrderList(WithdrawOrderListQueryRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<WithdrawOrderListQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT);
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<WithdrawOrderListQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var q = _withdrawOrderRepository.QueryProvider.Where(x => x.PayeeId == request.PayeeId);
+
+            if (request.OutTradeNo.HasValue())
+            {
+                q = from t0 in q
+                    where t0.OutTradeNo == request.OutTradeNo
+                    select t0;
+            }
+
+            if (request.From != null)
+            {
+                q = from t0 in q
+                    where t0.ApplyTime >= request.From
+                    select t0;
+            }
+
+            if (request.To != null)
+            {
+                q = from t0 in q
+                    where t0.ApplyTime <= request.To
+                    select t0;
+            }
+
+            try
+            {
+                var ds = from x in q
+                         select new WithdrawOrderListQueryItem()
+                         {
+                             Id = x.Id.ToString(),
+                             Amount = x.Amount,
+                             Status = x.Status,
+                             OutTradeNo = x.OutTradeNo,
+                             ApplyTime = x.ApplyTime,
+                             CompleteTime = x.CompleteTime,
+                             Remark = x.Remark
+                         };
+
+                var result = new PagedList<WithdrawOrderListQueryItem>(ds, request.PageIndex, request.PageSize);
+                return new XResult<WithdrawOrderListQueryResponseV1>(new WithdrawOrderListQueryResponseV1()
+                {
+                    Orders = result,
+                    PageInfo = result.PageInfo,
+                    Status = CommonStatus.SUCCESS.ToString(),
+                    Msg = CommonStatus.SUCCESS.GetDescription()
+                });
+            }
+            catch (Exception ex)
+            {
+                return new XResult<WithdrawOrderListQueryResponseV1>(null, ErrorCode.DB_QUERY_FAILED, ex);
             }
         }
 

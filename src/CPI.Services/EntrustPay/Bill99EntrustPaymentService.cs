@@ -9,6 +9,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using CPI.Common;
 using CPI.Common.Domain.EntrustPay;
+using CPI.Common.Domain.SettleDomain.Bill99;
+using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using CPI.Common.Exceptions;
 using CPI.Common.Models;
 using CPI.Config;
@@ -30,6 +32,7 @@ namespace CPI.Services.EntrustPay
         private static readonly EntrustPaymentApi _api = CreateEntrustPaymentApi();
 
         private readonly IPayOrderRepository _payOrderRepository = null;
+        private readonly IAllotAmountOrderRepository _allotAmountOrderRepository = null;
 
         private static EntrustPaymentApi CreateEntrustPaymentApi()
         {
@@ -54,6 +57,14 @@ namespace CPI.Services.EntrustPay
             {
                 return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付金额至少为{GlobalConfig.X99bill_EntrustPay_PayMinAmount.ToString()}元"));
             }
+
+            var parseSharingInfoResult = JsonUtil.DeserializeObject<SharingInfo>(request.SharingInfo);
+            if (!parseSharingInfoResult.Success)
+            {
+                return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DESERIALIZE_FAILED, new ArgumentException("解析SharingInfo参数失败"));
+            }
+
+            var sharingInfo = parseSharingInfoResult.Value;
 
             String service = $"{this.GetType().FullName}.Pay(...)";
 
@@ -104,6 +115,64 @@ namespace CPI.Services.EntrustPay
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                 }
 
+                //添加分账记录
+                var allotAmountOrder = new AllotAmountOrder()
+                {
+                    Id = IDGenerator.GenerateID(),
+                    AppId = request.AppId,
+                    PayeeId = request.PayerId,
+                    TradeNo = tradeNo,
+                    OutTradeNo = request.OutTradeNo,
+                    TotalAmount = request.Amount,
+                    FeePayerId = sharingInfo.FeePayerId,
+                    SharingType = sharingInfo.SharingType == "0" ? AllotAmountType.Pay.ToString() : AllotAmountType.Refund.ToString(),
+                    SharingInfo = sharingInfo.SharingData,
+                    ApplyTime = DateTime.Now,
+                    Status = AllotAmountOrderStatus.APPLY.ToString()
+                };
+
+                _allotAmountOrderRepository.Add(allotAmountOrder);
+                saveResult = _allotAmountOrderRepository.SaveChanges();
+
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "分账数据保存失败", saveResult.FirstException, allotAmountOrder);
+                    return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
+                }
+
+                //构造分账参数
+                ExtDate sharingExtDate = null;
+                if (sharingInfo.SharingType == "0")
+                {
+                    //构造消费分账数据
+                    var sharingDic = new Dictionary<String, String>(5);
+                    sharingDic["sharingFlag"] = "1";
+                    sharingDic["feeMode"] = sharingInfo.FeeMode;
+                    sharingDic["feePayer"] = sharingInfo.FeePayerId;
+                    sharingDic["sharingData"] = sharingInfo.SharingData;
+
+                    sharingExtDate = new ExtDate()
+                    {
+                        Key = "sharingInfo",
+                        Value = JsonUtil.SerializeObject(sharingDic).Value
+                    };
+                }
+                else if (sharingInfo.SharingType == "1")
+                {
+                    //构造退款分账数据
+                    var sharingDic = new Dictionary<String, String>(5);
+                    sharingDic["sharingFlag"] = "1";
+                    sharingDic["feeMode"] = sharingInfo.FeeMode;
+                    sharingDic["feePayer"] = sharingInfo.FeePayerId;
+                    sharingDic["sharingData"] = sharingInfo.SharingData;
+
+                    sharingExtDate = new ExtDate()
+                    {
+                        Key = "refundSharingInfo",
+                        Value = JsonUtil.SerializeObject(sharingDic).Value
+                    };
+                }
+
                 var tradeTime = DateTime.Now;
 
                 var payRequest = new EntrustPayRequest()
@@ -123,7 +192,8 @@ namespace CPI.Services.EntrustPay
                         ExtMap = new ExtMap()
                         {
                             ExtDates = new ExtDate[] {
-                                new ExtDate() { Key = "phone", Value = request.Mobile }
+                                new ExtDate() { Key = "phone", Value = request.Mobile },
+                                sharingExtDate
                             }
                         }
                     }
@@ -153,6 +223,14 @@ namespace CPI.Services.EntrustPay
                 if (respContent.ResponseCode != "00")
                 {
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respContent.ResponseTextMessage));
+                }
+
+                allotAmountOrder.Status = AllotAmountOrderStatus.PROCESSING.ToString();
+                _allotAmountOrderRepository.Update(allotAmountOrder);
+                saveResult = _allotAmountOrderRepository.SaveChanges();
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
                 }
 
                 var resp = new CPIEntrustPayPaymentResponse()

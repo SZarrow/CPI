@@ -4,6 +4,7 @@ using System.Text;
 using CPI.Common.Domain.SettleDomain.Bill99;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using Lotus.Core;
+using Lotus.Core.Collections;
 
 namespace CPI.IService.SettleServices
 {
@@ -62,5 +63,10 @@ namespace CPI.IService.SettleServices
         /// </summary>
         /// <param name="request"></param>
         XResult<WithdrawOrderQueryResponseV1> QueryWithdrawOrder(WithdrawOrderQueryRequestV1 request);
+        /// <summary>
+        /// 查询提现单列表
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<WithdrawOrderListQueryResponseV1> QueryWithdrawOrderList(WithdrawOrderListQueryRequestV1 request);
     }
 }
