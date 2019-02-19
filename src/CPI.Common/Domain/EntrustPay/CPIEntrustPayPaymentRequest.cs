@@ -60,6 +60,12 @@ namespace CPI.Common.Domain.EntrustPay
         public String OutTradeNo { get; set; }
 
         /// <summary>
+        /// 分账信息
+        /// </summary>
+        [Required(ErrorMessage = "SharingInfo字段必需")]
+        public String SharingInfo { get; set; }
+
+        /// <summary>
         /// 通知地址
         /// </summary>
         public String NotifyUrl { get; set; }

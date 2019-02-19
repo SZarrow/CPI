@@ -166,8 +166,6 @@ namespace CPI.WebAPI.Controllers
 
         private IActionResult Json(Object value, String callResultStatus)
         {
-            //String x = @"MIICXQIBAAKBgQDDwlqBSDL5T3+2UB9tiv3zYxIFlORbzlzWHs/FQ2opV9X1kTmRdW0mICTsOlolbsNSr4mKqVj8h6uaGq7my+5d2Xh7jdtG8ATHuCDiLuQrgrTeKmpXDFQMureIsWbjzIXg2oqgS44JtwGGW45WLeoCAlVFcwiC/7AS4BvC+qWjIQIDAQABAoGBAIfLjKjeAq47XaaEkiiVIHDzqo7AqGCfGHtYSFzY1Q305nFA2qRyxtKJvdM470vEOC5loo3Tx+z12C5AkE99681pt4nvQOZT3bNBI+EOhkWbp3T61KqTrxi4+VA8co48dNJr49y+XwgQw5NDQBSKslFCZ+opEGnECsyY26Sj1jnZAkEA/HT+gDfFzU08Ksc6G28Je3krNLo+c1jQ1l4Jg3oK3/lcyHwzVMvPz32fCIk+ULCzTULWYdoUdPgWdtDt6NVBLwJBAMaBqQzP1ao+3WaXPKTg1QeCPdqu59d8+L8jpUfVvq1w6y7Lt2IFTRW/l8ZqZb+zbzp0T16yDyYcVuSznkJ2LK8CQGM7GU4MnhM0aJHn/U8LNg7ycakoC6QLJQsdq1+ieOPQgEfNid+qvOQx3HDegT/2NIQJ4XpU3fWcDjhlpx39tMECQGNLTFJaS9iC5aCBmhYnWKgO3/3Za6MAojSKEgziwCRlzV51DF/9otd0JOldI1RG3yZwM5t8mdNIbbasmkdIcYUCQQCRCe0GS6uqxKW69UHXYwFWcTtLmY5lw6+mU7Y+4wyyjCinE7hhy1Zre6X+cNRHBlnw5Svco2anufGp4OHK8uPm";
-
             var result = new JsonResult(value);
             _logger.Trace(TraceType.API.ToString(), callResultStatus, $"{_typeFullName}.Json()", $"{nameof(result)}", LogPhase.ACTION, "CPI响应输出", value);
             return result;

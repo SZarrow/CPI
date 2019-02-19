@@ -521,6 +521,14 @@ namespace CPI.Services.AgreePay
                     return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respContent.ResponseTextMessage));
                 }
 
+                allotAmountOrder.Status = AllotAmountOrderStatus.PROCESSING.ToString();
+                _allotAmountOrderRepository.Update(allotAmountOrder);
+                saveResult = _allotAmountOrderRepository.SaveChanges();
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
+                }
+
                 var resp = new CPIAgreePayPaymentResponse()
                 {
                     OutTradeNo = respContent.ExternalRefNumber,

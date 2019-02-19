@@ -72,6 +72,8 @@ namespace CPI.Handlers.Settle
                     return AccountBalance_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.withdraw.query.1.1":
                     return QueryWithdrawOrder_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.withdraw.orders.query.1.1":
+                    return QueryWithdrawOrderList_1_1(traceService, requestService, ref traceMethod);
                     #endregion
             }
 
@@ -393,6 +395,26 @@ namespace CPI.Handlers.Settle
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现订单", withdrawOrderQueryRequest.Value);
 
             var queryResult = _serviceV1.QueryWithdrawOrder(withdrawOrderQueryRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询提现订单", queryResult.Value);
+
+            return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
+        }
+
+        private ObjectResult QueryWithdrawOrderList_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var withdrawOrderQueryRequest = JsonUtil.DeserializeObject<WithdrawOrderListQueryRequestV1>(_request.BizContent);
+            if (!withdrawOrderQueryRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", withdrawOrderQueryRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            withdrawOrderQueryRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.QueryWithdrawOrderList_1_1(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现订单", withdrawOrderQueryRequest.Value);
+
+            var queryResult = _serviceV1.QueryWithdrawOrderList(withdrawOrderQueryRequest.Value);
 
             _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询提现订单", queryResult.Value);
 
