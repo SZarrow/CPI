@@ -758,74 +758,70 @@ namespace CPI.Services.SettleServices
                     Remark = request.Remark
                 };
 
-                _withdrawOrderRepository.Add(newOrder);
-                var saveResult = _withdrawOrderRepository.SaveChanges();
+                RawPersonalWithdrawResponseV1 resp = null;
 
-                if (!saveResult.Success)
+                using (var tx = new TransactionScope())
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "创建提现单失败", saveResult.FirstException, newOrder);
-                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
-                }
+                    _withdrawOrderRepository.Add(newOrder);
+                    var saveResult = _withdrawOrderRepository.SaveChanges();
 
-                String traceMethod = $"{nameof(Bill99UtilHAT)}.Execute(/account/merchantWithdraw)";
-
-                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱HAT提现接口", request);
-
-                DateTime applyTime = DateTime.Now;
-
-                var execResult = Bill99UtilHAT.Execute<RawPersonalWithdrawRequestV1, RawPersonalWithdrawResponseV1>("/account/merchantWithdraw", new RawPersonalWithdrawRequestV1()
-                {
-                    functionCode = request.FunctionCode,
-                    outTradeNo = request.OutTradeNo,
-                    merchantName = request.MerchantName,
-                    merchantUId = request.PayeeId,
-                    isPlatformMerchant = request.IsPlatformMerchant,
-                    bankAcctName = userAccountInfo.RealName,
-                    amount = request.Amount,
-                    bankAcctId = bindcardInfo.BankCardNo,
-                    bankName = bindcardInfo.BankName,
-                    payMode = request.PayMode,
-                    orderType = request.OrderType
-                });
-
-                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱HAT提现接口", request);
-
-                if (!execResult.Success)
-                {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "提现失败", execResult.FirstException, request);
-                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
-                }
-
-                if (execResult.Value == null)
-                {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "快钱未返回任何数据");
-                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.REMOTE_RETURN_NOTHING);
-                }
-
-                var resp = execResult.Value;
-                if (resp.ResponseCode != "0000")
-                {
-                    _withdrawOrderRepository.Remove(newOrder);
-                    saveResult = _withdrawOrderRepository.SaveChanges();
                     if (!saveResult.Success)
                     {
-                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "无法删除提交失败的提现单", saveResult.FirstException, newOrder);
-                    }
-                    else
-                    {
-                        _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", LogPhase.ACTION, "成功删除提交失败的提现单");
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "创建提现单失败", saveResult.FirstException, newOrder);
+                        return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                     }
 
-                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{resp.ResponseCode}:{resp.ResponseMessage}");
-                    return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(resp.ResponseMessage));
+                    String traceMethod = $"{nameof(Bill99UtilHAT)}.Execute(/account/merchantWithdraw)";
+
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用快钱HAT提现接口", request);
+
+                    DateTime applyTime = DateTime.Now;
+
+                    var execResult = Bill99UtilHAT.Execute<RawPersonalWithdrawRequestV1, RawPersonalWithdrawResponseV1>("/account/merchantWithdraw", new RawPersonalWithdrawRequestV1()
+                    {
+                        functionCode = request.FunctionCode,
+                        outTradeNo = request.OutTradeNo,
+                        merchantName = request.MerchantName,
+                        merchantUId = request.PayeeId,
+                        isPlatformMerchant = request.IsPlatformMerchant,
+                        bankAcctName = userAccountInfo.RealName,
+                        amount = request.Amount,
+                        bankAcctId = bindcardInfo.BankCardNo,
+                        bankName = bindcardInfo.BankName,
+                        payMode = request.PayMode,
+                        orderType = request.OrderType
+                    });
+
+                    _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"结束调用快钱HAT提现接口", request);
+
+                    if (!execResult.Success)
+                    {
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "提现失败", execResult.FirstException, request);
+                        return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+                    }
+
+                    if (execResult.Value == null)
+                    {
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "快钱未返回任何数据");
+                        return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.REMOTE_RETURN_NOTHING);
+                    }
+
+                    resp = execResult.Value;
+                    if (resp.ResponseCode != "0000")
+                    {
+                        _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, LogPhase.ACTION, $"{resp.ResponseCode}:{resp.ResponseMessage}");
+                        return new XResult<PersonalWithdrawResponseV1>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(resp.ResponseMessage));
+                    }
+
+                    tx.Complete();
                 }
 
                 newOrder.Status = WithdrawBindCardStatus.PROCESSING.ToString();
-                saveResult = _withdrawOrderRepository.SaveChanges();
+                var updateResult = _withdrawOrderRepository.SaveChanges();
 
-                if (!saveResult.Success)
+                if (!updateResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "更新提现单状态失败", saveResult.FirstException, newOrder);
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_withdrawOrderRepository)}.SaveChanges()", "更新提现单状态失败", updateResult.FirstException, newOrder);
                 }
 
                 var respResult = new PersonalWithdrawResponseV1()
