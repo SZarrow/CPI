@@ -74,6 +74,8 @@ namespace CPI.Handlers.Settle
                     return QueryWithdrawOrder_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.withdraw.orders.query.1.1":
                     return QueryWithdrawOrderList_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.withdraw.pullresult.1.1":
+                    return PayResultPull_1_1(traceService, requestService, ref traceMethod);
                     #endregion
             }
 
@@ -439,6 +441,30 @@ namespace CPI.Handlers.Settle
             _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询账户余额", queryResult.Value);
 
             return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
+        }
+
+        private ObjectResult PayResultPull_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var pullRequest = JsonUtil.DeserializeObject<PersonalWithdrawResultPullRequestV1>(_request.BizContent);
+            if (!pullRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", pullRequest.FirstException, _request.BizContent);
+                return new ObjectResult(0, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            pullRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.Pull(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取提现状态", pullRequest.Value);
+
+            var pullResult = _serviceV1.PullWithdrawResult(pullRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (pullResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束拉取提现状态", pullResult.Value);
+
+            return pullResult.Success ? new ObjectResult(new PersonalWithdrawResultPullResponseV1()
+            {
+                SuccessCount = pullResult.Value.SuccessCount
+            }) : new ObjectResult(null, pullResult.ErrorCode, pullResult.FirstException);
         }
         #endregion
     }
