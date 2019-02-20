@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CPI.Common;
 using CPI.Common.Domain.SettleDomain.Bill99;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
@@ -1095,6 +1098,77 @@ namespace CPI.Services.SettleServices
             catch (Exception ex)
             {
                 return new XResult<WithdrawOrderListQueryResponseV1>(null, ErrorCode.DB_QUERY_FAILED, ex);
+            }
+        }
+
+        public XResult<PersonalWithdrawResultPullResponseV1> PullWithdrawResult(PersonalWithdrawResultPullRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalWithdrawResultPullResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<PersonalWithdrawResultPullResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var requestHash = $"PullWithdrawResult".GetHashCode();
+
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<PersonalWithdrawResultPullResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                var unprocessedOrders = (from t0 in _withdrawOrderRepository.QueryProvider
+                                         where t0.Status != WithdrawOrderStatus.SUCCESS.ToString()
+                                         && t0.Status != WithdrawOrderStatus.FAILURE.ToString()
+                                         select t0).OrderBy(x => x.ApplyTime).Take(request.Count).ToList();
+
+                if (unprocessedOrders == null || unprocessedOrders.Count == 0)
+                {
+                    return new XResult<PersonalWithdrawResultPullResponseV1>(new PersonalWithdrawResultPullResponseV1()
+                    {
+                        SuccessCount = 0
+                    });
+                }
+
+                List<Task> tasks = new List<Task>(unprocessedOrders.Count);
+                Int32 successCount = 0;
+
+                foreach (var order in unprocessedOrders)
+                {
+                    tasks.Add(Task.Run(() =>
+                    {
+                        var queryResult = QueryWithdrawOrder(new WithdrawOrderQueryRequestV1()
+                        {
+                            AppId = request.AppId,
+                            OutTradeNo = order.OutTradeNo,
+                            QueryMode = "PULL"
+                        });
+
+                        if (queryResult.Success && queryResult.Value != null)
+                        {
+                            Interlocked.Increment(ref successCount);
+                        }
+                    }));
+                }
+
+                Task.WaitAll(tasks.ToArray());
+                return new XResult<PersonalWithdrawResultPullResponseV1>(new PersonalWithdrawResultPullResponseV1()
+                {
+                    SuccessCount = successCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return new XResult<PersonalWithdrawResultPullResponseV1>(null, ErrorCode.DB_QUERY_FAILED, ex);
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
             }
         }
 

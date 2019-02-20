@@ -68,5 +68,10 @@ namespace CPI.IService.SettleServices
         /// </summary>
         /// <param name="request"></param>
         XResult<WithdrawOrderListQueryResponseV1> QueryWithdrawOrderList(WithdrawOrderListQueryRequestV1 request);
+        /// <summary>
+        /// 拉取提现结果
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalWithdrawResultPullResponseV1> PullWithdrawResult(PersonalWithdrawResultPullRequestV1 request);
     }
 }

@@ -6,9 +6,9 @@ using Lotus.Validation;
 
 namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
 {
-    public class AgreepayPayResultPullRequestV1 : ValidateModel
+    public class PersonalWithdrawResultPullRequestV1 : ValidateModel
     {
-        [Required(ErrorMessage = "AppId字段必需")]
+        [Required(ErrorMessage = "AppId字段")]
         public String AppId { get; set; }
 
         [Required(ErrorMessage = "Count字段必需")]

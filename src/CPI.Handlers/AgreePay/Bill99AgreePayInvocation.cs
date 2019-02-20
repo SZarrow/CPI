@@ -144,6 +144,11 @@ namespace CPI.Handlers.AgreePay
             }
             pullRequest.Value.AppId = _request.AppId;
 
+            if (!pullRequest.Value.IsValid)
+            {
+                return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(pullRequest.Value.ErrorMessage));
+            }
+
             traceMethod = $"{_agreePayService.GetType().FullName}.Pull(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取支付状态", pullRequest.Value);
