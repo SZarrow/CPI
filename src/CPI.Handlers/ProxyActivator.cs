@@ -88,6 +88,12 @@ namespace CPI.Handlers
                 return new Bill99AgreePayInvocation(request);
             }
 
+            if (request.Method.IndexOf("cpi.unified.payresult.pull") == 0)
+            {
+                _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
+                return new Bill99AgreePayInvocation(request);
+            }
+
             if (request.Method.IndexOf("cpi.unified.pay") == 0)
             {
                 // 根据AppId从数据库中查出默认通道编码，如果没有指定则默认使用快钱

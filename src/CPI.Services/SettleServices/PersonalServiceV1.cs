@@ -995,14 +995,15 @@ namespace CPI.Services.SettleServices
                         break;
                     case "1":
                         withdrawOrder.Status = WithdrawOrderStatus.SUCCESS.ToString();
+                        withdrawOrder.CompleteTime = DateTime.Now;
                         break;
                     default:
                         withdrawOrder.Status = WithdrawOrderStatus.FAILURE.ToString();
+                        withdrawOrder.CompleteTime = DateTime.Now;
                         break;
                 }
 
                 withdrawOrder.IsPlatformPayee = respResult.isPlatformPayee;
-                withdrawOrder.CompleteTime = DateTime.Now;
                 _withdrawOrderRepository.Update(withdrawOrder);
                 var saveResult = _withdrawOrderRepository.SaveChanges();
                 if (!saveResult.Success)
@@ -1045,10 +1046,12 @@ namespace CPI.Services.SettleServices
 
             var q = _withdrawOrderRepository.QueryProvider.Where(x => x.PayeeId == request.PayeeId);
 
-            if (request.OutTradeNo.HasValue())
+            if (request.Keyword.HasValue())
             {
+                String kw = request.Keyword.Trim();
+
                 q = from t0 in q
-                    where t0.OutTradeNo == request.OutTradeNo
+                    where t0.OutTradeNo == kw || t0.Remark.Contains(kw) || t0.Status.Contains(kw)
                     select t0;
             }
 

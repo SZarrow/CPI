@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using CPI.Common;
 using CPI.Common.Domain.EntrustPay;
 using CPI.Common.Domain.SettleDomain.Bill99;
@@ -210,28 +205,25 @@ namespace CPI.Services.EntrustPay
                 if (!result.Success)
                 {
                     _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "支付失败", result.FirstException, payRequest);
+                    UpdateAllotAmountOrder(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, result.FirstException);
                 }
 
                 if (result.Value == null || result.Value.EntrustPayResponseContent == null)
                 {
                     _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, LogPhase.ACTION, "快钱未返回任何数据");
+                    UpdateAllotAmountOrder(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
                 }
 
                 var respContent = result.Value.EntrustPayResponseContent;
                 if (respContent.ResponseCode != "00")
                 {
+                    UpdateAllotAmountOrder(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respContent.ResponseTextMessage));
                 }
 
-                allotAmountOrder.Status = AllotAmountOrderStatus.PROCESSING.ToString();
-                _allotAmountOrderRepository.Update(allotAmountOrder);
-                saveResult = _allotAmountOrderRepository.SaveChanges();
-                if (!saveResult.Success)
-                {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
-                }
+                UpdateAllotAmountOrder(service, allotAmountOrder, AllotAmountOrderStatus.SUCCESS);
 
                 var resp = new CPIEntrustPayPaymentResponse()
                 {
@@ -268,6 +260,17 @@ namespace CPI.Services.EntrustPay
             finally
             {
                 _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        private void UpdateAllotAmountOrder(String service, AllotAmountOrder allotAmountOrder, AllotAmountOrderStatus status)
+        {
+            allotAmountOrder.Status = status.ToString();
+            _allotAmountOrderRepository.Update(allotAmountOrder);
+            var saveResult = _allotAmountOrderRepository.SaveChanges();
+            if (!saveResult.Success)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
             }
         }
 
