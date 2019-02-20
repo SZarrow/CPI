@@ -5,6 +5,7 @@ using System.Text;
 using CPI.Common;
 using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.Common;
+using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using CPI.Common.Exceptions;
 using CPI.Config;
 using CPI.IService.AgreePay;
@@ -126,9 +127,35 @@ namespace CPI.Handlers.AgreePay
                         PageSize = queryResult.Value.PageInfo.PageSize,
                         TotalCount = queryResult.Value.PageInfo.TotalCount
                     }) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
+                case "cpi.unified.payresult.pull.1.0":
+                    return PayResultPull_1_0(traceService, requestService, ref traceMethod);
             }
 
             return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+        }
+
+        private ObjectResult PayResultPull_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            var pullRequest = JsonUtil.DeserializeObject<AgreepayPayResultPullRequestV1>(_request.BizContent);
+            if (!pullRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", pullRequest.FirstException, _request.BizContent);
+                return new ObjectResult(0, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            pullRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_agreePayService.GetType().FullName}.Pull(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取支付状态", pullRequest.Value);
+
+            var pullResult = _agreePayService.Pull(pullRequest.Value.Count);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (pullResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束拉取支付状态", pullResult.Value);
+
+            return pullResult.Success ? new ObjectResult(new AgreepayPayResultPullResponseV1()
+            {
+                SuccessCount = pullResult.Value
+            }) : new ObjectResult(null, pullResult.ErrorCode, pullResult.FirstException);
         }
 
         private XResult<CPIAgreePayPaymentRequest> BuildCPIAgreePayPaymentRequest(CommonPayRequest request)

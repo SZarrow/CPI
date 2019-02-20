@@ -680,8 +680,8 @@ namespace CPI.Services.AgreePay
 
                 foreach (var item in items)
                 {
-                    //将7天前还没有结果的订单设置为失败
-                    if ((DateTime.Now - item.CreateTime).TotalDays > 7)
+                    //将3天前还没有结果的订单设置为失败
+                    if ((DateTime.Now - item.CreateTime).TotalDays > 3)
                     {
                         sb.Append($"update pay_order set pay_status='{PayStatus.FAILURE.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{item.OutTradeNo}';");
                     }
