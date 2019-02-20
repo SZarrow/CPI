@@ -500,16 +500,19 @@ namespace CPI.Services.AgreePay
                 if (!result.Success)
                 {
                     _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "支付失败", result.FirstException, result);
+                    UpdateAllotAmountOrderStatus(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, result.FirstException);
                 }
 
                 if (result.Value == null)
                 {
+                    UpdateAllotAmountOrderStatus(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
                 }
 
                 if (result.Value.TxnMsgContent == null)
                 {
+                    UpdateAllotAmountOrderStatus(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return result.Value.ErrorMsgContent != null
                         ? new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(result.Value.ErrorMsgContent.ErrorMessage))
                         : new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
@@ -518,16 +521,11 @@ namespace CPI.Services.AgreePay
                 var respContent = result.Value.TxnMsgContent;
                 if (respContent.ResponseCode != "00")
                 {
+                    UpdateAllotAmountOrderStatus(service, allotAmountOrder, AllotAmountOrderStatus.FAILURE);
                     return new XResult<CPIAgreePayPaymentResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respContent.ResponseTextMessage));
                 }
 
-                allotAmountOrder.Status = AllotAmountOrderStatus.PROCESSING.ToString();
-                _allotAmountOrderRepository.Update(allotAmountOrder);
-                saveResult = _allotAmountOrderRepository.SaveChanges();
-                if (!saveResult.Success)
-                {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
-                }
+                UpdateAllotAmountOrderStatus(service, allotAmountOrder, AllotAmountOrderStatus.SUCCESS);
 
                 var resp = new CPIAgreePayPaymentResponse()
                 {
@@ -564,6 +562,17 @@ namespace CPI.Services.AgreePay
             finally
             {
                 _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        private void UpdateAllotAmountOrderStatus(String service, AllotAmountOrder allotAmountOrder, AllotAmountOrderStatus status)
+        {
+            allotAmountOrder.Status = status.ToString();
+            _allotAmountOrderRepository.Update(allotAmountOrder);
+            var saveResult = _allotAmountOrderRepository.SaveChanges();
+            if (!saveResult.Success)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
             }
         }
 
