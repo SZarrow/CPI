@@ -14,6 +14,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         [Required(ErrorMessage = "PayeeId字段必需")]
         public String PayeeId { get; set; }
 
+        public String Status { get; set; }
         public String Keyword { get; set; }
 
         [Required(ErrorMessage = "PageIndex字段必需")]

@@ -8,7 +8,8 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
     public class WithdrawOrderListQueryResponseV1 : CommonResponse
     {
         public IEnumerable<WithdrawOrderListQueryItem> Orders { get; set; }
-        public PageInfo PageInfo { get; set; }
+        public Int32 PageIndex { get; set; }
+        public Int32 PageCount { get; set; }
     }
 
     public class WithdrawOrderListQueryItem

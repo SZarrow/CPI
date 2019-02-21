@@ -158,6 +158,46 @@ namespace CPI.Services.SettleServices
             }
         }
 
+        public XResult<PersonalRegisterInfoQueryResponseV1> QueryPersonalInfo(PersonalRegisterInfoQueryRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalRegisterInfoQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<PersonalRegisterInfoQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            try
+            {
+                var userInfo = (from t0 in _personalSubAccountRepository.QueryProvider
+                                where t0.UID == request.UserId
+                                select t0).FirstOrDefault();
+
+                if (userInfo == null)
+                {
+                    return new XResult<PersonalRegisterInfoQueryResponseV1>(null, ErrorCode.INFO_NOT_EXIST);
+                }
+
+                return new XResult<PersonalRegisterInfoQueryResponseV1>(new PersonalRegisterInfoQueryResponseV1()
+                {
+                    UserId = userInfo.UID,
+                    IDCardNo = userInfo.IDCardNo,
+                    IDCardType = userInfo.IDCardType,
+                    RealName = userInfo.RealName,
+                    Mobile = userInfo.Mobile,
+                    Email = userInfo.Email,
+                    Status = userInfo.Status
+                });
+            }
+            catch (Exception ex)
+            {
+                return new XResult<PersonalRegisterInfoQueryResponseV1>(null, ErrorCode.DB_QUERY_FAILED, ex);
+            }
+        }
+
         public XResult<QueryBankCardAcceptResponseV1> QueryBankCardAccept(QueryBankCardAcceptRequestV1 request)
         {
             if (request == null)
@@ -1049,6 +1089,13 @@ namespace CPI.Services.SettleServices
 
             var q = _withdrawOrderRepository.QueryProvider.Where(x => x.PayeeId == request.PayeeId);
 
+            if (request.Status.HasValue())
+            {
+                q = from t0 in q
+                    where t0.Status == request.Status
+                    select t0;
+            }
+
             if (request.Keyword.HasValue())
             {
                 String kw = request.Keyword.Trim();
@@ -1060,15 +1107,17 @@ namespace CPI.Services.SettleServices
 
             if (request.From != null)
             {
+                var fromDate = request.From.Value.Date;
                 q = from t0 in q
-                    where t0.ApplyTime >= request.From
+                    where t0.ApplyTime >= fromDate
                     select t0;
             }
 
             if (request.To != null)
             {
+                var toDate = request.To.Value.Date.AddDays(1).Date;
                 q = from t0 in q
-                    where t0.ApplyTime <= request.To
+                    where t0.ApplyTime < toDate
                     select t0;
             }
 
@@ -1090,7 +1139,8 @@ namespace CPI.Services.SettleServices
                 return new XResult<WithdrawOrderListQueryResponseV1>(new WithdrawOrderListQueryResponseV1()
                 {
                     Orders = result,
-                    PageInfo = result.PageInfo,
+                    PageIndex = result.PageInfo.PageIndex,
+                    PageCount = result.PageInfo.PageCount,
                     Status = CommonStatus.SUCCESS.ToString(),
                     Msg = CommonStatus.SUCCESS.GetDescription()
                 });
