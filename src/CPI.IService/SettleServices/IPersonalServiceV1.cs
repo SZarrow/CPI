@@ -19,6 +19,11 @@ namespace CPI.IService.SettleServices
         /// <param name="request">开户请求参数</param>
         XResult<PersonalRegisterResponseV1> Register(PersonalRegisterRequestV1 request);
         /// <summary>
+        /// 查询开户信息
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalRegisterInfoQueryResponseV1> QueryPersonalInfo(PersonalRegisterInfoQueryRequestV1 request);
+        /// <summary>
         /// 查询银行卡受理能力
         /// </summary>
         /// <param name="request"></param>

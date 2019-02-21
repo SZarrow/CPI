@@ -56,6 +56,8 @@ namespace CPI.Handlers.Settle
                 #region #v1.1
                 case "cpi.settle.personal.register.1.1":
                     return Register_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.register.info.1.1":
+                    return QueryRegisterInfo_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.contractinfo.1.1":
                     return ContractInfo_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.signcontract.1.1":
@@ -261,6 +263,26 @@ namespace CPI.Handlers.Settle
             _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人开户", regResult.Value);
 
             return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
+        }
+
+        private ObjectResult QueryRegisterInfo_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var queryRequest = JsonUtil.DeserializeObject<PersonalRegisterInfoQueryRequestV1>(_request.BizContent);
+            if (!queryRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            queryRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_serviceV1.GetType().FullName}.QueryRegisterInfo_1_1(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人开户信息", queryRequest.Value);
+
+            var queryResult = _serviceV1.QueryPersonalInfo(queryRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人开户信息", queryResult.Value);
+
+            return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
         }
 
         private ObjectResult SignContract_1_1(String traceService, String requestService, ref String traceMethod)
