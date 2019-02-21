@@ -181,16 +181,34 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalRegisterInfoQueryResponseV1>(null, ErrorCode.INFO_NOT_EXIST);
                 }
 
-                return new XResult<PersonalRegisterInfoQueryResponseV1>(new PersonalRegisterInfoQueryResponseV1()
+                var bindcardInfo = (from t0 in _withdrawBankCardBindInfoRepository.QueryProvider
+                                    where t0.PayeeId == request.UserId
+                                    select t0).FirstOrDefault();
+
+                var resp = new PersonalRegisterInfoQueryResponseV1()
                 {
                     UserId = userInfo.UID,
                     IDCardNo = userInfo.IDCardNo,
                     IDCardType = userInfo.IDCardType,
                     RealName = userInfo.RealName,
-                    Mobile = userInfo.Mobile,
+                    Mobile = bindcardInfo != null ? bindcardInfo.Mobile : userInfo.Mobile,
+                    BankCardNo = bindcardInfo != null ? bindcardInfo.BankCardNo : null,
+                    BankName = bindcardInfo != null ? bindcardInfo.BankName : null,
                     Email = userInfo.Email,
                     Status = userInfo.Status
-                });
+                };
+
+                if (resp.BankCardNo.IsNullOrWhiteSpace())
+                {
+                    resp.BankCardNo = "(未绑卡)";
+                }
+
+                if (resp.BankName.IsNullOrWhiteSpace())
+                {
+                    resp.BankName = "(未知)";
+                }
+
+                return new XResult<PersonalRegisterInfoQueryResponseV1>(resp);
             }
             catch (Exception ex)
             {
@@ -368,7 +386,7 @@ namespace CPI.Services.SettleServices
                     return new XResult<PersonalWithdrawBindCardResponseV1>(null, ErrorCode.SUBMIT_REPEAT);
                 }
 
-                var existedBindInfo = _withdrawBankCardBindInfoRepository.Exists(x => x.PayeeId == request.UserId && x.BankCardNo == request.BankCardNo);
+                var existedBindInfo = _withdrawBankCardBindInfoRepository.Exists(x => x.PayeeId == request.UserId);
                 if (existedBindInfo)
                 {
                     return new XResult<PersonalWithdrawBindCardResponseV1>(null, ErrorCode.INFO_EXISTED, new ArgumentException("绑卡信息已存在"));
@@ -1089,6 +1107,9 @@ namespace CPI.Services.SettleServices
 
             var q = _withdrawOrderRepository.QueryProvider.Where(x => x.PayeeId == request.PayeeId);
 
+            var successCount = q.Where(x => x.Status == WithdrawBindCardStatus.SUCCESS.ToString()).Count();
+            var successAmount = q.Where(x => x.Status == WithdrawBindCardStatus.SUCCESS.ToString()).Select(x => x.Amount).Sum();
+
             if (request.Status.HasValue())
             {
                 q = from t0 in q
@@ -1139,6 +1160,8 @@ namespace CPI.Services.SettleServices
                 return new XResult<WithdrawOrderListQueryResponseV1>(new WithdrawOrderListQueryResponseV1()
                 {
                     Orders = result,
+                    SuccessCount = successCount,
+                    SuccessAmount = successAmount,
                     PageIndex = result.PageInfo.PageIndex,
                     PageCount = result.PageInfo.PageCount,
                     Status = CommonStatus.SUCCESS.ToString(),
@@ -1185,28 +1208,23 @@ namespace CPI.Services.SettleServices
                     });
                 }
 
-                List<Task> tasks = new List<Task>(unprocessedOrders.Count);
                 Int32 successCount = 0;
 
                 foreach (var order in unprocessedOrders)
                 {
-                    tasks.Add(Task.Run(() =>
+                    var queryResult = QueryWithdrawOrder(new WithdrawOrderQueryRequestV1()
                     {
-                        var queryResult = QueryWithdrawOrder(new WithdrawOrderQueryRequestV1()
-                        {
-                            AppId = request.AppId,
-                            OutTradeNo = order.OutTradeNo,
-                            QueryMode = "PULL"
-                        });
+                        AppId = request.AppId,
+                        OutTradeNo = order.OutTradeNo,
+                        QueryMode = "PULL"
+                    });
 
-                        if (queryResult.Success && queryResult.Value != null)
-                        {
-                            Interlocked.Increment(ref successCount);
-                        }
-                    }));
+                    if (queryResult.Success && queryResult.Value != null)
+                    {
+                        successCount++;
+                    }
                 }
 
-                Task.WaitAll(tasks.ToArray());
                 return new XResult<PersonalWithdrawResultPullResponseV1>(new PersonalWithdrawResultPullResponseV1()
                 {
                     SuccessCount = successCount
