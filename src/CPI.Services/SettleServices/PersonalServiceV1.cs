@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using CPI.Common;
@@ -1056,15 +1057,19 @@ namespace CPI.Services.SettleServices
                         break;
                     case "1":
                         withdrawOrder.Status = WithdrawOrderStatus.SUCCESS.ToString();
-                        withdrawOrder.CompleteTime = DateTime.Now;
+                        withdrawOrder.CompleteTime = 解析傻逼快钱返回的时间(respResult.txnEndTime);
                         break;
                     default:
                         withdrawOrder.Status = WithdrawOrderStatus.FAILURE.ToString();
-                        withdrawOrder.CompleteTime = DateTime.Now;
+                        withdrawOrder.CompleteTime = 解析傻逼快钱返回的时间(respResult.txnEndTime);
                         break;
                 }
 
-                withdrawOrder.IsPlatformPayee = respResult.isPlatformPayee;
+                if (respResult.isPlatformPayee.HasValue())
+                {
+                    withdrawOrder.IsPlatformPayee = respResult.isPlatformPayee;
+                }
+
                 _withdrawOrderRepository.Update(withdrawOrder);
                 var saveResult = _withdrawOrderRepository.SaveChanges();
                 if (!saveResult.Success)
@@ -1091,6 +1096,22 @@ namespace CPI.Services.SettleServices
             {
                 _lockProvider.UnLock(requestHash);
             }
+        }
+
+        private DateTime 解析傻逼快钱返回的时间(String endTime)
+        {
+            //20190220141838
+            //2019-02-20 14:18:38
+            if (Regex.IsMatch(endTime, @"\d{14}", RegexOptions.IgnoreCase))
+            {
+                var chars = new Char[] { endTime[0], endTime[1], endTime[2], endTime[3], '-', endTime[4], endTime[5], '-', endTime[6], endTime[7], ' ', endTime[8], endTime[9], ':', endTime[10], endTime[11], ':', endTime[12], endTime[13] };
+                if (DateTime.TryParse(new String(chars), out DateTime dt))
+                {
+                    return dt;
+                }
+            }
+
+            return DateTime.Now;
         }
 
         public XResult<WithdrawOrderListQueryResponseV1> QueryWithdrawOrderList(WithdrawOrderListQueryRequestV1 request)
