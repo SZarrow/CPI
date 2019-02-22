@@ -8,7 +8,6 @@ using CPI.Data.PostgreSQL;
 using CPI.IService.SettleServices;
 using Lotus.Core;
 using Lotus.Logging;
-using Quartz;
 
 namespace CPI.ScheduleJobs.Settle
 {
@@ -16,20 +15,9 @@ namespace CPI.ScheduleJobs.Settle
     {
         private static readonly ILogger _logger = LogManager.GetLogger();
 
-        protected async override Task Execute(String traceId)
+        protected override async Task Execute()
         {
-            _logger.ContinueTrace("CPI.ScheduleJobs", traceId);
-            var service = XDI.Resolve<IAllotAmountWithdrawService>();
-            var result = service.FireAllotAmount(10);
-            if (result.Success)
-            {
-                await Print($"成功{result.Value}个");
-            }
-            else
-            {
-                _logger.Error(TraceType.SCHEDULE.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.Execute()", "快钱分账定时任务", "发起分账失败", result.FirstException);
-                await Print($"发起分账失败：{result.FirstException.Message}");
-            }
+            await Task.CompletedTask;
         }
 
         private async Task Print(String content)

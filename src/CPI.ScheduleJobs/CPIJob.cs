@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,22 +14,25 @@ namespace CPI.ScheduleJobs
 {
     public abstract class CPIJob : IJob
     {
-        private static ILogger _logger = LogManager.GetLogger();
+        private static readonly ILogger _logger = LogManager.GetLogger();
+        protected static readonly HttpClient _client = new HttpClient();
 
         protected CPIJob() { }
 
-        public async Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext context)
         {
-            var ins = new Object();
-            XDI.CreateScope(ins);
-            XDI.Scope(typeof(CPIDbContext));
-            String traceId = Guid.NewGuid().ToString("N");
-            _logger.StartTrace("CPI.ScheduleJobs", traceId, "127.0.0.1");
-            await Execute(traceId);
-            _logger.StopTrace();
-            XDI.Release(ins);
+            //try
+            //{
+            //    await Execute();
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error("CPI.ScheduleJobs", "ERROR", $"{this.GetType().FullName}.Execute()", "Execute()", "定时调度任务执行出现异常", ex);
+            //}
+
+            return Execute();
         }
 
-        protected abstract Task Execute(String traceId);
+        protected abstract Task Execute();
     }
 }

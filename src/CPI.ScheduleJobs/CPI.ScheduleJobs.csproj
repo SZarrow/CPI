@@ -76,8 +76,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgreePay\Bill99AgreepayPayResultPullJob.cs" />
+    <Compile Include="CPIScheduleConfig.cs" />
     <Compile Include="CPIJob.cs" />
     <Compile Include="FundOut\Bill99PaymentResultPullJob.cs" />
+    <Compile Include="Models\AgreepayPayResultPullResult.cs" />
+    <Compile Include="Models\CPIGatewayCommonResponse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settle\Bill99FireAllotAmountJob.cs" />
@@ -102,8 +105,14 @@
     <PackageReference Include="Lotus.Logging">
       <Version>1.1.19</Version>
     </PackageReference>
+    <PackageReference Include="Lotus.Net">
+      <Version>1.0.16</Version>
+    </PackageReference>
     <PackageReference Include="Lotus.Schedule">
       <Version>1.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Lotus.Security">
+      <Version>1.0.8</Version>
     </PackageReference>
     <PackageReference Include="Quartz">
       <Version>3.0.7</Version>
