@@ -14,7 +14,7 @@ namespace CPI.ScheduleJobs.Settle
     //{
     //    private static readonly ILogger _logger = LogManager.GetLogger();
 
-    //    protected async override Task Execute()
+    //    protected override Task Execute()
     //    {
     //        var service = XDI.Resolve<IPersonalService>();
     //        var result = service.PullRegisterAuditResult(20);

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using CPI.Common;
-using CPI.Data.PostgreSQL;
-using CPI.IService.AgreePay;
-using Lotus.Core;
+using CPI.ScheduleJobs.Models;
+using CPI.Utils;
 using Lotus.Logging;
-using Quartz;
+using Lotus.Net;
+using Lotus.Security;
+using Newtonsoft.Json;
 
 namespace CPI.ScheduleJobs.AgreePay
 {
@@ -16,25 +17,53 @@ namespace CPI.ScheduleJobs.AgreePay
     {
         private static readonly ILogger _logger = LogManager.GetLogger();
 
-        protected async override Task Execute(String traceId)
+        protected override Task Execute()
         {
-            _logger.ContinueTrace("CPI.ScheduleJobs", traceId);
-            var service = XDI.Resolve<IAgreementPaymentService>();
-            var result = service.Pull(20);
-            if (result.Success)
+            var bizContent = new
             {
-                await Print($"成功从快钱拉取{result.Value}条支付结果");
-            }
-            else
+                Count = 20
+            };
+
+            var sign = CryptoHelper.MakeSign(JsonUtil.SerializeObject(bizContent).Value, CPIScheduleConfig.AppSecretKey, HashAlgorithmName.SHA1);
+
+            var postData = new
             {
-                _logger.Error(TraceType.SCHEDULE.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.Execute()", "拉取快钱协议支付结果定时任务", "从快钱拉取协议支付结果失败", result.FirstException);
-                await Print($"从快钱拉取协议支付结果失败：{result.FirstException.Message}");
-            }
+                CPIScheduleConfig.AppId,
+                Method = "cpi.unified.payresult.pull",
+                Version = "1.0",
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                BizContent = JsonUtil.SerializeObject(bizContent).Value,
+                SignType = "RSA",
+                Sign = sign.Value
+            };
+
+            return _client.PostJsonAsync<CPIGatewayCommonResponse<AgreepayPayResultPullResult>>(CPIScheduleConfig.RequestUrl, JsonUtil.SerializeObject(postData).Value).ContinueWith(t0 =>
+             {
+                 if (t0.IsCompleted)
+                 {
+                     if (t0.IsCanceled || t0.IsFaulted)
+                     {
+                         Print("任务取消或失败");
+                         return;
+                     }
+
+                     var resp = t0.Result;
+                     if (!resp.Success)
+                     {
+                         _logger.Error("CPI.ScheduleJobs.AgreePay", "ERROR", $"{this.GetType().FullName}.Execute()", "_client.PostJson(...)", resp.ErrorMessage, resp.FirstException);
+                         Print(resp.ErrorMessage);
+                     }
+                     else
+                     {
+                         Print($"成功拉取 {resp.Value.Content.SuccessCount} 个结果");
+                     }
+                 }
+             });
         }
 
-        private async Task Print(String content)
+        private void Print(String content)
         {
-            await Console.Out.WriteLineAsync($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}]-[快钱协议支付]：{content}");
+            Console.Out.WriteLineAsync($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}]-[快钱协议支付]：{content}");
         }
     }
 }
