@@ -256,5 +256,27 @@ namespace CPI.Config
                 return Configuration["System-Merchant:Sign-Key"];
             }
         }
+
+        /// <summary>
+        /// 易宝支付代付公钥
+        /// </summary>
+        public static String YeePay_FundOut_PublicKey
+        {
+            get
+            {
+                return Configuration["YeePay-FundOut:YeePay-PublicKey"];
+            }
+        }
+
+        /// <summary>
+        /// 易宝支付代付荷花私钥
+        /// </summary>
+        public static String YeePay_FundOut_Hehua_PrivateKey
+        {
+            get
+            {
+                return Configuration["YeePay-FundOut:Hehua-PrivateKey"];
+            }
+        }
     }
 }
