@@ -23,17 +23,6 @@ namespace CPI.Config
         }
 
         /// <summary>
-        /// 获取短路开关状态
-        /// </summary>
-        public static SwitchStatus ShortCircuitSwitch
-        {
-            get
-            {
-                return String.Compare(Configuration["ShortCircuitSwitch"], "ON", true) == 0 ? SwitchStatus.ON : SwitchStatus.OFF;
-            }
-        }
-
-        /// <summary>
         /// 获取或设置环境，默认为Development
         /// </summary>
         public static String Environment
@@ -250,6 +239,26 @@ namespace CPI.Config
                 }
 
                 return 1m;
+            }
+        }
+        /// <summary>
+        /// 易宝支付代付商户号
+        /// </summary>
+        public static String YeePay_FundOut_MerchantNo
+        {
+            get
+            {
+                return Configuration["YeePay-FundOut:Hehua-MerchantNo"];
+            }
+        }
+        /// <summary>
+        /// 易宝支付代付AppKey
+        /// </summary>
+        public static String YeePay_FundOut_AppKey
+        {
+            get
+            {
+                return Configuration["YeePay-FundOut:Hehua-AppKey"];
             }
         }
     }

@@ -11,6 +11,9 @@ using Lotus.Logging;
 
 namespace CPI.Handlers.FundOut
 {
+    /// <summary>
+    /// 双乾单笔代付
+    /// </summary>
     internal class EPay95SinglePayInvocation : IInvocation
     {
         private static readonly ILogger _logger = LogManager.GetLogger();
