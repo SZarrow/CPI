@@ -26,10 +26,5 @@ namespace CPI.Common.Models
         /// </summary>
         [Column("bank_name")]
         public String BankName { get; set; }
-        /// <summary>
-        /// 银行缩写
-        /// </summary>
-        [Column("bank_shortname")]
-        public String BankShortName { get; set; }
     }
 }

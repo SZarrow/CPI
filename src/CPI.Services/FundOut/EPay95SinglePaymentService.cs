@@ -24,8 +24,8 @@ namespace CPI.Services.FundOut
     public class EPay95SinglePaymentService : IEPay95SinglePaymentService
     {
         private static readonly ILogger _logger = LogManager.GetLogger();
-        private static readonly HttpClient _client = CreateHttpClient();
         private static readonly LockProvider _lockProvider = new LockProvider();
+        private static readonly IHttpClientFactory _httpClientFactory = XDI.Resolve<IHttpClientFactory>();
 
         private readonly IFundOutOrderRepository _fundOutOrderRepository = null;
 
@@ -70,11 +70,13 @@ namespace CPI.Services.FundOut
                 applyFreezeLoanParas["FrozenLoanBalance"] = request.Amount;
                 applyFreezeLoanParas["Sign"] = MerchantUtil.MD5Sign(applyFreezeLoanParas);
 
-                String traceMethod = $"{nameof(_client)}.PostForm(...)";
+                var client = GetClient();
+
+                String traceMethod = $"{nameof(client)}.PostForm(...)";
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始请求商户系统冻结放款余额", new Object[] { ApiConfig.SystemMerchantAccountBalanceFreezeRequestUrl, applyFreezeLoanParas });
 
-                var freezeResult = _client.PostForm<ApiResult>(ApiConfig.SystemMerchantAccountBalanceFreezeRequestUrl, applyFreezeLoanParas);
+                var freezeResult = client.PostForm<ApiResult>(ApiConfig.SystemMerchantAccountBalanceFreezeRequestUrl, applyFreezeLoanParas);
 
                 _logger.Trace(TraceType.BLL.ToString(), (freezeResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, "结束请求商户系统冻结放款余额", freezeResult.Value);
 
@@ -151,7 +153,7 @@ namespace CPI.Services.FundOut
 
                 //记录请求开始时间
                 fundoutOrder.ApplyTime = DateTime.Now;
-                var respMsgResult = _client.PostForm(ApiConfig.EPay95_FundOut_Pay_RequestUrl, dic);
+                var respMsgResult = client.PostForm(ApiConfig.EPay95_FundOut_Pay_RequestUrl, dic);
 
                 _logger.Trace(TraceType.BLL.ToString(), (respMsgResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, $"结束调用{ApiConfig.EPay95_FundOut_Pay_RequestUrl}");
 
@@ -434,10 +436,9 @@ namespace CPI.Services.FundOut
             return null;
         }
 
-        private static HttpClient CreateHttpClient()
+        private static HttpClient GetClient()
         {
-            var factory = XDI.Resolve<IHttpClientFactory>();
-            return factory.CreateClient();
+            return _httpClientFactory.CreateClient("CommonHttpClient");
         }
     }
 }

@@ -146,6 +146,16 @@ namespace CPI.Config
                 return Configuration["X-95epay-FundOut:Pay-NotifyUrl"];
             }
         }
+        /// <summary>
+        /// 易宝单笔代付支付请求接口
+        /// </summary>
+        public static String YeePay_FundOut_Pay_RequestUrl
+        {
+            get
+            {
+                return Configuration["YeePay-FundOut:Pay-RequestUrl"];
+            }
+        }
 
         /// <summary>
         /// 获取商户系统申请冻结放款余额的请求地址

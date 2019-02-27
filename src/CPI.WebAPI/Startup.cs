@@ -58,6 +58,7 @@ namespace CPI.WebAPI
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(GlobalConfig.CommonRemoteCertificateValidationCallback);
             InitAgreePaymentHttpClient(services);
             InitEntrustPaymentHttpClient(services);
+            InitCommonHttpClient(services);
 
             XDI.AddServices(services);
             XDI.Scope(typeof(CPIDbContext));
@@ -101,6 +102,11 @@ namespace CPI.WebAPI
                 handler.ClientCertificates.Add(new X509Certificate2(pfxFilePath, KeyConfig.Bill99_EntrustPay_PrivateKeyFilePassword));
                 return handler;
             });
+        }
+
+        private void InitCommonHttpClient(IServiceCollection services)
+        {
+            services.AddHttpClient("CommonHttpClient");
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
