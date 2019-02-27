@@ -149,11 +149,11 @@ namespace CPI.Config
         /// <summary>
         /// 易宝单笔代付支付请求接口
         /// </summary>
-        public static String YeePay_FundOut_Pay_RequestUrl
+        public static String YeePay_FundOut_RequestUrl
         {
             get
             {
-                return Configuration["YeePay-FundOut:Pay-RequestUrl"];
+                return Configuration["YeePay-FundOut:RequestUrl"];
             }
         }
 
