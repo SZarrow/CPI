@@ -17,13 +17,8 @@ namespace CPI.Utils
 {
     public static class Bill99UtilHAT
     {
-        private static readonly HttpClient _client = new HttpClient();
         private static readonly ILogger _logger = LogManager.GetLogger();
-
-        static Bill99UtilHAT()
-        {
-            _client.DefaultRequestHeaders.Add("X-99Bill-PlatformCode", GlobalConfig.X99bill_HAT_PlatformCode);
-        }
+        private static readonly IHttpClientFactory _httpClientFactory = XDI.Resolve<IHttpClientFactory>();
 
         public static String AddSign(HttpClient client, String signContent)
         {
@@ -126,7 +121,9 @@ namespace CPI.Utils
 
         private static HttpClient GetClient()
         {
-            var client = _client;
+            var client = _httpClientFactory.CreateClient("CommonHttpClient");
+            client.DefaultRequestHeaders.Remove("X-99Bill-PlatformCode");
+            client.DefaultRequestHeaders.Add("X-99Bill-PlatformCode", GlobalConfig.X99bill_HAT_PlatformCode);
             client.DefaultRequestHeaders.Remove("X-99Bill-TraceId");
             String traceId = _logger.CurrentTraceId;
             client.DefaultRequestHeaders.Add("X-99Bill-TraceId", traceId);

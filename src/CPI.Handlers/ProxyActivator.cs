@@ -43,6 +43,12 @@ namespace CPI.Handlers
                 return new EPay95SinglePayInvocation(request);
             }
 
+            if (request.Method.IndexOf("cpi.fundout.single.yeepay.") == 0)
+            {
+                _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 YeePaySinglePayInvocation");
+                return new YeePaySinglePayInvocation(request);
+            }
+
             if (request.Method.IndexOf("cpi.settle.personal.") == 0)
             {
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99PersonalInvocation");

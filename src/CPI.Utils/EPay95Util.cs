@@ -51,12 +51,12 @@ namespace CPI.Utils
             signContent += value.Remark;
             signContent += value.ResultCode;
 
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "LoanJsonList", LogPhase.ACTION, "LoanJsonList", value.LoanJsonList);
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "PlatformMoneymoremore", LogPhase.ACTION, "PlatformMoneymoremore", value.PlatformMoneymoremore);
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "BatchNo", LogPhase.ACTION, "BatchNo", value.BatchNo);
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "Remark", LogPhase.ACTION, "Remark", value.Remark);
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "ResultCode", LogPhase.ACTION, "ResultCode", value.ResultCode);
-            _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "signContent", LogPhase.ACTION, "SignContent", signContent);
+            //_logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "LoanJsonList", LogPhase.ACTION, "LoanJsonList", value.LoanJsonList);
+            //_logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "PlatformMoneymoremore", LogPhase.ACTION, "PlatformMoneymoremore", value.PlatformMoneymoremore);
+            //_logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "BatchNo", LogPhase.ACTION, "BatchNo", value.BatchNo);
+            //_logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "Remark", LogPhase.ACTION, "Remark", value.Remark);
+            //_logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "ResultCode", LogPhase.ACTION, "ResultCode", value.ResultCode);
+            //_logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), $"{nameof(EPay95Util)}.VerifySign(...)", "signContent", LogPhase.ACTION, "SignContent", signContent);
 
             var verifyResult = CryptoHelper.VerifySign(value.SignInfo, signContent, KeyConfig.EPay95_FundOut_PublicKey, HashAlgorithmName.SHA1);
             return verifyResult.Success && verifyResult.Value;

@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CPI.Common\CPI.Common.csproj" />
     <ProjectReference Include="..\CPI.Config\CPI.Config.csproj" />
+    <ProjectReference Include="..\CPI.Providers\CPI.Providers.csproj" />
     <ProjectReference Include="..\CPI.Security\CPI.Security.csproj" />
   </ItemGroup>
 
