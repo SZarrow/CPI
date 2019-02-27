@@ -23,7 +23,7 @@ namespace CPI.Utils
         private static readonly ILogger _logger = LogManager.GetLogger();
         private static readonly IHttpClientFactory _httpClientFactory = XDI.Resolve<IHttpClientFactory>();
 
-        public static void AddSign(HttpClient client, IDictionary<String, String> formValues)
+        public static void AddSign(HttpClient client, String interfaceUrl, IDictionary<String, String> formValues)
         {
             String requestId = Guid.NewGuid().ToString("N");
             String timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
@@ -43,17 +43,18 @@ namespace CPI.Utils
             }
 
             //签名内容的请求地址部分
-            String requestPath = ApiConfig.YeePay_FundOut_Pay_RequestUrl.Substring(ApiConfig.YeePay_FundOut_Pay_RequestUrl.IndexOf("/rest/"));
+            String requestPath = interfaceUrl;
 
             //签名内容的请求内容部分
             var content = new FormUrlEncodedContent(new SortedDictionary<String, String>(formValues));
             String requestBody = content.ReadAsStringAsync().GetAwaiter().GetResult();
+            content.Dispose();
 
             //签名内容的请求头部分
             String signHeaderSignContent = String.Join("\n", signHeaders.Select(x => $"{HttpUtility.UrlEncode(x.Key)}:{HttpUtility.UrlEncode(x.Value)}"));
 
             //签名内容
-            String signContent = $@"{version}/{appKey}/{timestamp}/{expireSeconds}\nPOST\n{requestPath}\n{requestBody}\n{signHeaderSignContent}";
+            String signContent = $"{version}/{appKey}/{timestamp}/{expireSeconds}\nPOST\n{requestPath}\n{requestBody}\n{signHeaderSignContent}";
 
             var sign = SignUtil.MakeSign(signContent, KeyConfig.YeePay_FundOut_Hehua_PrivateKey, PrivateKeyFormat.PKCS1, "RSA");
             if (sign.Success)
@@ -144,7 +145,7 @@ namespace CPI.Utils
                 return new XResult<TResponse>(default(TResponse), new ArgumentNullException(nameof(request)));
             }
 
-            String service = $"{typeof(Bill99UtilYZT).FullName}.Execute(...)";
+            String service = $"{typeof(YeePayFundOutUtil).FullName}.Execute(...)";
 
             var client = GetClient();
 
@@ -154,9 +155,9 @@ namespace CPI.Utils
                 return new XResult<TResponse>(default(TResponse), ErrorCode.INVALID_CAST, new InvalidCastException("将请求对象转换成字典失败"));
             }
 
-            AddSign(client, requestDic);
+            AddSign(client, interfaceUrl, requestDic);
 
-            String requestUrl = $"{ApiConfig.Bill99YZTRequestUrl}{interfaceUrl}";
+            String requestUrl = $"{ApiConfig.YeePay_FundOut_RequestUrl}{interfaceUrl}";
             String traceMethod = $"{nameof(client)}.PostForm(...)";
 
             _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始请求易宝代付接口", new Object[] { requestUrl, requestDic });
@@ -183,8 +184,7 @@ namespace CPI.Utils
 
                 _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", respString);
 
-                String verifySignError;
-                if (!VerifySign(result.Value, respString, out verifySignError))
+                if (!VerifySign(result.Value, respString, out String verifySignError))
                 {
                     _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "VerifySign(...)", "易宝代付返回的数据验签失败", new SignException(verifySignError));
                     return new XResult<TResponse>(default(TResponse), new SignException("易宝代付返回的数据验签失败"));
