@@ -75,13 +75,13 @@ namespace CPI.Services.FundOut
                     CreateTime = DateTime.Now
                 };
 
-                _fundOutOrderRepository.Add(fundoutOrder);
-                var saveResult = _fundOutOrderRepository.SaveChanges();
-                if (!saveResult.Success)
-                {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存代付订单数据失败", saveResult.FirstException, fundoutOrder);
-                    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DB_UPDATE_FAILED, new DbUpdateException("保存代付订单数据失败"));
-                }
+                //_fundOutOrderRepository.Add(fundoutOrder);
+                //var saveResult = _fundOutOrderRepository.SaveChanges();
+                //if (!saveResult.Success)
+                //{
+                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存代付订单数据失败", saveResult.FirstException, fundoutOrder);
+                //    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DB_UPDATE_FAILED, new DbUpdateException("保存代付订单数据失败"));
+                //}
 
                 //记录请求开始时间
                 fundoutOrder.ApplyTime = DateTime.Now;
@@ -91,7 +91,7 @@ namespace CPI.Services.FundOut
 
                 //var respMsgResult = _client.PostForm(ApiConfig.YeePay_FundOut_Pay_RequestUrl, dic);
 
-                var respMsgResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResponse>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
+                var respMsgResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResult>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
                 {
                     orderId = request.OutTradeNo,
                     accountName = request.AccountName,
@@ -100,7 +100,8 @@ namespace CPI.Services.FundOut
                     bankCode = request.BankCode,
                     batchNo = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
                     customerNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
-                    groupNumber = GlobalConfig.YeePay_FundOut_MerchantNo
+                    groupNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
+                    feeType = request.FeeType
                 });
 
                 //_logger.Trace(TraceType.BLL.ToString(), (respMsgResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, $"结束调用{ApiConfig.EPay95_FundOut_Pay_RequestUrl}");

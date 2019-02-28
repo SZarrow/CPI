@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CPI.Common.Domain.FundOut.YeePay
 {
-    public abstract class YeePayCommonResponse
+    public abstract class RawYeePayCommonResult
     {
         public String errorCode { get; set; }
         public String errorMsg { get; set; }

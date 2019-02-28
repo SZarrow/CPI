@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web;
 using CPI.Common;
+using CPI.Common.Domain.FundOut.YeePay;
 using CPI.Common.Exceptions;
 using CPI.Config;
-using CPI.Providers;
 using CPI.Security;
 using Lotus.Core;
 using Lotus.Logging;
@@ -23,7 +24,7 @@ namespace CPI.Utils
         private static readonly ILogger _logger = LogManager.GetLogger();
         private static readonly IHttpClientFactory _httpClientFactory = XDI.Resolve<IHttpClientFactory>();
 
-        public static void AddSign(HttpClient client, String interfaceUrl, IDictionary<String, String> formValues)
+        public static void AddSign(HttpClient client, String interfaceUrl, String requestBody)
         {
             String requestId = Guid.NewGuid().ToString("N");
             String timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
@@ -31,10 +32,10 @@ namespace CPI.Utils
             String expireSeconds = "1800";
             String appKey = GlobalConfig.YeePay_FundOut_AppKey;
 
-            var signHeaders = new Dictionary<String, String>(3);
+            var signHeaders = new SortedDictionary<String, String>();
+            signHeaders["x-yop-appkey"] = appKey;
             signHeaders["x-yop-request-id"] = requestId;
             signHeaders["x-yop-date"] = timestamp;
-            signHeaders["x-yop-appkey"] = appKey;
 
             foreach (var key in signHeaders.Keys)
             {
@@ -42,29 +43,34 @@ namespace CPI.Utils
                 client.DefaultRequestHeaders.Add(key, signHeaders[key]);
             }
 
-            //签名内容的请求地址部分
-            String requestPath = interfaceUrl;
-
-            //签名内容的请求内容部分
-            var content = new FormUrlEncodedContent(new SortedDictionary<String, String>(formValues));
-            String requestBody = content.ReadAsStringAsync().GetAwaiter().GetResult();
-            content.Dispose();
-
             //签名内容的请求头部分
-            String signHeaderSignContent = String.Join("\n", signHeaders.Select(x => $"{HttpUtility.UrlEncode(x.Key)}:{HttpUtility.UrlEncode(x.Value)}"));
+            String signHeaderSignContent = String.Join("\n", signHeaders.Select(x => $"{HttpUtility.UrlEncode(x.Key)}:{UrlEncodeToUpper(HttpUtility.UrlEncode(x.Value))}"));
 
             //签名内容
-            String signContent = $"{version}/{appKey}/{timestamp}/{expireSeconds}\nPOST\n{requestPath}\n{requestBody}\n{signHeaderSignContent}";
+            String signContent = $"{version}/{appKey}/{timestamp}/{expireSeconds}\nPOST\n{interfaceUrl}\n{requestBody}\n{signHeaderSignContent}";
 
-            var sign = SignUtil.MakeSign(signContent, KeyConfig.YeePay_FundOut_Hehua_PrivateKey, PrivateKeyFormat.PKCS1, "RSA");
+            var sign = SignUtil.MakeSign(signContent, KeyConfig.YeePay_FundOut_Hehua_PrivateKey, PrivateKeyFormat.PKCS1, "RSA2");
             if (sign.Success)
             {
                 String signHeaderNames = String.Join(";", signHeaders.Keys);
-                String base64SignContent = EncodeBase64(sign.Value);
+                String base64SignContent = EncodeBase64(sign.Value) + "$SHA256";
 
                 client.DefaultRequestHeaders.Remove("Authorization");
-                client.DefaultRequestHeaders.Add("Authorization", GetAuthorization(version, appKey, timestamp, expireSeconds, signHeaderNames, base64SignContent));
+                String auth = GetAuthorization(version, appKey, timestamp, expireSeconds, signHeaderNames, base64SignContent);
+                _logger.Debug($"Authorization={auth}");
+                client.DefaultRequestHeaders.Add("Authorization", auth);
             }
+        }
+
+        private static String GetTimeStamp()
+        {
+            const Int64 TicksOf1970 = 621355968000000000;
+            return ((DateTime.Now.ToUniversalTime().Ticks - TicksOf1970) / 10000000L).ToString();
+        }
+
+        private static String UrlEncodeToUpper(String value)
+        {
+            return Regex.Replace(value, @"%[a-f0-9]{2}", m => m.Value.ToUpperInvariant());
         }
 
         public static String EncodeBase64(String content)
@@ -114,35 +120,36 @@ namespace CPI.Utils
             return $"YOP-RSA2048-SHA256 {version}/{appKey}/{timestamp}/{expireSeconds}/{signHeaderNames}/{base64SignContent}";
         }
 
-        public static Boolean VerifySign(HttpResponseMessage respMsg, String respString, out String errorMessage)
+        public static Boolean VerifySign(String signContent, String sign, out String errorMessage)
         {
             errorMessage = null;
-            if (!respMsg.Headers.TryGetValues("X-99Bill-Signature", out IEnumerable<String> respSign))
-            {
-                errorMessage = "响应头中无\"X-99Bill-Signature\"字段";
-                return false;
-            }
+            //if (!respMsg.Headers.TryGetValues("X-99Bill-Signature", out IEnumerable<String> respSign))
+            //{
+            //    errorMessage = "响应头中无\"X-99Bill-Signature\"字段";
+            //    return false;
+            //}
 
-            String signString = respSign.FirstOrDefault();
-            if (signString.IsNullOrWhiteSpace())
-            {
-                errorMessage = "响应头中\"X-99Bill-Signature\"字段的值为空";
-                return false;
-            }
+            //String signString = respSign.FirstOrDefault();
+            //if (signString.IsNullOrWhiteSpace())
+            //{
+            //    errorMessage = "响应头中\"X-99Bill-Signature\"字段的值为空";
+            //    return false;
+            //}
 
-            var verifyResult = SignUtil.VerifySign(signString, respString, KeyConfig.Bill99YZTPublicKey, "RSA");
-            if (!verifyResult.Success)
-            {
-                errorMessage = verifyResult.ErrorMessage;
-            }
-            return verifyResult.Success && verifyResult.Value;
+            //var verifyResult = SignUtil.VerifySign(signString, respString, KeyConfig.Bill99YZTPublicKey, "RSA");
+            //if (!verifyResult.Success)
+            //{
+            //    errorMessage = verifyResult.ErrorMessage;
+            //}
+            //return verifyResult.Success && verifyResult.Value;
+            return false;
         }
 
-        public static XResult<TResponse> Execute<TRequest, TResponse>(String interfaceUrl, TRequest request)
+        public static XResult<TResult> Execute<TRequest, TResult>(String interfaceUrl, TRequest request)
         {
             if (request == null)
             {
-                return new XResult<TResponse>(default(TResponse), new ArgumentNullException(nameof(request)));
+                return new XResult<TResult>(default(TResult), new ArgumentNullException(nameof(request)));
             }
 
             String service = $"{typeof(YeePayFundOutUtil).FullName}.Execute(...)";
@@ -152,30 +159,47 @@ namespace CPI.Utils
             var requestDic = CommonUtil.ToDictionary(request);
             if (requestDic == null || requestDic.Count == 0)
             {
-                return new XResult<TResponse>(default(TResponse), ErrorCode.INVALID_CAST, new InvalidCastException("将请求对象转换成字典失败"));
+                return new XResult<TResult>(default(TResult), ErrorCode.INVALID_CAST, new InvalidCastException("将请求对象转换成字典失败"));
             }
 
-            AddSign(client, interfaceUrl, requestDic);
+            //签名内容的请求内容部分
+            requestDic["method"] = interfaceUrl;
+            requestDic["appKey"] = GlobalConfig.YeePay_FundOut_AppKey;
+            requestDic["locale"] = "zh_CN";
+            requestDic["ts"] = GetTimeStamp();
+            requestDic["v"] = "1.0";
+
+            var orderedDic = new SortedDictionary<String, String>(requestDic);
+            foreach (var key in orderedDic.Keys.ToList())
+            {
+                orderedDic[key] = UrlEncodeToUpper(HttpUtility.UrlEncode(orderedDic[key]));
+            }
+
+            String requestBody = String.Join("&",
+                     from t0 in orderedDic
+                     select $"{t0.Key}={t0.Value}");
+
+            AddSign(client, interfaceUrl, requestBody);
 
             String requestUrl = $"{ApiConfig.YeePay_FundOut_RequestUrl}{interfaceUrl}";
             String traceMethod = $"{nameof(client)}.PostForm(...)";
 
             _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始请求易宝代付接口", new Object[] { requestUrl, requestDic });
 
-            var result = client.PostForm(requestUrl, requestDic);
+            var result = client.PostForm(requestUrl, orderedDic);
 
             _logger.Trace(TraceType.UTIL.ToString(), (result.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束请求易宝代付接口");
 
             if (!result.Success)
             {
                 _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝代付接口失败：{result.ErrorMessage}", result.FirstException);
-                return new XResult<TResponse>(default(TResponse), result.FirstException);
+                return new XResult<TResult>(default(TResult), result.FirstException);
             }
 
             if (result.Value == null)
             {
                 _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝代付接口超时");
-                return new XResult<TResponse>(default(TResponse), ErrorCode.REQUEST_TIMEOUT);
+                return new XResult<TResult>(default(TResult), ErrorCode.REQUEST_TIMEOUT);
             }
 
             try
@@ -184,17 +208,26 @@ namespace CPI.Utils
 
                 _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", respString);
 
-                if (!VerifySign(result.Value, respString, out String verifySignError))
+                if (respString.IsNullOrWhiteSpace())
                 {
-                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "VerifySign(...)", "易宝代付返回的数据验签失败", new SignException(verifySignError));
-                    return new XResult<TResponse>(default(TResponse), new SignException("易宝代付返回的数据验签失败"));
+                    return new XResult<TResult>(default(TResult), ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("支付机构未返回任何数据"));
                 }
 
-                return JsonUtil.DeserializeObject<TResponse>(respString);
+                var decodeResult = JsonUtil.DeserializeObject<RawYeePayCommonResponse<TResult>>(respString);
+                if (!decodeResult.Success)
+                {
+                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "易宝返回的数据无法反序列化", decodeResult.FirstException, respString);
+                    return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, new RemoteException("支付机构返回的数据无法解析"));
+                }
+
+                var resp = decodeResult.Value;
+
+
+                return new XResult<TResult>(decodeResult.Value.result);
             }
             catch (Exception ex)
             {
-                return new XResult<TResponse>(default(TResponse), ex);
+                return new XResult<TResult>(default(TResult), ex);
             }
         }
 
