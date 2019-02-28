@@ -87,9 +87,7 @@ namespace CPI.Services.FundOut
                 fundoutOrder.ApplyTime = DateTime.Now;
                 String traceMethod = $"{nameof(_client)}.PostForm(...)";
 
-                //var dic = CommonUtil.ToDictionary(request, true);
-
-                //var respMsgResult = _client.PostForm(ApiConfig.YeePay_FundOut_Pay_RequestUrl, dic);
+                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用易宝代付支付接口", request);
 
                 var respMsgResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResult>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
                 {
@@ -104,13 +102,13 @@ namespace CPI.Services.FundOut
                     feeType = request.FeeType
                 });
 
-                //_logger.Trace(TraceType.BLL.ToString(), (respMsgResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, $"结束调用{ApiConfig.EPay95_FundOut_Pay_RequestUrl}");
+                _logger.Trace(TraceType.BLL.ToString(), (respMsgResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束调用易宝代付支付接口");
 
-                //if (!respMsgResult.Success)
-                //{
-                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "代付失败", respMsgResult.FirstException, dic);
-                //    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RequestException(respMsgResult.ErrorMessage));
-                //}
+                if (!respMsgResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "代付失败", respMsgResult.FirstException, respMsgResult);
+                    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RequestException(respMsgResult.ErrorMessage));
+                }
 
                 //String respContent = null;
                 //try
