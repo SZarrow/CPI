@@ -213,17 +213,36 @@ namespace CPI.Utils
                     return new XResult<TResult>(default(TResult), ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("支付机构未返回任何数据"));
                 }
 
-                var decodeResult = JsonUtil.DeserializeObject<RawYeePayCommonResponse<TResult>>(respString);
+                var decodeResult = JsonUtil.DeserializeObject<IDictionary<String, Object>>(respString);
                 if (!decodeResult.Success)
                 {
                     _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "易宝返回的数据无法反序列化", decodeResult.FirstException, respString);
                     return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, new RemoteException("支付机构返回的数据无法解析"));
                 }
 
-                var resp = decodeResult.Value;
+                var respDic = decodeResult.Value;
+                var state = respDic["state"].ToString();
 
+                if (state == "FAILURE")
+                {
+                    var errorDecodeResult = JsonUtil.DeserializeObject<IDictionary<String, String>>(respDic["error"].ToString());
+                    if (!errorDecodeResult.Success)
+                    {
+                        _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "errorDecodeResult", "易宝返回的数据无法反序列化", errorDecodeResult.FirstException, respDic["error"]);
+                        return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, errorDecodeResult.FirstException);
+                    }
 
-                return new XResult<TResult>(decodeResult.Value.result);
+                    return new XResult<TResult>(default(TResult), ErrorCode.FAILURE, new RemoteException(respDic["message"].ToString()));
+                }
+
+                var payResult = JsonUtil.DeserializeObject<TResult>(respDic["result"].ToString());
+                if (!payResult.Success)
+                {
+                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "payResult", "易宝返回的数据无法反序列化", payResult.FirstException, respDic["error"]);
+                    return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, new ArgumentException("参数payResult无法转换成RawYeePaySinglePayResult类型"));
+                }
+
+                return new XResult<TResult>(payResult.Value);
             }
             catch (Exception ex)
             {
