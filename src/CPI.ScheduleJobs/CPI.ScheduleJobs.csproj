@@ -103,10 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lotus.Logging">
-      <Version>1.1.19</Version>
+      <Version>1.1.24</Version>
     </PackageReference>
     <PackageReference Include="Lotus.Net">
-      <Version>1.0.16</Version>
+      <Version>1.0.17</Version>
     </PackageReference>
     <PackageReference Include="Lotus.Schedule">
       <Version>1.0.6</Version>

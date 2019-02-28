@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lotus.Core" Version="1.1.6" />
+    <PackageReference Include="Lotus.Core" Version="1.1.8" />
     <PackageReference Include="Lotus.Serialization" Version="1.0.9" />
     <PackageReference Include="Lotus.Validation" Version="1.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.1" />
