@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web;
 using CPI.Common;
+using CPI.Common.Domain.FundOut.YeePay;
 using CPI.Common.Exceptions;
 using CPI.Config;
 using CPI.Security;
@@ -144,11 +145,11 @@ namespace CPI.Utils
             return false;
         }
 
-        public static XResult<TResponse> Execute<TRequest, TResponse>(String interfaceUrl, TRequest request)
+        public static XResult<TResult> Execute<TRequest, TResult>(String interfaceUrl, TRequest request)
         {
             if (request == null)
             {
-                return new XResult<TResponse>(default(TResponse), new ArgumentNullException(nameof(request)));
+                return new XResult<TResult>(default(TResult), new ArgumentNullException(nameof(request)));
             }
 
             String service = $"{typeof(YeePayFundOutUtil).FullName}.Execute(...)";
@@ -158,7 +159,7 @@ namespace CPI.Utils
             var requestDic = CommonUtil.ToDictionary(request);
             if (requestDic == null || requestDic.Count == 0)
             {
-                return new XResult<TResponse>(default(TResponse), ErrorCode.INVALID_CAST, new InvalidCastException("将请求对象转换成字典失败"));
+                return new XResult<TResult>(default(TResult), ErrorCode.INVALID_CAST, new InvalidCastException("将请求对象转换成字典失败"));
             }
 
             //签名内容的请求内容部分
@@ -178,8 +179,6 @@ namespace CPI.Utils
                      from t0 in orderedDic
                      select $"{t0.Key}={t0.Value}");
 
-            _logger.Debug($"requestBody={requestBody}");
-
             AddSign(client, interfaceUrl, requestBody);
 
             String requestUrl = $"{ApiConfig.YeePay_FundOut_RequestUrl}{interfaceUrl}";
@@ -194,13 +193,13 @@ namespace CPI.Utils
             if (!result.Success)
             {
                 _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝代付接口失败：{result.ErrorMessage}", result.FirstException);
-                return new XResult<TResponse>(default(TResponse), result.FirstException);
+                return new XResult<TResult>(default(TResult), result.FirstException);
             }
 
             if (result.Value == null)
             {
                 _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝代付接口超时");
-                return new XResult<TResponse>(default(TResponse), ErrorCode.REQUEST_TIMEOUT);
+                return new XResult<TResult>(default(TResult), ErrorCode.REQUEST_TIMEOUT);
             }
 
             try
@@ -211,21 +210,24 @@ namespace CPI.Utils
 
                 if (respString.IsNullOrWhiteSpace())
                 {
-                    return new XResult<TResponse>(default(TResponse), ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("支付机构未返回任何数据"));
+                    return new XResult<TResult>(default(TResult), ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("支付机构未返回任何数据"));
                 }
 
-                var respResult = JsonUtil.DeserializeObject<TResponse>(respString);
-                if (!respResult.Success)
+                var decodeResult = JsonUtil.DeserializeObject<RawYeePayCommonResponse<TResult>>(respString);
+                if (!decodeResult.Success)
                 {
-                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "易宝返回的数据无法反序列化", respResult.FirstException, respString);
-                    return new XResult<TResponse>(default(TResponse), ErrorCode.DESERIALIZE_FAILED, new RemoteException("支付机构返回的数据无法解析"));
+                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "易宝返回的数据无法反序列化", decodeResult.FirstException, respString);
+                    return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, new RemoteException("支付机构返回的数据无法解析"));
                 }
 
-                return respResult;
+                var resp = decodeResult.Value;
+
+
+                return new XResult<TResult>(decodeResult.Value.result);
             }
             catch (Exception ex)
             {
-                return new XResult<TResponse>(default(TResponse), ex);
+                return new XResult<TResult>(default(TResult), ex);
             }
         }
 

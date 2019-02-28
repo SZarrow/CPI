@@ -91,7 +91,7 @@ namespace CPI.Services.FundOut
 
                 //var respMsgResult = _client.PostForm(ApiConfig.YeePay_FundOut_Pay_RequestUrl, dic);
 
-                var respMsgResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResponse>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
+                var respMsgResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResult>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
                 {
                     orderId = request.OutTradeNo,
                     accountName = request.AccountName,
