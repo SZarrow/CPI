@@ -32,6 +32,8 @@ namespace CPI.Utils
             String expireSeconds = "1800";
             String appKey = GlobalConfig.YeePay_FundOut_AppKey;
 
+            String x = "1l";
+
             var signHeaders = new SortedDictionary<String, String>();
             signHeaders["x-yop-appkey"] = appKey;
             signHeaders["x-yop-request-id"] = requestId;
@@ -225,8 +227,7 @@ namespace CPI.Utils
 
                 //验签返回的结果
                 String resultJsonString = respString.Substring();
-                String signError;
-                if (!VerifySign(resultJsonString, respDic["sign"].ToString(), out signError))
+                if (!VerifySign(resultJsonString, respDic["sign"].ToString(), out String signError))
                 {
                     return new XResult<TResult>(default(TResult), ErrorCode.SIGN_VERIFY_FAILED, new SignException(signError));
                 }
