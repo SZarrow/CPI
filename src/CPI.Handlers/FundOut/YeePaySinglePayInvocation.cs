@@ -36,6 +36,8 @@ namespace CPI.Handlers.FundOut
             {
                 case "cpi.fundout.single.yeepay.pay.1.0":
                     return Pay_1_0(traceService, requestService, ref traceMethod);
+                case "cpi.fundout.single.yeepay.querystatus.1.0":
+                    return QueryStatus_1_0(traceService, requestService, ref traceMethod);
             }
 
             return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
@@ -65,6 +67,11 @@ namespace CPI.Handlers.FundOut
             _logger.Trace(TraceType.ROUTE.ToString(), (payResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束执行代付", payResult.Value);
 
             return payResult.Success ? new ObjectResult(payResult.Value) : new ObjectResult(null, payResult.ErrorCode, payResult.FirstException);
+        }
+
+        private ObjectResult QueryStatus_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            throw new NotImplementedException();
         }
     }
 }
