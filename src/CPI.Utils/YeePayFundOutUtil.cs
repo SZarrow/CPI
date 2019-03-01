@@ -24,7 +24,7 @@ namespace CPI.Utils
         private static readonly ILogger _logger = LogManager.GetLogger();
         private static readonly IHttpClientFactory _httpClientFactory = XDI.Resolve<IHttpClientFactory>();
 
-        public static void AddSign(HttpClient client, String interfaceUrl, String requestBody)
+        private static void AddSign(HttpClient client, String interfaceUrl, String requestBody)
         {
             String requestId = Guid.NewGuid().ToString("N");
             String timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
@@ -73,7 +73,7 @@ namespace CPI.Utils
             return Regex.Replace(value, @"%[a-f0-9]{2}", m => m.Value.ToUpperInvariant());
         }
 
-        public static String EncodeBase64(String content)
+        private static String EncodeBase64(String content)
         {
             if (content.IsNullOrWhiteSpace())
             {
@@ -89,12 +89,7 @@ namespace CPI.Utils
             return content.Replace('+', '-').Replace('/', '_');
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="base64String"></param>
-        /// <exception cref="ArgumentException"></exception>
-        public static String DecodeBase64(String base64String)
+        private static String DecodeBase64(String base64String)
         {
             if (base64String.IsNullOrWhiteSpace())
             {
@@ -120,29 +115,19 @@ namespace CPI.Utils
             return $"YOP-RSA2048-SHA256 {version}/{appKey}/{timestamp}/{expireSeconds}/{signHeaderNames}/{base64SignContent}";
         }
 
-        public static Boolean VerifySign(String signContent, String sign, out String errorMessage)
+        private static Boolean VerifySign(String signContent, String sign, out String errorMessage)
         {
             errorMessage = null;
-            //if (!respMsg.Headers.TryGetValues("X-99Bill-Signature", out IEnumerable<String> respSign))
-            //{
-            //    errorMessage = "响应头中无\"X-99Bill-Signature\"字段";
-            //    return false;
-            //}
 
-            //String signString = respSign.FirstOrDefault();
-            //if (signString.IsNullOrWhiteSpace())
-            //{
-            //    errorMessage = "响应头中\"X-99Bill-Signature\"字段的值为空";
-            //    return false;
-            //}
+            signContent = signContent.Replace("\t", String.Empty).Replace(Environment.NewLine, String.Empty).Replace(" ", String.Empty);
+            sign = DecodeBase64(sign.Substring(0, sign.Length - "$SHA256".Length));
 
-            //var verifyResult = SignUtil.VerifySign(signString, respString, KeyConfig.Bill99YZTPublicKey, "RSA");
-            //if (!verifyResult.Success)
-            //{
-            //    errorMessage = verifyResult.ErrorMessage;
-            //}
-            //return verifyResult.Success && verifyResult.Value;
-            return false;
+            var verifyResult = SignUtil.VerifySign(sign, signContent, KeyConfig.YeePay_FundOut_PublicKey, "RSA2");
+            if (!verifyResult.Success)
+            {
+                errorMessage = verifyResult.ErrorMessage;
+            }
+            return verifyResult.Success && verifyResult.Value;
         }
 
         public static XResult<TResult> Execute<TRequest, TResult>(String interfaceUrl, TRequest request)
@@ -206,6 +191,8 @@ namespace CPI.Utils
             {
                 String respString = result.Value.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
+                respString = respString.Replace("\t", String.Empty).Replace(Environment.NewLine, String.Empty).Replace("\n", String.Empty).Replace(" ", String.Empty);
+
                 _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", respString);
 
                 if (respString.IsNullOrWhiteSpace())
@@ -235,7 +222,15 @@ namespace CPI.Utils
                     return new XResult<TResult>(default(TResult), ErrorCode.FAILURE, new RemoteException(respDic["message"].ToString()));
                 }
 
-                var payResult = JsonUtil.DeserializeObject<TResult>(respDic["result"].ToString());
+                //验签返回的结果
+                String resultJsonString = respDic["result"].ToString();
+                String signError;
+                if (!VerifySign(resultJsonString, respDic["sign"].ToString(), out signError))
+                {
+                    return new XResult<TResult>(default(TResult), ErrorCode.SIGN_VERIFY_FAILED, new SignException(signError));
+                }
+
+                var payResult = JsonUtil.DeserializeObject<TResult>(resultJsonString);
                 if (!payResult.Success)
                 {
                     _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "payResult", "易宝返回的数据无法反序列化", payResult.FirstException, respDic["error"]);

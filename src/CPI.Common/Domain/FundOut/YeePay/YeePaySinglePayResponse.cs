@@ -6,7 +6,7 @@ namespace CPI.Common.Domain.FundOut.YeePay
 {
     public class YeePaySinglePayResponse : CommonResponse
     {
-        public String OrderNo { get; set; }
+        public String OutTradeNo { get; set; }
         public String BatchNo { get; set; }
     }
 }

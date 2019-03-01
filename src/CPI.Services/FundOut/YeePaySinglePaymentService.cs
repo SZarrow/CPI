@@ -75,21 +75,22 @@ namespace CPI.Services.FundOut
                     CreateTime = DateTime.Now
                 };
 
-                //_fundOutOrderRepository.Add(fundoutOrder);
-                //var saveResult = _fundOutOrderRepository.SaveChanges();
-                //if (!saveResult.Success)
-                //{
-                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存代付订单数据失败", saveResult.FirstException, fundoutOrder);
-                //    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DB_UPDATE_FAILED, new DbUpdateException("保存代付订单数据失败"));
-                //}
+                _fundOutOrderRepository.Add(fundoutOrder);
+                var saveResult = _fundOutOrderRepository.SaveChanges();
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存代付订单数据失败", saveResult.FirstException, fundoutOrder);
+                    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DB_UPDATE_FAILED, new DbUpdateException("保存代付订单数据失败"));
+                }
 
-                //记录请求开始时间
-                fundoutOrder.ApplyTime = DateTime.Now;
-                String traceMethod = $"{nameof(_client)}.PostForm(...)";
+                String traceMethod = $"{nameof(YeePayFundOutUtil)}.Execute(...)";
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用易宝代付支付接口", request);
 
-                var respMsgResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResult>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
+                //记录请求开始时间
+                fundoutOrder.ApplyTime = DateTime.Now;
+
+                var execResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayRequest, RawYeePaySinglePayResult>("/rest/v1.0/balance/transfer_send", new RawYeePaySinglePayRequest()
                 {
                     orderId = request.OutTradeNo,
                     accountName = request.AccountName,
@@ -102,85 +103,77 @@ namespace CPI.Services.FundOut
                     feeType = request.FeeType
                 });
 
-                _logger.Trace(TraceType.BLL.ToString(), (respMsgResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束调用易宝代付支付接口");
+                //记录请求结束时间
+                fundoutOrder.EndTime = DateTime.Now;
 
-                if (!respMsgResult.Success)
+                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束调用易宝代付支付接口");
+
+                if (!execResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "代付失败", respMsgResult.FirstException, respMsgResult);
-                    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RequestException(respMsgResult.ErrorMessage));
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "代付失败", execResult.FirstException, execResult);
+                    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RequestException(execResult.ErrorMessage));
                 }
 
-                //String respContent = null;
-                //try
-                //{
-                //    respContent = respMsgResult.Value.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                //    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, $"调用{ApiConfig.EPay95_FundOut_Pay_RequestUrl}返回结果", respContent);
-                //}
-                //catch (Exception ex)
-                //{
-                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "读取代付返回的消息内容出现异常", ex, dic);
-                //    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.RESPONSE_READ_FAILED, ex);
-                //}
+                var respResult = execResult.Value;
+                if (respResult.errorCode != "BAC001")
+                {
+                    fundoutOrder.PayStatus = PayStatus.FAILURE.ToString();
+                    UpdateFundOutOrder(fundoutOrder);
+                    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.FAILURE, new RemoteException(respResult.errorMsg.HasValue() ? respResult.errorMsg : "发送请求失败"));
+                }
 
-                //if (respContent.IsNullOrWhiteSpace())
-                //{
-                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "易宝未返回任何数据", null, dic);
-                //    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
-                //}
+                fundoutOrder.PayStatus = PayStatus.PROCESSING.ToString();
+                switch (respResult.transferStatusCode)
+                {
+                    case "0028":
+                        fundoutOrder.PayStatus = PayStatus.FAILURE.ToString();
+                        break;
+                }
 
-                //EPay95PayReturnResult respResult = JsonUtil.DeserializeObject<EPay95PayReturnResult>(respContent).Value;
-                //if (respResult == null)
-                //{
-                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "无法将代付结果反序列化为EPay95PayReturnResult对象", null, respContent);
-                //    return new XResult<YeePaySinglePayResponse>(null, ErrorCode.DESERIALIZE_FAILED);
-                //}
+                UpdateFundOutOrder(fundoutOrder);
 
-                ////记录请求结束时间
-                //fundoutOrder.EndTime = DateTime.Now;
+                var payResp = new YeePaySinglePayResponse()
+                {
+                    BatchNo = respResult.batchNo,
+                    OutTradeNo = request.OutTradeNo,
+                    Status = fundoutOrder.PayStatus,
+                    Msg = GetPayStatusDescription(fundoutOrder.PayStatus)
+                };
 
-                //switch (respResult.ResultCode)
-                //{
-                //    case "88":
-                //    case "90":
-                //    case "15":
-                //        //修改支付状态为正在处理中
-                //        fundoutOrder.PayStatus = PayStatus.PROCESSING.ToString();
-                //        break;
-                //    default:
-                //        //修改支付状态为正在处理中
-                //        fundoutOrder.PayStatus = PayStatus.FAILURE.ToString();
-                //        break;
-                //}
-
-                //fundoutOrder.UpdateTime = DateTime.Now;
-                //_fundOutOrderRepository.Update(fundoutOrder);
-                //var updateResult = _fundOutOrderRepository.SaveChanges();
-                //if (!updateResult.Success)
-                //{
-                //    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "更新支付状态失败", updateResult.FirstException, fundoutOrder);
-                //}
-
-                //var payResp = new YeePaySinglePayResponse()
-                //{
-                //    Status = fundoutOrder.PayStatus,
-                //    Msg = respResult.Message.HasValue() ? respResult.Message : PayStatus.PROCESSING.GetDescription()
-                //};
-
-                //if (respResult.LoanJsonList != null)
-                //{
-                //    payResp.Amount = respResult.LoanJsonList.Amount;
-                //    payResp.BankCardNo = respResult.LoanJsonList.CardNumber;
-                //    payResp.OutTradeNo = respResult.LoanJsonList.OrderNo;
-                //}
-
-                return new XResult<YeePaySinglePayResponse>(new YeePaySinglePayResponse());
+                return new XResult<YeePaySinglePayResponse>(payResp);
             }
             finally
             {
                 _lockProvider.UnLock(requestHash);
             }
+        }
 
-            throw new NotImplementedException();
+        private String GetPayStatusDescription(String payStatus)
+        {
+            switch (payStatus)
+            {
+                case nameof(PayStatus.APPLY):
+                    return PayStatus.APPLY.GetDescription();
+                case nameof(PayStatus.PROCESSING):
+                    return PayStatus.PROCESSING.GetDescription();
+                case nameof(PayStatus.FAILURE):
+                    return PayStatus.FAILURE.GetDescription();
+                case nameof(PayStatus.SUCCESS):
+                    return PayStatus.SUCCESS.GetDescription();
+            }
+
+            return "未知状态";
+        }
+
+        private void UpdateFundOutOrder(FundOutOrder fundoutOrder)
+        {
+            fundoutOrder.UpdateTime = DateTime.Now;
+            _fundOutOrderRepository.Update(fundoutOrder);
+            var updateResult = _fundOutOrderRepository.SaveChanges();
+            if (!updateResult.Success)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.Pay(...)", $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "更新支付状态失败", updateResult.FirstException, fundoutOrder);
+            }
         }
 
         private static HttpClient CreateHttpClient()
