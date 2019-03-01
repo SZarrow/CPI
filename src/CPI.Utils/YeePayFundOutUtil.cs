@@ -119,7 +119,8 @@ namespace CPI.Utils
         {
             errorMessage = null;
 
-            signContent = signContent.Replace("\t", String.Empty).Replace(Environment.NewLine, String.Empty).Replace(" ", String.Empty);
+            signContent = signContent.Replace(" ", String.Empty);
+
             sign = DecodeBase64(sign.Substring(0, sign.Length - "$SHA256".Length));
 
             var verifyResult = SignUtil.VerifySign(sign, signContent, KeyConfig.YeePay_FundOut_PublicKey, "RSA2");
@@ -191,7 +192,7 @@ namespace CPI.Utils
             {
                 String respString = result.Value.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                respString = respString.Replace("\t", String.Empty).Replace(Environment.NewLine, String.Empty).Replace("\n", String.Empty).Replace(" ", String.Empty);
+                respString = ZipJsonString(respString);
 
                 _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", respString);
 
@@ -200,7 +201,7 @@ namespace CPI.Utils
                     return new XResult<TResult>(default(TResult), ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("支付机构未返回任何数据"));
                 }
 
-                var decodeResult = JsonUtil.DeserializeObject<IDictionary<String, Object>>(respString);
+                var decodeResult = JsonUtil.DeserializeObject<IDictionary<String, String>>(respString);
                 if (!decodeResult.Success)
                 {
                     _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "易宝返回的数据无法反序列化", decodeResult.FirstException, respString);
@@ -223,7 +224,7 @@ namespace CPI.Utils
                 }
 
                 //验签返回的结果
-                String resultJsonString = respDic["result"].ToString();
+                String resultJsonString = respString.Substring();
                 String signError;
                 if (!VerifySign(resultJsonString, respDic["sign"].ToString(), out signError))
                 {
@@ -243,6 +244,17 @@ namespace CPI.Utils
             {
                 return new XResult<TResult>(default(TResult), ex);
             }
+        }
+
+        private static String ZipJsonString(String respString)
+        {
+            //respString = respString.Replace(Environment.NewLine, String.Empty);
+            //respString = Regex.Replace(respString.Replace("\t", String.Empty), @"\n\s*", String.Empty);
+            //respString = Regex.Replace(respString, @"\s*([:,])\s*", "$1");
+            //respString = Regex.Replace(respString, @"\s*([\[\]])\s*", "$1");
+            //respString = Regex.Replace(respString, @"\s*([\{\}])\s*", "$1");
+            respString = respString.Replace("\t", String.Empty).Replace("\n", String.Empty).Replace(" ", String.Empty);
+            return respString;
         }
 
         private static HttpClient GetClient()

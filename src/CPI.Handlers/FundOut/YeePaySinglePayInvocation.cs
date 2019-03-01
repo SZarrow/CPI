@@ -58,7 +58,7 @@ namespace CPI.Handlers.FundOut
                 return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(payRequest.Value.ErrorMessage));
             }
 
-            traceMethod = $"{_service.GetType().FullName}.Pull(...)";
+            traceMethod = $"{_service.GetType().FullName}.Pay(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始执行代付", payRequest.Value);
 
@@ -71,7 +71,28 @@ namespace CPI.Handlers.FundOut
 
         private ObjectResult QueryStatus_1_0(String traceService, String requestService, ref String traceMethod)
         {
-            throw new NotImplementedException();
+            var queryRequest = JsonUtil.DeserializeObject<YeePaySinglePayResultQueryRequest>(_request.BizContent);
+            if (!queryRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryRequest.FirstException, _request.BizContent);
+                return new ObjectResult(0, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            queryRequest.Value.AppId = _request.AppId;
+
+            if (!queryRequest.Value.IsValid)
+            {
+                return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(queryRequest.Value.ErrorMessage));
+            }
+
+            traceMethod = $"{_service.GetType().FullName}.QueryStatus(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始代付结果状态查询", queryRequest.Value);
+
+            var queryResult = _service.QueryStatus(queryRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束代付结果状态查询", queryResult.Value);
+
+            return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
         }
     }
 }
