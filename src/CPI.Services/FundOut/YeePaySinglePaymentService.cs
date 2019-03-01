@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
+using System.Linq;
 using CPI.Common;
 using CPI.Common.Domain.FundOut.YeePay;
 using CPI.Common.Exceptions;
@@ -13,7 +13,7 @@ using CPI.Providers;
 using CPI.Utils;
 using Lotus.Core;
 using Lotus.Logging;
-using Lotus.Net;
+using Lotus.Core.Collections;
 
 namespace CPI.Services.FundOut
 {
@@ -97,7 +97,7 @@ namespace CPI.Services.FundOut
                     accountNumber = request.BankCardNo,
                     amount = request.Amount,
                     bankCode = request.BankCode,
-                    batchNo = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
+                    batchNo = fundoutOrder.TradeNo,
                     customerNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
                     groupNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
                     feeType = request.FeeType
@@ -141,6 +141,125 @@ namespace CPI.Services.FundOut
                 };
 
                 return new XResult<YeePaySinglePayResponse>(payResp);
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <returns></returns>
+        public XResult<YeePaySinglePayResultQueryResponse> QueryStatus(YeePaySinglePayResultQueryRequest request)
+        {
+            if (request == null)
+            {
+                return new XResult<YeePaySinglePayResultQueryResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<YeePaySinglePayResultQueryResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            String service = $"{this.GetType().FullName}.QueryStatus(...)";
+            var requestHash = $"QueryStatus:{request.OutTradeNo}{request.PageIndex}{request.PageSize}".GetHashCode();
+
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<YeePaySinglePayResultQueryResponse>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                var q = _fundOutOrderRepository.QueryProvider;
+
+                if (request.OutTradeNo.HasValue())
+                {
+                    if (request.OutTradeNo.IndexOf(",") > 0)
+                    {
+                        var outTradeNos = request.OutTradeNo.Split(new Char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        q = from t0 in q
+                            where outTradeNos.Contains(t0.OutTradeNo)
+                            select t0;
+                    }
+                    else
+                    {
+                        q = from t0 in q
+                            where t0.OutTradeNo == request.OutTradeNo
+                            select t0;
+                    }
+                }
+
+                if (request.From.HasValue() && DateTime.TryParse(request.From, out DateTime fromDate))
+                {
+                    fromDate = fromDate.Date;
+                    q = from t0 in q
+                        where t0.CreateTime >= fromDate
+                        select t0;
+                }
+
+                if (request.To.HasValue() && DateTime.TryParse(request.To, out DateTime toDate))
+                {
+                    toDate = toDate.Date.AddDays(1);
+                    q = from t0 in q
+                        where t0.CreateTime < toDate
+                        select t0;
+                }
+
+                var pagedList = new PagedList<FundOutOrder>(q.OrderByDescending(x => x.CreateTime), request.PageIndex.ToInt32(), request.PageSize.ToInt32());
+                if (pagedList.Exception != null)
+                {
+                    return new XResult<YeePaySinglePayResultQueryResponse>(null, ErrorCode.DB_QUERY_FAILED, pagedList.Exception);
+                }
+
+                if (String.Compare(request.QueryMode, "PULL", true) == 0)
+                {
+                    var needPullOrders = pagedList.Where(x => x.PayStatus != PayStatus.SUCCESS.ToString() && x.PayStatus != PayStatus.FAILURE.ToString());
+                    if (needPullOrders != null && needPullOrders.Count() > 0)
+                    {
+                        foreach (var pullOrder in needPullOrders)
+                        {
+                            var pullResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayResultQueryStatusRequest, RawYeePaySinglePayResultQueryStatusResult>("/rest/v1.0/balance/transfer_query", new RawYeePaySinglePayResultQueryStatusRequest()
+                            {
+                                batchNo = pullOrder.TradeNo,
+                                customerNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
+                                orderId = pullOrder.OutTradeNo,
+                                pageNo = request.PageIndex,
+                                pageSize = request.PageSize,
+                                product = String.Empty
+                            });
+
+                            if (pullResult.Success)
+                            {
+                            }
+                        }
+                    }
+                }
+
+                var pageInfo = pagedList.PageInfo;
+
+                var resp = new YeePaySinglePayResultQueryResponse()
+                {
+                    PageIndex = pageInfo.PageIndex,
+                    PageSize = pageInfo.PageSize,
+                    TotalCount = pageInfo.TotalCount,
+                    Orders = pagedList.Select(x => new YeePaySinglePayStatusResult()
+                    {
+                        OutTradeNo = x.OutTradeNo,
+                        BankCardNo = x.BankCardNo,
+                        Amount = x.Amount,
+                        Fee = x.Fee,
+                        Status = x.PayStatus,
+                        Msg = GetPayStatusDescription(x.PayStatus)
+                    })
+                };
+
+                return new XResult<YeePaySinglePayResultQueryResponse>(resp);
             }
             finally
             {

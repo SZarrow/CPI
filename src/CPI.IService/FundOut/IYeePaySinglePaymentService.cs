@@ -16,5 +16,10 @@ namespace CPI.IService.FundOut
         /// </summary>
         /// <param name="request"></param>
         XResult<YeePaySinglePayResponse> Pay(YeePaySinglePayRequest request);
+        /// <summary>
+        /// 查询代付结果状态
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<YeePaySinglePayResultQueryResponse> QueryStatus(YeePaySinglePayResultQueryRequest request);
     }
 }
