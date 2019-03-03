@@ -102,14 +102,14 @@ namespace CPI.Handlers.EntrustPay
 
             String service = $"{this.GetType().FullName}.BuildCPIEntrustPayPaymentRequest(...)";
 
-            var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.X99bill_PayChannelCode);
+            var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.X99BILL_PAYCHANNEL_CODE);
             if (!queryResult.Success || queryResult.Value == null || queryResult.Value.Count() == 0)
             {
                 _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_bindInfoService)}.GetBankCardBindDetails(...)", "未查询到该用户的绑卡信息", queryResult.FirstException, new
                 {
                     request.PayerId,
                     request.BankCardNo,
-                    PayChannelCode = GlobalConfig.X99bill_PayChannelCode
+                    PayChannelCode = GlobalConfig.X99BILL_PAYCHANNEL_CODE
                 });
                 return new XResult<CPIEntrustPayPaymentRequest>(null, ErrorCode.DB_QUERY_FAILED, new DbQueryException("未查询到该用户的绑卡信息"));
             }

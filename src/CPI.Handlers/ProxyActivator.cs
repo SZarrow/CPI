@@ -76,7 +76,10 @@ namespace CPI.Handlers
 
             if (request.Method.IndexOf("cpi.agreepay.apply.99bill") == 0
                 || request.Method.IndexOf("cpi.agreepay.bindcard.99bill") == 0
-                || request.Method.IndexOf("cpi.agreepay.pay.99bill") == 0)
+                || request.Method.IndexOf("cpi.agreepay.pay.99bill") == 0
+                || request.Method.IndexOf("cpi.agreepay.apply.yeepay") == 0
+                || request.Method.IndexOf("cpi.agreepay.bindcard.yeepay") == 0
+                || request.Method.IndexOf("cpi.agreepay.pay.yeepay") == 0)
             {
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
                 return new Bill99AgreePayInvocation(request);
@@ -141,12 +144,40 @@ namespace CPI.Handlers
                     if (cheapestChannel.Cost > GlobalConfig.PayChannelFeeThreshold)
                     {
                         _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99EntrustPayInvocation");
-                        return new Bill99EntrustPayInvocation(request);
+                        return CreateEntrustPayInvocation(cheapestChannel.ChannelCode, request);
                     }
+
+                    return CreateAgreePayInvocation(cheapestChannel.ChannelCode, request);
                 }
 
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
-                return new Bill99AgreePayInvocation(request);
+                return CreateAgreePayInvocation(GlobalConfig.X99BILL_PAYCHANNEL_CODE, request);
+            }
+
+            return null;
+        }
+
+        private static IInvocation CreateAgreePayInvocation(String channelCode, GatewayCommonRequest request)
+        {
+            switch (channelCode)
+            {
+                case GlobalConfig.X99BILL_PAYCHANNEL_CODE:
+                    return new Bill99AgreePayInvocation(request);
+                case GlobalConfig.YEEPAY_PAYCHANNEL_CODE:
+                    return new YeePayAgreePayInvocation(request);
+            }
+
+            return null;
+        }
+
+        private static IInvocation CreateEntrustPayInvocation(String channelCode, GatewayCommonRequest request)
+        {
+            switch (channelCode)
+            {
+                case GlobalConfig.X99BILL_PAYCHANNEL_CODE:
+                    return new Bill99EntrustPayInvocation(request);
+                case GlobalConfig.YEEPAY_PAYCHANNEL_CODE:
+                    return null;
             }
 
             return null;

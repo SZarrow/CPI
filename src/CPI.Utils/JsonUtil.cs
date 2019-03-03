@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lotus.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CPI.Utils
 {
@@ -39,6 +40,28 @@ namespace CPI.Utils
             catch (Exception ex)
             {
                 return new XResult<T>(default(T), ex);
+            }
+        }
+
+        private static readonly JToken DefaultJToken = JToken.Parse("{}");
+
+        public static JToken GetJToken(String jsonString)
+        {
+            if (jsonString.IsNullOrWhiteSpace())
+            {
+                return DefaultJToken;
+            }
+
+            try
+            {
+                return JToken.Parse(jsonString, new JsonLoadSettings()
+                {
+                    LineInfoHandling = LineInfoHandling.Ignore
+                });
+            }
+            catch (Exception)
+            {
+                return DefaultJToken;
             }
         }
     }

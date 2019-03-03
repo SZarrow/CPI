@@ -10,5 +10,6 @@ namespace CPI.Common.Domain.FundOut.YeePay
         public String BankCardNo { get; set; }
         public Decimal Amount { get; set; }
         public Decimal Fee { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }

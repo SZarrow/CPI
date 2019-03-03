@@ -13,6 +13,7 @@ using Lotus.Core;
 using Lotus.Logging;
 using Lotus.Net;
 using Lotus.Security;
+using Microsoft.Extensions.Configuration;
 
 namespace CPI.Utils
 {
@@ -31,8 +32,6 @@ namespace CPI.Utils
             String version = "yop-auth-v2";
             String expireSeconds = "1800";
             String appKey = GlobalConfig.YeePay_FundOut_AppKey;
-
-            String x = "1l";
 
             var signHeaders = new SortedDictionary<String, String>();
             signHeaders["x-yop-appkey"] = appKey;
@@ -121,8 +120,6 @@ namespace CPI.Utils
         {
             errorMessage = null;
 
-            signContent = signContent.Replace(" ", String.Empty);
-
             sign = DecodeBase64(sign.Substring(0, sign.Length - "$SHA256".Length));
 
             var verifyResult = SignUtil.VerifySign(sign, signContent, KeyConfig.YeePay_FundOut_PublicKey, "RSA2");
@@ -194,24 +191,18 @@ namespace CPI.Utils
             {
                 String respString = result.Value.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                respString = ZipJsonString(respString);
+                String zippedRespString = ZipJsonString(respString);
 
-                _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", respString);
+                _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", zippedRespString);
 
                 if (respString.IsNullOrWhiteSpace())
                 {
                     return new XResult<TResult>(default(TResult), ErrorCode.REMOTE_RETURN_NOTHING, new RemoteException("支付机构未返回任何数据"));
                 }
 
-                var decodeResult = JsonUtil.DeserializeObject<IDictionary<String, String>>(respString);
-                if (!decodeResult.Success)
-                {
-                    _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "respResult", "易宝返回的数据无法反序列化", decodeResult.FirstException, respString);
-                    return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, new RemoteException("支付机构返回的数据无法解析"));
-                }
+                var respDic = JsonUtil.GetJToken(zippedRespString);
 
-                var respDic = decodeResult.Value;
-                var state = respDic["state"].ToString();
+                var state = respDic.GetValue<String>("state");
 
                 if (state == "FAILURE")
                 {
@@ -226,13 +217,13 @@ namespace CPI.Utils
                 }
 
                 //验签返回的结果
-                String resultJsonString = respString.Substring();
-                if (!VerifySign(resultJsonString, respDic["sign"].ToString(), out String signError))
+                String signContent = GetResultJsonValue(zippedRespString);
+                if (!VerifySign(signContent, respDic.GetValue<String>("sign"), out String signError))
                 {
                     return new XResult<TResult>(default(TResult), ErrorCode.SIGN_VERIFY_FAILED, new SignException(signError));
                 }
 
-                var payResult = JsonUtil.DeserializeObject<TResult>(resultJsonString);
+                var payResult = JsonUtil.DeserializeObject<TResult>(signContent);
                 if (!payResult.Success)
                 {
                     _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, "payResult", "易宝返回的数据无法反序列化", payResult.FirstException, respDic["error"]);
@@ -247,15 +238,22 @@ namespace CPI.Utils
             }
         }
 
+        /// <summary>
+        /// 获取用于签名的内容
+        /// </summary>
+        /// <param name="zippedJsonString"></param>
+        private static String GetResultJsonValue(String zippedJsonString)
+        {
+            String startStr = "\"result\":";
+            Int32 startIndex = zippedJsonString.IndexOf(startStr) + startStr.Length;
+            Int32 endIndex = zippedJsonString.IndexOf(",\"ts\":");
+            Int32 length = endIndex > startIndex ? endIndex - startIndex : 0;
+            return zippedJsonString.Substring(startIndex, length).Trim();
+        }
+
         private static String ZipJsonString(String respString)
         {
-            //respString = respString.Replace(Environment.NewLine, String.Empty);
-            //respString = Regex.Replace(respString.Replace("\t", String.Empty), @"\n\s*", String.Empty);
-            //respString = Regex.Replace(respString, @"\s*([:,])\s*", "$1");
-            //respString = Regex.Replace(respString, @"\s*([\[\]])\s*", "$1");
-            //respString = Regex.Replace(respString, @"\s*([\{\}])\s*", "$1");
-            respString = respString.Replace("\t", String.Empty).Replace("\n", String.Empty).Replace(" ", String.Empty);
-            return respString;
+            return respString.Replace("\t", String.Empty).Replace("\n", String.Empty).Replace(" ", String.Empty);
         }
 
         private static HttpClient GetClient()

@@ -11,15 +11,12 @@ namespace CPI.Common.Domain.FundOut.YeePay
         public String accountName { get; set; }
         public String accountNumber { get; set; }
         public String amount { get; set; }
-        public String bankBranchName { get; set; }
         public String bankCode { get; set; }
         public String bankName { get; set; }
         public String bankTrxStatusCode { get; set; }
-        public String cityCode { get; set; }
         public String fee { get; set; }
         public String feeType { get; set; }
         public String leaveWord { get; set; }
-        public String provinceCode { get; set; }
         public String transferStatusCode { get; set; }
         public String urgency { get; set; }
         public String urgencyType { get; set; }

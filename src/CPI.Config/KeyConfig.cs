@@ -278,5 +278,27 @@ namespace CPI.Config
                 return Configuration["YeePay-FundOut:Hehua-PrivateKey"];
             }
         }
+
+        /// <summary>
+        /// 易宝协议支付公钥
+        /// </summary>
+        public static String YeePay_AgreePay_PublicKey
+        {
+            get
+            {
+                return Configuration["YeePay-AgreePay:YeePay-PublicKey"];
+            }
+        }
+
+        /// <summary>
+        /// 易宝协议支付荷花私钥
+        /// </summary>
+        public static String YeePay_AgreePay_Hehua_PrivateKey
+        {
+            get
+            {
+                return Configuration["YeePay-AgreePay:Hehua-PrivateKey"];
+            }
+        }
     }
 }
