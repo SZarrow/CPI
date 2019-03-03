@@ -198,7 +198,7 @@ namespace CPI.Services.AgreePay
                 }
 
                 // 根据付款人Id、银行卡号和通道判断绑卡数据是否已存在
-                var existsBindInfo = _bankCardBindInfoRepository.Exists(x => x.PayerId == request.PayerId && x.BankCardNo == request.BankCardNo && x.PayChannelCode == GlobalConfig.X99bill_PayChannelCode);
+                var existsBindInfo = _bankCardBindInfoRepository.Exists(x => x.PayerId == request.PayerId && x.BankCardNo == request.BankCardNo && x.PayChannelCode == GlobalConfig.X99BILL_PAYCHANNEL_CODE);
                 if (existsBindInfo)
                 {
                     return new XResult<CPIAgreePayBindCardResponse>(null, ErrorCode.INFO_EXISTED, new ArgumentException("绑卡信息已存在"));
@@ -282,7 +282,7 @@ namespace CPI.Services.AgreePay
                     OutTradeNo = request.OutTradeNo,
                     BankCardNo = request.BankCardNo,
                     PayToken = respContent.PayToken,
-                    PayChannelCode = GlobalConfig.X99bill_PayChannelCode,
+                    PayChannelCode = GlobalConfig.X99BILL_PAYCHANNEL_CODE,
                     BindStatus = nameof(BankCardBindStatus.BOUND),
                     ApplyTime = DateTime.Now
                 };
@@ -306,7 +306,7 @@ namespace CPI.Services.AgreePay
 
                 // 绑卡成功之后更新PayToken
                 var bankCardBindInfo = (from t0 in _bankCardBindInfoRepository.QueryProvider
-                                        where t0.AppId == request.AppId && t0.OutTradeNo == request.OutTradeNo && t0.PayChannelCode == GlobalConfig.X99bill_PayChannelCode
+                                        where t0.AppId == request.AppId && t0.OutTradeNo == request.OutTradeNo && t0.PayChannelCode == GlobalConfig.X99BILL_PAYCHANNEL_CODE
                                         select t0).FirstOrDefault();
                 if (bankCardBindInfo != null)
                 {
@@ -391,7 +391,7 @@ namespace CPI.Services.AgreePay
                     TradeNo = tradeNo,
                     PayAmount = request.Amount,
                     BankCardNo = request.BankCardNo,
-                    PayChannelCode = GlobalConfig.X99bill_PayChannelCode,
+                    PayChannelCode = GlobalConfig.X99BILL_PAYCHANNEL_CODE,
                     PayStatus = PayStatus.APPLY.ToString(),
                     PayType = PayType.AGREEMENTPAY.ToString(),
                     CreateTime = tradeTime

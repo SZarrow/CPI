@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Linq;
+using System.Net.Http;
 using CPI.Common;
 using CPI.Common.Domain.FundOut.YeePay;
 using CPI.Common.Exceptions;
@@ -12,8 +12,8 @@ using CPI.IService.FundOut;
 using CPI.Providers;
 using CPI.Utils;
 using Lotus.Core;
-using Lotus.Logging;
 using Lotus.Core.Collections;
+using Lotus.Logging;
 
 namespace CPI.Services.FundOut
 {
@@ -219,23 +219,74 @@ namespace CPI.Services.FundOut
 
                 if (String.Compare(request.QueryMode, "PULL", true) == 0)
                 {
-                    var needPullOrders = pagedList.Where(x => x.PayStatus != PayStatus.SUCCESS.ToString() && x.PayStatus != PayStatus.FAILURE.ToString());
-                    if (needPullOrders != null && needPullOrders.Count() > 0)
+                    if (_lockProvider.Lock(requestHash))
                     {
-                        foreach (var pullOrder in needPullOrders)
+                        var needPullOrders = pagedList.Where(x => x.PayStatus != PayStatus.SUCCESS.ToString() && x.PayStatus != PayStatus.FAILURE.ToString());
+                        if (needPullOrders != null && needPullOrders.Count() > 0)
                         {
-                            var pullResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayResultQueryStatusRequest, RawYeePaySinglePayResultQueryStatusResult>("/rest/v1.0/balance/transfer_query", new RawYeePaySinglePayResultQueryStatusRequest()
+                            Boolean statusChanged = false;
+                            foreach (var pullOrder in needPullOrders)
                             {
-                                batchNo = pullOrder.TradeNo,
-                                customerNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
-                                orderId = pullOrder.OutTradeNo,
-                                pageNo = request.PageIndex,
-                                pageSize = request.PageSize,
-                                product = String.Empty
-                            });
+                                var pullResult = YeePayFundOutUtil.Execute<RawYeePaySinglePayResultQueryStatusRequest, RawYeePaySinglePayResultQueryStatusResult>("/rest/v1.0/balance/transfer_query", new RawYeePaySinglePayResultQueryStatusRequest()
+                                {
+                                    batchNo = pullOrder.TradeNo,
+                                    customerNumber = GlobalConfig.YeePay_FundOut_MerchantNo,
+                                    orderId = pullOrder.OutTradeNo,
+                                    pageNo = request.PageIndex,
+                                    pageSize = request.PageSize,
+                                    product = String.Empty
+                                });
+                                if (pullResult.Success && pullResult.Value != null)
+                                {
+                                    var orderResult = pullResult.Value;
 
-                            if (pullResult.Success)
-                            {
+                                    if (orderResult.errorCode == "BAC000048")
+                                    {
+                                        pullOrder.PayStatus = PayStatus.FAILURE.ToString();
+                                        pullOrder.UpdateTime = DateTime.Now;
+                                        statusChanged = true;
+                                    }
+                                    else if (orderResult.errorCode == "BAC001" && orderResult.list != null && orderResult.list.Count() == 1)
+                                    {
+                                        var orderResultDetail = orderResult.list.FirstOrDefault();
+                                        if (orderResultDetail.transferStatusCode == "0028"
+                                            || orderResultDetail.transferStatusCode == "0027")
+                                        {
+                                            pullOrder.PayStatus = PayStatus.FAILURE.ToString();
+                                            pullOrder.UpdateTime = DateTime.Now;
+                                            statusChanged = true;
+                                        }
+                                        else if (orderResultDetail.transferStatusCode == "0026")
+                                        {
+                                            switch (orderResultDetail.bankTrxStatusCode)
+                                            {
+                                                case "S":
+                                                    pullOrder.Fee = orderResultDetail.fee.ToDecimal();
+                                                    pullOrder.FeeAction = orderResultDetail.feeType;
+                                                    pullOrder.Remark = orderResultDetail.leaveWord;
+                                                    pullOrder.PayStatus = PayStatus.SUCCESS.ToString();
+                                                    pullOrder.UpdateTime = DateTime.Now;
+                                                    statusChanged = true;
+                                                    break;
+                                                case "F":
+                                                    pullOrder.PayStatus = PayStatus.FAILURE.ToString();
+                                                    pullOrder.UpdateTime = DateTime.Now;
+                                                    statusChanged = true;
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (statusChanged)
+                                {
+                                    _fundOutOrderRepository.Update(pullOrder);
+                                    var updateResult = _fundOutOrderRepository.SaveChanges();
+                                    if (!updateResult.Success)
+                                    {
+                                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存代付订单数据失败", updateResult.FirstException, new Object[] { pullOrder, pullResult.Value });
+                                    }
+                                }
                             }
                         }
                     }
@@ -254,6 +305,7 @@ namespace CPI.Services.FundOut
                         BankCardNo = x.BankCardNo,
                         Amount = x.Amount,
                         Fee = x.Fee,
+                        CreateTime = x.CreateTime,
                         Status = x.PayStatus,
                         Msg = GetPayStatusDescription(x.PayStatus)
                     })

@@ -10,6 +10,6 @@ namespace CPI.Common.Domain.FundOut.YeePay
         public String pageNo { get; set; }
         public String pageSize { get; set; }
         public String totalPageSize { get; set; }
-        public String list { get; set; }
+        public IEnumerable<RawYeePaySinglePayResultDetail> list { get; set; }
     }
 }

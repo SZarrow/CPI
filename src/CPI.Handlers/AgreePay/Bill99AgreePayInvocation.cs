@@ -175,14 +175,14 @@ namespace CPI.Handlers.AgreePay
                 return new XResult<CPIAgreePayPaymentRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.X99bill_PayChannelCode);
+            var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.X99BILL_PAYCHANNEL_CODE);
             if (!queryResult.Success || queryResult.Value == null || queryResult.Value.Count() == 0)
             {
                 _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), $"BuildCPIAgreePayPaymentRequest(...)", "构造协议支付请求参数", "未查询到该用户的绑卡信息", queryResult.FirstException, new
                 {
                     request.PayerId,
                     request.BankCardNo,
-                    PayChannelCode = GlobalConfig.X99bill_PayChannelCode
+                    PayChannelCode = GlobalConfig.X99BILL_PAYCHANNEL_CODE
                 });
                 return new XResult<CPIAgreePayPaymentRequest>(null, ErrorCode.NO_BANKCARD_BOUND, new DbQueryException("未查询到该用户的绑卡信息"));
             }

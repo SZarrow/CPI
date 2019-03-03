@@ -65,6 +65,15 @@ namespace CPI.Config
         private static IConfigurationRoot Configuration { get; set; }
 
         /// <summary>
+        /// 获取快钱支付通道编码
+        /// </summary>
+        public const String X99BILL_PAYCHANNEL_CODE = "99bill";
+        /// <summary>
+        /// 获取易宝支付通道编码
+        /// </summary>
+        public const String YEEPAY_PAYCHANNEL_CODE = "yeepay";
+
+        /// <summary>
         /// 获取通用的远程证书回调函数
         /// </summary>
         public static readonly Func<Object, X509Certificate, X509Chain, SslPolicyErrors, Boolean> CommonRemoteCertificateValidationCallback = (t1, t2, t3, t4) => true;
@@ -121,16 +130,6 @@ namespace CPI.Config
             get
             {
                 return Configuration["X-99bill-YZT:Hehua-PlatformCode"];
-            }
-        }
-        /// <summary>
-        /// 获取快钱支付通道编码
-        /// </summary>
-        public static String X99bill_PayChannelCode
-        {
-            get
-            {
-                return "99bill";
             }
         }
         /// <summary>
@@ -259,6 +258,26 @@ namespace CPI.Config
             get
             {
                 return Configuration["YeePay-FundOut:Hehua-AppKey"];
+            }
+        }
+        /// <summary>
+        /// 易宝协议支付商户号
+        /// </summary>
+        public static String YeePay_AgreePay_MerchantNo
+        {
+            get
+            {
+                return Configuration["YeePay-AgreePay:Hehua-MerchantNo"];
+            }
+        }
+        /// <summary>
+        /// 易宝协议支付AppKey
+        /// </summary>
+        public static String YeePay_AgreePay_AppKey
+        {
+            get
+            {
+                return Configuration["YeePay-AgreePay:Hehua-AppKey"];
             }
         }
     }

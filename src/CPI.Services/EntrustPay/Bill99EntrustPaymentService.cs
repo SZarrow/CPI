@@ -96,7 +96,7 @@ namespace CPI.Services.EntrustPay
                     PayAmount = request.Amount,
                     BankCardNo = request.BankCardNo,
                     PayerId = request.PayerId,
-                    PayChannelCode = GlobalConfig.X99bill_PayChannelCode,
+                    PayChannelCode = GlobalConfig.X99BILL_PAYCHANNEL_CODE,
                     PayStatus = PayStatus.APPLY.ToString(),
                     PayType = PayType.ENTRUSTPAY.ToString(),
                     CreateTime = DateTime.Now
