@@ -5,9 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Security;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using CPI.Common;
@@ -588,7 +586,7 @@ namespace CPI.Services.AgreePay
                 return new XResult<PagedList<CPIAgreePayQueryResult>>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var q = _payOrderRepository.QueryProvider;//.Where(x => x.AppId == request.AppId);
+            var q = _payOrderRepository.QueryProvider;
 
             if (!String.IsNullOrWhiteSpace(request.OutTradeNo))
             {

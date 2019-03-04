@@ -76,13 +76,18 @@ namespace CPI.Handlers
 
             if (request.Method.IndexOf("cpi.agreepay.apply.99bill") == 0
                 || request.Method.IndexOf("cpi.agreepay.bindcard.99bill") == 0
-                || request.Method.IndexOf("cpi.agreepay.pay.99bill") == 0
-                || request.Method.IndexOf("cpi.agreepay.apply.yeepay") == 0
+                || request.Method.IndexOf("cpi.agreepay.pay.99bill") == 0)
+            {
+                _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
+                return new Bill99AgreePayInvocation(request);
+            }
+
+            if (request.Method.IndexOf("cpi.agreepay.apply.yeepay") == 0
                 || request.Method.IndexOf("cpi.agreepay.bindcard.yeepay") == 0
                 || request.Method.IndexOf("cpi.agreepay.pay.yeepay") == 0)
             {
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
-                return new Bill99AgreePayInvocation(request);
+                return new YeePayAgreePayInvocation(request);
             }
 
             if (request.Method.IndexOf("cpi.entrust.pay.99bill") == 0)

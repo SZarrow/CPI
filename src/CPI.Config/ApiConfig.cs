@@ -156,6 +156,16 @@ namespace CPI.Config
                 return Configuration["YeePay-FundOut:RequestUrl"];
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public static String YeePay_AgreePay_RequestUrl
+        {
+            get
+            {
+                return Configuration["YeePay-AgreePay:RequestUrl"];
+            }
+        }
 
         /// <summary>
         /// 获取商户系统申请冻结放款余额的请求地址
