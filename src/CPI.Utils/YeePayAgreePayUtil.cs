@@ -20,18 +20,18 @@ namespace CPI.Utils
     /// <summary>
     /// 易宝代付助手类
     /// </summary>
-    public static class YeePayFundOutUtil
+    public static class YeePayAgreePayUtil
     {
         private static readonly ILogger _logger = LogManager.GetLogger();
         private static readonly IHttpClientFactory _httpClientFactory = XDI.Resolve<IHttpClientFactory>();
 
         private static void AddSign(HttpClient client, String interfaceUrl, String requestBody)
         {
-            String requestId = Guid.NewGuid().ToString("N");
-            String timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
+            String requestId = "d177ef56-0d20-4732-925d-a03c6a5c6046";// Guid.NewGuid().ToString("N");
+            String timestamp = "2019-03-04T16:00:31+08:00";// DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
             String version = "yop-auth-v2";
             String expireSeconds = "1800";
-            String appKey = GlobalConfig.YeePay_FundOut_AppKey;
+            String appKey = GlobalConfig.YeePay_AgreePay_AppKey;
 
             var signHeaders = new SortedDictionary<String, String>();
             signHeaders["x-yop-appkey"] = appKey;
@@ -50,7 +50,7 @@ namespace CPI.Utils
             //签名内容
             String signContent = $"{version}/{appKey}/{timestamp}/{expireSeconds}\nPOST\n{interfaceUrl}\n{requestBody}\n{signHeaderSignContent}";
 
-            var sign = SignUtil.MakeSign(signContent, KeyConfig.YeePay_FundOut_Hehua_PrivateKey, PrivateKeyFormat.PKCS1, "RSA2");
+            var sign = SignUtil.MakeSign(signContent, KeyConfig.YeePay_AgreePay_Hehua_PrivateKey, PrivateKeyFormat.PKCS1, "RSA2");
             if (sign.Success)
             {
                 String signHeaderNames = String.Join(";", signHeaders.Keys);
@@ -122,7 +122,7 @@ namespace CPI.Utils
 
             sign = DecodeBase64(sign.Substring(0, sign.Length - "$SHA256".Length));
 
-            var verifyResult = SignUtil.VerifySign(sign, signContent, KeyConfig.YeePay_FundOut_PublicKey, "RSA2");
+            var verifyResult = SignUtil.VerifySign(sign, signContent, KeyConfig.YeePay_AgreePay_PublicKey, "RSA2");
             if (!verifyResult.Success)
             {
                 errorMessage = verifyResult.ErrorMessage;
@@ -137,7 +137,7 @@ namespace CPI.Utils
                 return new XResult<TResult>(default(TResult), new ArgumentNullException(nameof(request)));
             }
 
-            String service = $"{typeof(YeePayFundOutUtil).FullName}.Execute(...)";
+            String service = $"{typeof(YeePayAgreePayUtil).FullName}.Execute(...)";
 
             var client = GetClient();
 
@@ -149,9 +149,9 @@ namespace CPI.Utils
 
             //签名内容的请求内容部分
             requestDic["method"] = interfaceUrl;
-            requestDic["appKey"] = GlobalConfig.YeePay_FundOut_AppKey;
+            requestDic["appKey"] = GlobalConfig.YeePay_AgreePay_AppKey;
             requestDic["locale"] = "zh_CN";
-            requestDic["ts"] = GetTimeStamp();
+            requestDic["ts"] = "1551686427";// GetTimeStamp();
             requestDic["v"] = "1.0";
 
             var orderedDic = new SortedDictionary<String, String>(requestDic);
@@ -166,24 +166,24 @@ namespace CPI.Utils
 
             AddSign(client, interfaceUrl, requestBody);
 
-            String requestUrl = $"{ApiConfig.YeePay_FundOut_RequestUrl}{interfaceUrl}";
+            String requestUrl = $"{ApiConfig.YeePay_AgreePay_RequestUrl}{interfaceUrl}";
             String traceMethod = $"{nameof(client)}.PostForm(...)";
 
-            _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始请求易宝代付接口", new Object[] { requestUrl, requestDic });
+            _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始请求易宝协议支付接口", new Object[] { requestUrl, requestDic });
 
             var result = client.PostForm(requestUrl, orderedDic);
 
-            _logger.Trace(TraceType.UTIL.ToString(), (result.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束请求易宝代付接口");
+            _logger.Trace(TraceType.UTIL.ToString(), (result.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束请求易宝协议支付接口");
 
             if (!result.Success)
             {
-                _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝代付接口失败：{result.ErrorMessage}", result.FirstException);
+                _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝协议支付接口失败：{result.ErrorMessage}", result.FirstException);
                 return new XResult<TResult>(default(TResult), result.FirstException);
             }
 
             if (result.Value == null)
             {
-                _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝代付接口超时");
+                _logger.Error(TraceType.UTIL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, $"调用易宝协议支付接口超时");
                 return new XResult<TResult>(default(TResult), ErrorCode.REQUEST_TIMEOUT);
             }
 
@@ -193,7 +193,7 @@ namespace CPI.Utils
 
                 String compressedRespString = CompressJsonString(respString);
 
-                _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝代付返回结果", compressedRespString);
+                _logger.Trace(TraceType.UTIL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.END, "易宝协议支付返回结果", compressedRespString);
 
                 if (respString.IsNullOrWhiteSpace())
                 {
@@ -241,7 +241,7 @@ namespace CPI.Utils
         /// <summary>
         /// 获取用于签名的内容
         /// </summary>
-        /// <param name="compressedJsonString"></param>
+        /// <param name="compressedJsonString">压缩的Json字符串</param>
         private static String GetResultJsonValue(String compressedJsonString)
         {
             String startStr = "\"result\":";

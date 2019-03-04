@@ -148,12 +148,6 @@ namespace CPI.Services.FundOut
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <returns></returns>
         public XResult<YeePaySinglePayResultQueryResponse> QueryStatus(YeePaySinglePayResultQueryRequest request)
         {
             if (request == null)
@@ -236,10 +230,10 @@ namespace CPI.Services.FundOut
                                     pageSize = request.PageSize,
                                     product = String.Empty
                                 });
+
                                 if (pullResult.Success && pullResult.Value != null)
                                 {
                                     var orderResult = pullResult.Value;
-
                                     if (orderResult.errorCode == "BAC000048")
                                     {
                                         pullOrder.PayStatus = PayStatus.FAILURE.ToString();
