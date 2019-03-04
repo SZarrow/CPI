@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using Lotus.Core;
 
 namespace CPI.Utils
 {
@@ -9,7 +10,12 @@ namespace CPI.Utils
     {
         public static String UrlEncode(String value)
         {
-            return HttpUtility.UrlEncode(value).Replace("+", "%20");
+            if (value.HasValue())
+            {
+                return HttpUtility.UrlEncode(value).Replace("+", "%20");
+            }
+
+            return value;
         }
     }
 }

@@ -71,7 +71,12 @@ namespace CPI.Utils
 
         private static String UrlEncodeToUpper(String value)
         {
-            return Regex.Replace(value, @"%[a-f0-9]{2}", m => m.Value.ToUpperInvariant());
+            if (value.HasValue())
+            {
+                return Regex.Replace(value, @"%[a-f0-9]{2}", m => m.Value.ToUpperInvariant());
+            }
+
+            return value;
         }
 
         private static String EncodeBase64(String content)
@@ -213,7 +218,7 @@ namespace CPI.Utils
                         return new XResult<TResult>(default(TResult), ErrorCode.DESERIALIZE_FAILED, errorDecodeResult.FirstException);
                     }
 
-                    return new XResult<TResult>(default(TResult), ErrorCode.FAILURE, new RemoteException(respDic["message"].ToString()));
+                    return new XResult<TResult>(default(TResult), ErrorCode.FAILURE, new RemoteException(errorDecodeResult.Value["message"]));
                 }
 
                 //验签返回的结果
