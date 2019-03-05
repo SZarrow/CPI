@@ -185,6 +185,22 @@ namespace CPI.Config
             }
         }
         /// <summary>
+        /// 易宝协议支付最小金额
+        /// </summary>
+        public static Decimal YeePay_AgreePay_PayMinAmount
+        {
+            get
+            {
+                String payMinAmountValue = Configuration["YeePay-AgreePay:PayMinAmount"];
+                if (Decimal.TryParse(payMinAmountValue, out Decimal result))
+                {
+                    return result;
+                }
+
+                return 1m;
+            }
+        }
+        /// <summary>
         /// 快钱协议支付荷花商户Id
         /// </summary>
         public static String X99bill_AgreePay_Hehua_MerchantId

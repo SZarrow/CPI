@@ -302,22 +302,6 @@ namespace CPI.Services.AgreePay
                     Msg = CommonStatus.SUCCESS.GetDescription()
                 };
 
-                // 绑卡成功之后更新PayToken
-                var bankCardBindInfo = (from t0 in _bankCardBindInfoRepository.QueryProvider
-                                        where t0.AppId == request.AppId && t0.OutTradeNo == request.OutTradeNo && t0.PayChannelCode == GlobalConfig.X99BILL_PAYCHANNEL_CODE
-                                        select t0).FirstOrDefault();
-                if (bankCardBindInfo != null)
-                {
-                    bankCardBindInfo.PayToken = resp.PayToken;
-                    bankCardBindInfo.BindStatus = BankCardBindStatus.BOUND.ToString();
-                    _bankCardBindInfoRepository.Update(bankCardBindInfo);
-                    var updateResult = _bankCardBindInfoRepository.SaveChanges();
-                    if (!updateResult.Success)
-                    {
-                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_bankCardBindInfoRepository)}.SaveChanges()", "更新PayToken失败", updateResult.FirstException, bankCardBindInfo);
-                    }
-                }
-
                 return new XResult<CPIAgreePayBindCardResponse>(resp);
             }
             finally
