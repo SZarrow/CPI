@@ -2,6 +2,7 @@
 using System.Linq;
 using CPI.Common;
 using CPI.Common.Domain.AgreePay;
+using CPI.Common.Domain.AgreePay.YeePay;
 using CPI.Common.Domain.Common;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using CPI.Common.Exceptions;
@@ -37,7 +38,7 @@ namespace CPI.Handlers.AgreePay
             switch (requestService)
             {
                 case "cpi.agreepay.apply.yeepay.1.0":
-                    var applyRequest = JsonUtil.DeserializeObject<CPIAgreePayApplyRequest>(_request.BizContent);
+                    var applyRequest = JsonUtil.DeserializeObject<YeePayAgreePayApplyRequest>(_request.BizContent);
                     if (!applyRequest.Success)
                     {
                         _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", applyRequest.FirstException, _request.BizContent);
@@ -55,7 +56,7 @@ namespace CPI.Handlers.AgreePay
 
                     return applyResult.Success ? new ObjectResult(applyResult.Value) : new ObjectResult(null, applyResult.ErrorCode, applyResult.FirstException);
                 case "cpi.agreepay.bindcard.yeepay.1.0":
-                    var bindRequest = JsonUtil.DeserializeObject<CPIAgreePayBindCardRequest>(_request.BizContent);
+                    var bindRequest = JsonUtil.DeserializeObject<YeePayAgreePayBindCardRequest>(_request.BizContent);
                     if (!bindRequest.Success)
                     {
                         _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
@@ -161,45 +162,43 @@ namespace CPI.Handlers.AgreePay
             }) : new ObjectResult(null, pullResult.ErrorCode, pullResult.FirstException);
         }
 
-        private XResult<CPIAgreePayPaymentRequest> BuildCPIAgreePayPaymentRequest(CommonPayRequest request)
+        private XResult<YeePayAgreePayPaymentRequest> BuildCPIAgreePayPaymentRequest(CommonPayRequest request)
         {
             if (request == null)
             {
-                return new XResult<CPIAgreePayPaymentRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+                return new XResult<YeePayAgreePayPaymentRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
             }
 
             if (!request.IsValid)
             {
-                return new XResult<CPIAgreePayPaymentRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+                return new XResult<YeePayAgreePayPaymentRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.X99BILL_PAYCHANNEL_CODE);
+            var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.YEEPAY_PAYCHANNEL_CODE);
             if (!queryResult.Success || queryResult.Value == null || queryResult.Value.Count() == 0)
             {
                 _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), $"BuildCPIAgreePayPaymentRequest(...)", "构造协议支付请求参数", "未查询到该用户的绑卡信息", queryResult.FirstException, new
                 {
                     request.PayerId,
                     request.BankCardNo,
-                    PayChannelCode = GlobalConfig.X99BILL_PAYCHANNEL_CODE
+                    PayChannelCode = GlobalConfig.YEEPAY_PAYCHANNEL_CODE
                 });
-                return new XResult<CPIAgreePayPaymentRequest>(null, ErrorCode.NO_BANKCARD_BOUND, new DbQueryException("未查询到该用户的绑卡信息"));
+                return new XResult<YeePayAgreePayPaymentRequest>(null, ErrorCode.NO_BANKCARD_BOUND, new DbQueryException("未查询到该用户的绑卡信息"));
             }
 
             // 默认取第一条绑卡信息
             var boundInfo = queryResult.Value.FirstOrDefault();
 
-            var result = new CPIAgreePayPaymentRequest()
+            var result = new YeePayAgreePayPaymentRequest()
             {
                 PayerId = request.PayerId,
                 Amount = request.Amount,
                 OutTradeNo = request.OutTradeNo,
                 BankCardNo = boundInfo.BankCardNo,
-                PayToken = boundInfo.PayToken,
-                Mobile = boundInfo.Mobile,
-                SharingInfo = request.SharingInfo
+                TerminalNo = request.TerminalNo
             };
 
-            return new XResult<CPIAgreePayPaymentRequest>(result);
+            return new XResult<YeePayAgreePayPaymentRequest>(result);
         }
     }
 }

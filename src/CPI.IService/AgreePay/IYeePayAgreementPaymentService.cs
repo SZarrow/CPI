@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CPI.Common.Domain.AgreePay;
+using CPI.Common.Domain.AgreePay.YeePay;
 using Lotus.Core;
 using Lotus.Core.Collections;
 
@@ -16,17 +17,17 @@ namespace CPI.IService.AgreePay
         /// 申请支付请求
         /// </summary>
         /// <param name="request">申请请求参数</param>
-        XResult<CPIAgreePayApplyResponse> Apply(CPIAgreePayApplyRequest request);
+        XResult<YeePayAgreePayApplyResponse> Apply(YeePayAgreePayApplyRequest request);
         /// <summary>
         /// 绑卡
         /// </summary>
         /// <param name="request">绑卡请求参数</param>
-        XResult<CPIAgreePayBindCardResponse> BindCard(CPIAgreePayBindCardRequest request);
+        XResult<YeePayAgreePayBindCardResponse> BindCard(YeePayAgreePayBindCardRequest request);
         /// <summary>
         /// 支付
         /// </summary>
         /// <param name="request">支付请求参数</param>
-        XResult<CPIAgreePayPaymentResponse> Pay(CPIAgreePayPaymentRequest request);
+        XResult<YeePayAgreePayPaymentResponse> Pay(YeePayAgreePayPaymentRequest request);
         /// <summary>
         /// 支付单查询
         /// </summary>

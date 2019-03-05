@@ -27,8 +27,8 @@ namespace CPI.Utils
 
         private static void AddSign(HttpClient client, String interfaceUrl, String requestBody)
         {
-            String requestId = "d177ef56-0d20-4732-925d-a03c6a5c6046";// Guid.NewGuid().ToString("N");
-            String timestamp = "2019-03-04T16:00:31+08:00";// DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
+            String requestId = Guid.NewGuid().ToString("N");
+            String timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzzz");
             String version = "yop-auth-v2";
             String expireSeconds = "1800";
             String appKey = GlobalConfig.YeePay_AgreePay_AppKey;
@@ -156,7 +156,7 @@ namespace CPI.Utils
             requestDic["method"] = interfaceUrl;
             requestDic["appKey"] = GlobalConfig.YeePay_AgreePay_AppKey;
             requestDic["locale"] = "zh_CN";
-            requestDic["ts"] = "1551686427";// GetTimeStamp();
+            requestDic["ts"] = GetTimeStamp();
             requestDic["v"] = "1.0";
 
             var orderedDic = new SortedDictionary<String, String>(requestDic);
