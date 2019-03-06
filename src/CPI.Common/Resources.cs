@@ -8,5 +8,7 @@ namespace CPI.Common
     {
         public const String PageNumberRegexExpression = @"^[1-9]\d*?$";
         public const String AmountRegexExpression = @"^(\d+\.\d{1,2}|\d+?)$";
+        public const String YeePayAgreePayTerminalNo = "SQKKSCENEKJ010";
+        public const String YeePayEntrustPayTerminalNo = "SQKKSCENE10";
     }
 }

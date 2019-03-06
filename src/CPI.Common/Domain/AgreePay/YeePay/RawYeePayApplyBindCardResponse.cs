@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CPI.Common.Domain.AgreePay.YeePay
 {
-    public class RawYeePayApplyBindCardResult : RawYeePayCommonResult
+    public class RawYeePayApplyBindCardResponse : RawYeePayCommonResponse
     {
         public String merchantno { get; set; }
         public String requestno { get; set; }

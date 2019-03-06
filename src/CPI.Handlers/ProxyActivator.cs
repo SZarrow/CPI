@@ -84,7 +84,9 @@ namespace CPI.Handlers
 
             if (request.Method.IndexOf("cpi.agreepay.apply.yeepay") == 0
                 || request.Method.IndexOf("cpi.agreepay.bindcard.yeepay") == 0
-                || request.Method.IndexOf("cpi.agreepay.pay.yeepay") == 0)
+                || request.Method.IndexOf("cpi.agreepay.pay.yeepay") == 0
+                || request.Method.IndexOf("cpi.agreepay.refund.yeepay") == 0
+                || request.Method.IndexOf("cpi.agreepay.payresult.pull.yeepay") == 0)
             {
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
                 return new YeePayAgreePayInvocation(request);

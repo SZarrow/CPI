@@ -38,99 +38,115 @@ namespace CPI.Handlers.AgreePay
             switch (requestService)
             {
                 case "cpi.agreepay.apply.yeepay.1.0":
-                    var applyRequest = JsonUtil.DeserializeObject<YeePayAgreePayApplyRequest>(_request.BizContent);
-                    if (!applyRequest.Success)
-                    {
-                        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", applyRequest.FirstException, _request.BizContent);
-                        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-                    }
-                    applyRequest.Value.AppId = _request.AppId;
-
-                    traceMethod = $"{_agreePayService.GetType().FullName}.Apply(...)";
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始申请绑卡", applyRequest.Value);
-
-                    var applyResult = _agreePayService.Apply(applyRequest.Value);
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), (applyResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束申请绑卡", applyResult.Value);
-
-                    return applyResult.Success ? new ObjectResult(applyResult.Value) : new ObjectResult(null, applyResult.ErrorCode, applyResult.FirstException);
+                    return ApplyBindCard_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.agreepay.bindcard.yeepay.1.0":
-                    var bindRequest = JsonUtil.DeserializeObject<YeePayAgreePayBindCardRequest>(_request.BizContent);
-                    if (!bindRequest.Success)
-                    {
-                        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
-                        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-                    }
-                    bindRequest.Value.AppId = _request.AppId;
-
-                    traceMethod = $"{_agreePayService.GetType().FullName}.BindCard(...)";
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始绑卡", bindRequest.Value);
-
-                    var bindResult = _agreePayService.BindCard(bindRequest.Value);
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束绑卡", bindResult.Value);
-
-                    return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
+                    return BindCard_1_0(traceService, requestService, ref traceMethod);
+                case "cpi.agreepay.quietbindcard.yeepay.1.0":
+                    return QuietBindCard_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.unified.pay.yeepay.1.0":
                 case "cpi.agreepay.pay.yeepay.1.0":
-                    var commonPayRequest = JsonUtil.DeserializeObject<CommonPayRequest>(_request.BizContent);
-                    if (!commonPayRequest.Success)
-                    {
-                        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", commonPayRequest.FirstException, _request.BizContent);
-                        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-                    }
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIAgreePayPaymentRequest(...)", LogPhase.BEGIN, "开始构造协议支付请求参数", commonPayRequest.Value);
-                    var agreePayRequest = BuildCPIAgreePayPaymentRequest(commonPayRequest.Value);
-                    if (!agreePayRequest.Success)
-                    {
-                        return new ObjectResult(null, agreePayRequest.ErrorCode, agreePayRequest.FirstException);
-                    }
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIAgreePayPaymentRequest(...)", LogPhase.END, "结束构造协议支付请求参数", agreePayRequest.Value);
-
-                    agreePayRequest.Value.AppId = _request.AppId;
-
-                    traceMethod = $"{_agreePayService.GetType().FullName}.Pay(...)";
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始支付", agreePayRequest.Value);
-
-                    var agreePayResult = _agreePayService.Pay(agreePayRequest.Value);
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), (agreePayResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束支付", agreePayResult.Value);
-
-                    return agreePayResult.Success ? new ObjectResult(agreePayResult.Value) : new ObjectResult(null, agreePayResult.ErrorCode, agreePayResult.FirstException);
-                case "cpi.agreepay.querystatus.yeepay.1.0":
-                case "cpi.unified.querystatus.1.0":
-                    var queryRequest = JsonUtil.DeserializeObject<CPIAgreePayQueryRequest>(_request.BizContent);
-                    if (!queryRequest.Success)
-                    {
-                        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryRequest.FirstException, _request.BizContent);
-                        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-                    }
-                    queryRequest.Value.AppId = _request.AppId;
-
-                    traceMethod = $"{_agreePayService.GetType().FullName}.Query(...)";
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始查询支付状态", queryRequest.Value);
-
-                    var queryResult = _agreePayService.Query(queryRequest.Value);
-
-                    _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束查询支付状态", queryResult.Value);
-
-                    return queryResult.Success ? new ObjectResult(new PagedListResult<CPIAgreePayQueryResult>()
-                    {
-                        Items = queryResult.Value,
-                        PageIndex = queryResult.Value.PageInfo.PageIndex,
-                        PageSize = queryResult.Value.PageInfo.PageSize,
-                        TotalCount = queryResult.Value.PageInfo.TotalCount
-                    }) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
-                case "cpi.unified.payresult.pull.1.0":
+                    return Pay_1_0(traceService, requestService, ref traceMethod);
+                case "cpi.agreepay.refund.yeepay.1.0":
+                    return Refund_1_0(traceService, requestService, ref traceMethod);
+                case "cpi.agreepay.payresult.pull.yeepay.1.0":
                     return PayResultPull_1_0(traceService, requestService, ref traceMethod);
             }
 
             return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+        }
+
+        private ObjectResult BindCard_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            var bindRequest = JsonUtil.DeserializeObject<YeePayAgreePayBindCardRequest>(_request.BizContent);
+            if (!bindRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            bindRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_agreePayService.GetType().FullName}.BindCard(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始绑卡", bindRequest.Value);
+
+            var bindResult = _agreePayService.BindCard(bindRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束绑卡", bindResult.Value);
+
+            return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
+        }
+
+        private ObjectResult ApplyBindCard_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            var applyRequest = JsonUtil.DeserializeObject<YeePayAgreePayApplyRequest>(_request.BizContent);
+            if (!applyRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", applyRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            applyRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_agreePayService.GetType().FullName}.Apply(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始申请绑卡", applyRequest.Value);
+
+            var applyResult = _agreePayService.Apply(applyRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (applyResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束申请绑卡", applyResult.Value);
+
+            return applyResult.Success ? new ObjectResult(applyResult.Value) : new ObjectResult(null, applyResult.ErrorCode, applyResult.FirstException);
+        }
+
+        private ObjectResult Pay_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            var commonPayRequest = JsonUtil.DeserializeObject<CommonPayRequest>(_request.BizContent);
+            if (!commonPayRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", commonPayRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIAgreePayPaymentRequest(...)", LogPhase.BEGIN, "开始构造协议支付请求参数", commonPayRequest.Value);
+            var agreePayRequest = BuildCPIAgreePayPaymentRequest(commonPayRequest.Value);
+            if (!agreePayRequest.Success)
+            {
+                return new ObjectResult(null, agreePayRequest.ErrorCode, agreePayRequest.FirstException);
+            }
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIAgreePayPaymentRequest(...)", LogPhase.END, "结束构造协议支付请求参数", agreePayRequest.Value);
+
+            agreePayRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_agreePayService.GetType().FullName}.Pay(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始支付", agreePayRequest.Value);
+
+            var agreePayResult = _agreePayService.Pay(agreePayRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (agreePayResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束支付", agreePayResult.Value);
+
+            return agreePayResult.Success ? new ObjectResult(agreePayResult.Value) : new ObjectResult(null, agreePayResult.ErrorCode, agreePayResult.FirstException);
+        }
+
+        private ObjectResult Refund_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            var refundRequest = JsonUtil.DeserializeObject<YeePayAgreePayRefundRequest>(_request.BizContent);
+            if (!refundRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", refundRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+
+            refundRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_agreePayService.GetType().FullName}.Refund(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始退款", refundRequest.Value);
+
+            var refundResult = _agreePayService.Refund(refundRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (refundResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束退款", refundResult.Value);
+
+            return refundResult.Success ? new ObjectResult(refundResult.Value) : new ObjectResult(null, refundResult.ErrorCode, refundResult.FirstException);
         }
 
         private ObjectResult PayResultPull_1_0(String traceService, String requestService, ref String traceMethod)
@@ -148,11 +164,11 @@ namespace CPI.Handlers.AgreePay
                 return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(pullRequest.Value.ErrorMessage));
             }
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.Pull(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.PullPayStatus(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取支付状态", pullRequest.Value);
 
-            var pullResult = _agreePayService.Pull(pullRequest.Value.Count);
+            var pullResult = _agreePayService.PullPayStatus(pullRequest.Value.Count);
 
             _logger.Trace(TraceType.ROUTE.ToString(), (pullResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束拉取支付状态", pullResult.Value);
 
