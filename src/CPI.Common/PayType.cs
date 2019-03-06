@@ -16,6 +16,10 @@ namespace CPI.Common
         /// <summary>
         /// 代扣
         /// </summary>
-        ENTRUSTPAY
+        ENTRUSTPAY,
+        /// <summary>
+        /// 退款
+        /// </summary>
+        REFUND
     }
 }

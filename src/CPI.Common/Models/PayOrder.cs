@@ -78,5 +78,10 @@ namespace CPI.Common.Models
         /// </summary>
         [Column("update_time")]
         public DateTime? UpdateTime { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        [Column("remark")]
+        public String Remark { get; set; }
     }
 }

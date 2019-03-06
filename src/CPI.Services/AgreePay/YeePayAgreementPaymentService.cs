@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CPI.Common;
 using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.AgreePay.YeePay;
+using CPI.Common.Domain.Common;
 using CPI.Common.Exceptions;
 using CPI.Common.Models;
 using CPI.Config;
@@ -82,11 +88,7 @@ namespace CPI.Services.AgreePay
                     }
                 }
 
-                String traceMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
-
-                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始调用易宝协议支付接口", request);
-
-                var execResult = YeePayAgreePayUtil.Execute<RawYeePayApplyBindCardRequest, RawYeePayApplyBindCardResult>("/rest/v1.0/paperorder/unified/auth/request", new RawYeePayApplyBindCardRequest()
+                var execResult = YeePayAgreePayUtil.Execute<RawYeePayApplyBindCardRequest, RawYeePayApplyBindCardResponse>("/rest/v1.0/paperorder/unified/auth/request", new RawYeePayApplyBindCardRequest()
                 {
                     merchantno = GlobalConfig.YeePay_AgreePay_MerchantNo,
                     requestno = request.OutTradeNo,
@@ -102,7 +104,7 @@ namespace CPI.Services.AgreePay
                     authtype = "COMMON_FOUR"
                 });
 
-                _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.ACTION, "结束调用易宝协议支付接口");
+                String traceMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
 
                 if (!execResult.Success)
                 {
@@ -194,17 +196,14 @@ namespace CPI.Services.AgreePay
 
                 var tradeTime = DateTime.Now;
 
-                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
-                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, callMethod, LogPhase.BEGIN, $"开始调用{callMethod}", new Object[] { ApiConfig.Bill99_AgreePay_BindCard_RequestUrl, request });
-
-                var result = YeePayAgreePayUtil.Execute<RawYeePayBindCardRequest, RawYeePayBindCardResult>("/rest/v1.0/paperorder/auth/confirm", new RawYeePayBindCardRequest()
+                var result = YeePayAgreePayUtil.Execute<RawYeePayBindCardRequest, RawYeePayBindCardResponse>("/rest/v1.0/paperorder/auth/confirm", new RawYeePayBindCardRequest()
                 {
                     merchantno = GlobalConfig.YeePay_AgreePay_MerchantNo,
                     requestno = request.OutTradeNo,
                     validatecode = request.SmsValidCode
                 });
 
-                _logger.Trace(TraceType.BLL.ToString(), (result.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, callMethod, LogPhase.END, $"完成调用{callMethod}", result.Value);
+                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
 
                 if (!result.Success)
                 {
@@ -282,6 +281,12 @@ namespace CPI.Services.AgreePay
                 return new XResult<YeePayAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
+            String terminalPattern = $"^({Resources.YeePayAgreePayTerminalNo})|({Resources.YeePayEntrustPayTerminalNo})$";
+            if (!Regex.IsMatch(request.TerminalNo, terminalPattern))
+            {
+                return new XResult<YeePayAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException("TerminalNo字段传值错误"));
+            }
+
             if (request.Amount < GlobalConfig.YeePay_AgreePay_PayMinAmount)
             {
                 return new XResult<YeePayAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付总金额必须大于{GlobalConfig.YeePay_AgreePay_PayMinAmount.ToString()}"));
@@ -327,7 +332,7 @@ namespace CPI.Services.AgreePay
                     BankCardNo = request.BankCardNo,
                     PayChannelCode = GlobalConfig.YEEPAY_PAYCHANNEL_CODE,
                     PayStatus = PayStatus.APPLY.ToString(),
-                    PayType = PayType.AGREEMENTPAY.ToString(),
+                    PayType = request.TerminalNo == Resources.YeePayAgreePayTerminalNo ? PayType.AGREEMENTPAY.ToString() : PayType.ENTRUSTPAY.ToString(),
                     CreateTime = tradeTime
                 };
 
@@ -339,10 +344,7 @@ namespace CPI.Services.AgreePay
                     return new XResult<YeePayAgreePayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                 }
 
-                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
-                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, callMethod, LogPhase.BEGIN, $"开始调用{callMethod}", new Object[] { ApiConfig.YeePay_AgreePay_RequestUrl, request });
-
-                var result = YeePayAgreePayUtil.Execute<RawYeePayAgreePayPaymentRequest, RawYeePayAgreePayPaymentResult>("/rest/v1.0/paperorder/unified/pay", new RawYeePayAgreePayPaymentRequest()
+                var result = YeePayAgreePayUtil.Execute<RawYeePayAgreePayPaymentRequest, RawYeePayAgreePayPaymentResponse>("/rest/v1.0/paperorder/unified/pay", new RawYeePayAgreePayPaymentRequest()
                 {
                     merchantno = GlobalConfig.YeePay_AgreePay_MerchantNo,
                     requestno = request.OutTradeNo,
@@ -357,7 +359,7 @@ namespace CPI.Services.AgreePay
                     terminalno = request.TerminalNo
                 });
 
-                _logger.Trace(TraceType.BLL.ToString(), (result.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, callMethod, LogPhase.END, $"完成调用{callMethod}", result.Value);
+                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
 
                 if (!result.Success)
                 {
@@ -371,23 +373,29 @@ namespace CPI.Services.AgreePay
                 }
 
                 var respResult = result.Value;
+
+                //如果易宝返回的不是PROCESSING则表示处理失败
                 if (respResult.status != "PROCESSING")
                 {
                     newOrder.PayStatus = PayStatus.FAILURE.ToString();
                     newOrder.UpdateTime = DateTime.Now;
-                    _payOrderRepository.Update(newOrder);
-                    saveResult = _payOrderRepository.SaveChanges();
-                    if (!saveResult.Success)
-                    {
-                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_payOrderRepository)}.SaveChanges()", "更新协议支付结果失败", saveResult.FirstException, newOrder);
-                    }
+                    UpdatePayOrder(service, newOrder);
+                    return new XResult<YeePayAgreePayPaymentResponse>(null, ErrorCode.FAILURE, new RemoteException($"{respResult.errorcode}:{respResult.errormsg}"));
                 }
+
+                //如果易宝返回PROCESSING表示已处理
+                //并且要将易宝返回的易宝内部交易号更新到数据库
+                //这个TradeNo以后可以作为退款接口的原交易号
+                newOrder.PayStatus = PayStatus.PROCESSING.ToString();
+                newOrder.TradeNo = respResult.yborderid;
+                newOrder.UpdateTime = DateTime.Now;
+                UpdatePayOrder(service, newOrder);
 
                 var resp = new YeePayAgreePayPaymentResponse()
                 {
                     OutTradeNo = respResult.requestno,
-                    TradeNo = tradeNo,
-                    PayTime = tradeTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                    YeePayTradeNo = respResult.yborderid,
+                    ApplyTime = tradeTime.ToString("yyyy-MM-dd HH:mm:ss"),
                     Status = PayStatus.PROCESSING.ToString(),
                     Msg = PayStatus.PROCESSING.GetDescription()
                 };
@@ -400,14 +408,284 @@ namespace CPI.Services.AgreePay
             }
         }
 
-        public XResult<Int32> Pull(Int32 count)
+        public XResult<YeePayAgreePayRefundResponse> Refund(YeePayAgreePayRefundRequest request)
+        {
+            if (request == null)
+            {
+                return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            String service = $"{this.GetType().FullName}.Refund(...)";
+
+            var requestHash = $"refund:{request.OutTradeNo}".GetHashCode();
+
+            if (_lockProvider.Exists(requestHash))
+            {
+                return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.SUBMIT_REPEAT);
+            }
+
+            try
+            {
+                if (!_lockProvider.Lock(requestHash))
+                {
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.SUBMIT_REPEAT);
+                }
+
+                // 保证外部交易号不重复
+                var existsOutTradeNo = _payOrderRepository.Exists(x => x.AppId == request.AppId && x.OutTradeNo == request.OutTradeNo);
+                if (existsOutTradeNo)
+                {
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.OUT_TRADE_NO_EXISTED);
+                }
+
+                //保证原始单号是存在的
+                var originalPayOrder = _payOrderRepository.QueryProvider.FirstOrDefault(x => x.OutTradeNo == request.OriginalOutTradeNo);
+                if (originalPayOrder == null)
+                {
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.INFO_NOT_EXIST, new ArgumentException("原支付单不存在"));
+                }
+
+                if (request.Amount < 0.01m || request.Amount > originalPayOrder.PayAmount)
+                {
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException("退款金额必须大于0.01元且小于或等于支付金额"));
+                }
+
+                //生成全局唯一的ID号
+                Int64 newId = IDGenerator.GenerateID();
+                var tradeTime = DateTime.Now;
+
+                // 添加退款记录
+                var refundOrder = new PayOrder()
+                {
+                    Id = newId,
+                    AppId = request.AppId,
+                    PayerId = originalPayOrder.PayerId,
+                    OutTradeNo = request.OutTradeNo,
+                    TradeNo = originalPayOrder.TradeNo,
+                    PayAmount = request.Amount,
+                    BankCardNo = originalPayOrder.BankCardNo,
+                    PayChannelCode = GlobalConfig.YEEPAY_PAYCHANNEL_CODE,
+                    PayStatus = PayStatus.APPLY.ToString(),
+                    PayType = PayType.REFUND.ToString(),
+                    CreateTime = tradeTime,
+                    Remark = request.Remark
+                };
+
+                _payOrderRepository.Add(refundOrder);
+                var saveResult = _payOrderRepository.SaveChanges();
+                if (!saveResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_payOrderRepository)}.SaveChanges()", "支付单保存失败", saveResult.FirstException, refundOrder);
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
+                }
+
+                var execResult = YeePayAgreePayUtil.Execute<RawYeePayRefundRequest, RawYeePayRefundResponse>("/rest/v1.0/paperorder/api/refund/request", new RawYeePayRefundRequest()
+                {
+                    merchantno = GlobalConfig.YeePay_AgreePay_MerchantNo,
+                    requestno = request.OutTradeNo,
+                    paymentyborderid = refundOrder.TradeNo,
+                    amount = request.Amount.ToString("0.00"),
+                    requesttime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    remark = request.Remark
+                });
+
+                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
+
+                if (!execResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "支付失败", execResult.FirstException, execResult);
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, execResult.FirstException);
+                }
+
+                if (execResult.Value == null)
+                {
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
+                }
+
+                var respResult = execResult.Value;
+
+                //如果易宝返回的不是PROCESSING则表示处理失败
+                if (respResult.status != "PROCESSING")
+                {
+                    refundOrder.PayStatus = PayStatus.FAILURE.ToString();
+                    refundOrder.UpdateTime = DateTime.Now;
+                    UpdatePayOrder(service, refundOrder);
+                    return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.FAILURE, new RemoteException($"{respResult.errorcode}:{respResult.errormsg}"));
+                }
+
+                //如果易宝返回PROCESSING表示已处理
+                //并且要将易宝返回的易宝内部交易号更新到数据库
+                //这个TradeNo以后可以作为退款接口的原交易号
+                refundOrder.PayStatus = PayStatus.PROCESSING.ToString();
+                refundOrder.TradeNo = respResult.yborderid;
+                refundOrder.UpdateTime = DateTime.Now;
+                UpdatePayOrder(service, refundOrder);
+
+                var resp = new YeePayAgreePayRefundResponse()
+                {
+                    OutTradeNo = respResult.requestno,
+                    YeePayTradeNo = respResult.yborderid,
+                    ApplyTime = tradeTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Status = PayStatus.PROCESSING.ToString(),
+                    Msg = PayStatus.PROCESSING.GetDescription()
+                };
+
+                return new XResult<YeePayAgreePayRefundResponse>(resp);
+            }
+            finally
+            {
+                _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        private void UpdatePayOrder(String service, PayOrder order)
+        {
+            _payOrderRepository.Update(order);
+            var saveResult = _payOrderRepository.SaveChanges();
+            if (!saveResult.Success)
+            {
+                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_payOrderRepository)}.SaveChanges()", "更新协议支付结果失败", saveResult.FirstException, order);
+            }
+        }
+
+        public XResult<Int32> PullPayStatus(Int32 count)
+        {
+            if (count <= 0 || count > 20)
+            {
+                return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count超出范围[1,20]"));
+            }
+
+            String service = $"{this.GetType().FullName}.PullPayStatus(...)";
+
+            var key = DateTime.Now.Date.GetHashCode();
+
+            if (_lockProvider.Exists(key))
+            {
+                return new XResult<Int32>(0);
+            }
+
+            try
+            {
+                if (!_lockProvider.Lock(key))
+                {
+                    return new XResult<Int32>(0);
+                }
+
+                List<PullQueryItem> items = null;
+
+                try
+                {
+                    items = (from t0 in _payOrderRepository.QueryProvider
+                             where t0.PayStatus != PayStatus.FAILURE.ToString()
+                             && t0.PayStatus != PayStatus.SUCCESS.ToString()
+                             && t0.PayChannelCode == GlobalConfig.YEEPAY_PAYCHANNEL_CODE
+                             orderby t0.CreateTime
+                             select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).ToList();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "items", "查询处理中的订单失败", ex);
+                    return new XResult<Int32>(0);
+                }
+
+                if (items == null || items.Count == 0)
+                {
+                    return new XResult<Int32>(0);
+                }
+
+                var tasks = new List<Task>(items.Count);
+                var results = new ConcurrentQueue<YeePayAgreePayQueryResult>();
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var item in items)
+                {
+                    //将3天前还没有结果的订单设置为失败
+                    if ((DateTime.Now - item.CreateTime).TotalDays > 3)
+                    {
+                        sb.Append($"update pay_order set pay_status='{PayStatus.FAILURE.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{item.OutTradeNo}';");
+                    }
+
+                    tasks.Add(Task.Run(() =>
+                    {
+                        QueryFromYeePay(item.OutTradeNo, results);
+                    }));
+                }
+
+                try
+                {
+                    Task.WaitAll(tasks.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "Task.WaitAll(...)", "查询协议支付结果的并行任务出现异常", ex);
+                }
+
+                foreach (var result in results)
+                {
+                    if (result.PayStatus == PayStatus.SUCCESS
+                        || result.PayStatus == PayStatus.FAILURE)
+                    {
+                        sb.Append($"update pay_order set pay_status='{result.PayStatus.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{result.OutTradeNo}' and pay_channel_code='{GlobalConfig.YEEPAY_PAYCHANNEL_CODE}';");
+                    }
+                }
+
+                if (sb.Length > 0)
+                {
+                    String sql = sb.ToString();
+                    String traceMethod = $"{nameof(_payOrderRepository)}.ExecuteSql(...)";
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, $"开始调用{traceMethod}", $"SQL：{sql}");
+                    var execResult = _payOrderRepository.ExecuteSql(FormattableStringFactory.Create(sql));
+                    _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"完成调用{traceMethod}", $"受影响{execResult.Value}行");
+                    if (!execResult.Success)
+                    {
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "更新协议支付结果失败", execResult.FirstException, $"SQL：{sql}");
+                    }
+
+                    return execResult;
+                }
+
+                return new XResult<Int32>(0);
+            }
+            finally
+            {
+                _lockProvider.UnLock(key);
+            }
+        }
+
+        public XResult<Int32> PullRefundStatus(Int32 count)
         {
             throw new NotImplementedException();
         }
 
-        public XResult<PagedList<CPIAgreePayQueryResult>> Query(CPIAgreePayQueryRequest request)
+        private void QueryFromYeePay(String outTradeNo, ConcurrentQueue<YeePayAgreePayQueryResult> results)
         {
-            throw new NotImplementedException();
+            var execResult = YeePayAgreePayUtil.Execute<Object, RawYeePayAgreePayResultQueryResponse>("/rest/v1.0/paperorder/api/pay/query", new
+            {
+                merchantno = GlobalConfig.YeePay_AgreePay_MerchantNo,
+                requestno = outTradeNo
+            });
+
+            if (execResult.Success && execResult.Value != null)
+            {
+                var respResult = execResult.Value;
+                if (respResult.status == "PAY_SUCCESS" || respResult.status == "PAY_FAIL")
+                {
+                    var result = new YeePayAgreePayQueryResult()
+                    {
+                        Amount = respResult.amount,
+                        CompleteTime = respResult.banksuccessdate,
+                        OutTradeNo = respResult.requestno,
+                        YeePayTradeNo = respResult.yborderid,
+                        PayStatus = respResult.status == "PAY_SUCCESS" ? PayStatus.SUCCESS : PayStatus.FAILURE
+                    };
+                    results.Enqueue(result);
+                }
+            }
         }
     }
 }

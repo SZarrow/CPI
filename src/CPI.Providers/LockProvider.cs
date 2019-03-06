@@ -61,18 +61,14 @@ namespace CPI.Providers
             }
         }
 
-        public Boolean UnLock(Int32 key)
+        public void UnLock(Int32 key)
         {
             try
             {
                 _rwLock.EnterWriteLock();
                 _lockDic.Remove(key);
-                return true;
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            catch { }
             finally
             {
                 if (_rwLock.IsWriteLockHeld)

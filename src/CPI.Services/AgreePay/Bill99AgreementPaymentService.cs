@@ -642,6 +642,7 @@ namespace CPI.Services.AgreePay
                     items = (from t0 in _payOrderRepository.QueryProvider
                              where t0.PayStatus != PayStatus.FAILURE.ToString()
                              && t0.PayStatus != PayStatus.SUCCESS.ToString()
+                             && t0.PayChannelCode == GlobalConfig.X99BILL_PAYCHANNEL_CODE
                              orderby t0.CreateTime
                              select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).ToList();
                 }
@@ -665,7 +666,7 @@ namespace CPI.Services.AgreePay
                     //将3天前还没有结果的订单设置为失败
                     if ((DateTime.Now - item.CreateTime).TotalDays > 3)
                     {
-                        sb.Append($"update pay_order set pay_status='{PayStatus.FAILURE.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{item.OutTradeNo}';");
+                        sb.Append($"update pay_order set pay_status='{PayStatus.FAILURE.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{item.OutTradeNo}' and pay_channel_code='{GlobalConfig.X99BILL_PAYCHANNEL_CODE}';");
                     }
 
                     tasks.Add(Task.Run(() =>

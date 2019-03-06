@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CPI.Common.Domain.AgreePay.YeePay
 {
-    public class YeePayAgreePayPaymentResponse : CommonResponse
+    public class YeePayAgreePayRefundResponse : CommonResponse
     {
         /// <summary>
         /// 外部交易号（商户订单编号）
@@ -17,7 +17,7 @@ namespace CPI.Common.Domain.AgreePay.YeePay
         public String YeePayTradeNo { get; set; }
 
         /// <summary>
-        /// 申请时间
+        /// 退款申请时间
         /// </summary>
         public String ApplyTime { get; set; }
     }
