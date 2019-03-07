@@ -136,7 +136,7 @@ namespace CPI.Handlers.AgreePay
 
         private ObjectResult PayResultPull_1_0(String traceService, String requestService, ref String traceMethod)
         {
-            var pullRequest = JsonUtil.DeserializeObject<AgreepayPayResultPullRequestV1>(_request.BizContent);
+            var pullRequest = JsonUtil.DeserializeObject<CommonPullRequest>(_request.BizContent);
             if (!pullRequest.Success)
             {
                 _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", pullRequest.FirstException, _request.BizContent);
@@ -157,7 +157,7 @@ namespace CPI.Handlers.AgreePay
 
             _logger.Trace(TraceType.ROUTE.ToString(), (pullResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束拉取支付状态", pullResult.Value);
 
-            return pullResult.Success ? new ObjectResult(new AgreepayPayResultPullResponseV1()
+            return pullResult.Success ? new ObjectResult(new CommonPullResponse()
             {
                 SuccessCount = pullResult.Value
             }) : new ObjectResult(null, pullResult.ErrorCode, pullResult.FirstException);

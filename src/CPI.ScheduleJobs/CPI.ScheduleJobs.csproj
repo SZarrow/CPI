@@ -78,15 +78,10 @@
     <Compile Include="AgreePay\Bill99AgreepayPayResultPullJob.cs" />
     <Compile Include="CPIScheduleConfig.cs" />
     <Compile Include="CPIJob.cs" />
-    <Compile Include="FundOut\Bill99PaymentResultPullJob.cs" />
-    <Compile Include="Models\AgreepayPayResultPullResult.cs" />
+    <Compile Include="Models\CommonPullResult.cs" />
     <Compile Include="Models\CPIGatewayCommonResponse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settle\Bill99FireAllotAmountJob.cs" />
-    <Compile Include="Settle\Bill99FireWithdrawJob.cs" />
-    <Compile Include="Settle\Bill99PullAllotAmountResultJob.cs" />
-    <Compile Include="Settle\Bill99PullRegisterAuditResultJob.cs" />
     <Compile Include="Settle\Bill99PullWithdrawResultJob.cs" />
   </ItemGroup>
   <ItemGroup>
