@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgreePay\Bill99AgreepayPayResultPullJob.cs" />
+    <Compile Include="AgreePay\YeePayAgreepayPayResultPullJob.cs" />
     <Compile Include="CPIScheduleConfig.cs" />
     <Compile Include="CPIJob.cs" />
     <Compile Include="Models\CommonPullResult.cs" />
@@ -86,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Configs\Lotus.Logging.Config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="CPI.ScheduleJobs.Development.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
