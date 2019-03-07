@@ -593,6 +593,7 @@ namespace CPI.Services.AgreePay
                 {
                     OutTradeNo = x.OutTradeNo,
                     Amount = x.PayAmount,
+                    PayType = x.PayType,
                     Status = x.PayStatus,
                     Msg = GetQueryStatusMsg(x.PayStatus),
                     CreateTime = x.CreateTime

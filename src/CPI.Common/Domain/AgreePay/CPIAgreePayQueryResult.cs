@@ -18,6 +18,10 @@ namespace CPI.Common.Domain.AgreePay
         /// </summary>
         public Decimal Amount { get; set; }
         /// <summary>
+        /// 支付类型
+        /// </summary>
+        public String PayType { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
