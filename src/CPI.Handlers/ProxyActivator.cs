@@ -100,8 +100,8 @@ namespace CPI.Handlers
 
             if (request.Method.IndexOf("cpi.unified.querystatus") == 0)
             {
-                _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
-                return new Bill99AgreePayInvocation(request);
+                _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 AgreePayInvocation");
+                return new AgreePayInvocation(request);
             }
 
             if (request.Method.IndexOf("cpi.unified.payresult.pull") == 0)
