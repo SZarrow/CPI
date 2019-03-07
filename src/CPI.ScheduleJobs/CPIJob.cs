@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CPI.Common;
 using CPI.Data.PostgreSQL;
 using Lotus.Core;
 using Lotus.Logging;
@@ -21,15 +22,6 @@ namespace CPI.ScheduleJobs
 
         public Task Execute(IJobExecutionContext context)
         {
-            //try
-            //{
-            //    await Execute();
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.Error("CPI.ScheduleJobs", "ERROR", $"{this.GetType().FullName}.Execute()", "Execute()", "定时调度任务执行出现异常", ex);
-            //}
-
             return Execute();
         }
 
