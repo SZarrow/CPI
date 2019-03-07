@@ -1,6 +1,6 @@
-# CPICore-AllotAmount-v1
+﻿# CPICore-AllotAmount-v1
 
 [English](README.md) | 中文
 
-CPI的分账1.0版本。
+通用支付接口。该接口通过统一的调用方式对接了快钱协议支付(含分账)/代扣、双乾代付、易宝协议支付/代扣(不含分账)。
 
