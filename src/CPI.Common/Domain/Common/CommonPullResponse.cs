@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace CPI.ScheduleJobs.Models
+namespace CPI.Common.Domain.Common
 {
-    public class AgreepayPayResultPullResult
+    public class CommonPullResponse
     {
         public Int32 SuccessCount { get; set; }
     }

@@ -555,9 +555,9 @@ namespace CPI.Services.AgreePay
 
         public XResult<Int32> PullPayStatus(Int32 count)
         {
-            if (count <= 0 || count > 20)
+            if (count <= 0)
             {
-                return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count超出范围[1,20]"));
+                return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count必须大于0"));
             }
 
             String service = $"{this.GetType().FullName}.PullPayStatus(...)";
@@ -584,8 +584,9 @@ namespace CPI.Services.AgreePay
                              where t0.PayStatus != PayStatus.FAILURE.ToString()
                              && t0.PayStatus != PayStatus.SUCCESS.ToString()
                              && t0.PayChannelCode == GlobalConfig.YEEPAY_PAYCHANNEL_CODE
+                             && (t0.PayType == PayType.AGREEMENTPAY.ToString() || t0.PayType == PayType.ENTRUSTPAY.ToString())
                              orderby t0.CreateTime
-                             select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).ToList();
+                             select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).Take(count).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -604,15 +605,9 @@ namespace CPI.Services.AgreePay
 
                 foreach (var item in items)
                 {
-                    //将3天前还没有结果的订单设置为失败
-                    if ((DateTime.Now - item.CreateTime).TotalDays > 3)
-                    {
-                        sb.Append($"update pay_order set pay_status='{PayStatus.FAILURE.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{item.OutTradeNo}';");
-                    }
-
                     tasks.Add(Task.Run(() =>
                     {
-                        QueryFromYeePay(item.OutTradeNo, results);
+                        QueryPayResultFromYeePay(item.OutTradeNo, results);
                     }));
                 }
 
@@ -662,7 +657,7 @@ namespace CPI.Services.AgreePay
             throw new NotImplementedException();
         }
 
-        private void QueryFromYeePay(String outTradeNo, ConcurrentQueue<YeePayAgreePayQueryResult> results)
+        private void QueryPayResultFromYeePay(String outTradeNo, ConcurrentQueue<YeePayAgreePayQueryResult> results)
         {
             var execResult = YeePayAgreePayUtil.Execute<Object, RawYeePayAgreePayResultQueryResponse>("/rest/v1.0/paperorder/api/pay/query", new
             {
@@ -673,7 +668,7 @@ namespace CPI.Services.AgreePay
             if (execResult.Success && execResult.Value != null)
             {
                 var respResult = execResult.Value;
-                if (respResult.status == "PAY_SUCCESS" || respResult.status == "PAY_FAIL")
+                if (respResult.status == "PAY_SUCCESS" || respResult.status == "PAY_FAIL" || respResult.status == String.Empty)
                 {
                     var result = new YeePayAgreePayQueryResult()
                     {

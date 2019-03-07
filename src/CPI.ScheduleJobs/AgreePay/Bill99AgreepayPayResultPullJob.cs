@@ -37,7 +37,7 @@ namespace CPI.ScheduleJobs.AgreePay
                 Sign = sign.Value
             };
 
-            return _client.PostJsonAsync<CPIGatewayCommonResponse<AgreepayPayResultPullResult>>(CPIScheduleConfig.RequestUrl, JsonUtil.SerializeObject(postData).Value).ContinueWith(t0 =>
+            return _client.PostJsonAsync<CPIGatewayCommonResponse<CommonPullResult>>(CPIScheduleConfig.RequestUrl, JsonUtil.SerializeObject(postData).Value).ContinueWith(t0 =>
              {
                  if (t0.IsCompleted)
                  {

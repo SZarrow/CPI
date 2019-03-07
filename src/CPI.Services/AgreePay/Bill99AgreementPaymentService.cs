@@ -614,9 +614,9 @@ namespace CPI.Services.AgreePay
 
         public XResult<Int32> Pull(Int32 count)
         {
-            if (count <= 0 || count > 20)
+            if (count <= 0)
             {
-                return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count超出范围[1,20]"));
+                return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count必须大于0"));
             }
 
             String service = $"{this.GetType().FullName}.Pull(...)";
@@ -644,7 +644,7 @@ namespace CPI.Services.AgreePay
                              && t0.PayStatus != PayStatus.SUCCESS.ToString()
                              && t0.PayChannelCode == GlobalConfig.X99BILL_PAYCHANNEL_CODE
                              orderby t0.CreateTime
-                             select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).ToList();
+                             select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).Take(count).ToList();
                 }
                 catch (Exception ex)
                 {
