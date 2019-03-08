@@ -124,7 +124,7 @@ namespace CPI.Data.PostgreSQL
         {
             try
             {
-                String service = $"{GetTypeFullName()}.ExecuteSql(...)";
+                String service = $"{GetTypeFullName()}.{nameof(ExecuteSql)}(...)";
                 String traceMethod = $"{nameof(_db)}.Database.ExecuteSqlCommand(...)";
                 _logger.Trace(TraceType.DAL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, "开始执行SQL语句", $"SQL：{sql.ToString()}");
                 Int32 result = _db.Database.ExecuteSqlCommand(sql);
@@ -133,7 +133,7 @@ namespace CPI.Data.PostgreSQL
             }
             catch (Exception ex)
             {
-                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{GetTypeFullName()}.ExecuteSql()", "数据库更新异常", "执行SQL语句时出现异常", ex, sql);
+                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{GetTypeFullName()}.{nameof(ExecuteSql)}()", "数据库更新异常", "执行SQL语句时出现异常", ex, sql);
                 return new XResult<Int32>(0, ex);
             }
         }
@@ -171,12 +171,12 @@ namespace CPI.Data.PostgreSQL
             catch (DbUpdateConcurrencyException ex)
             {
                 //TODO
-                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{GetTypeFullName()}.SaveChanges()", "数据库更新异常", "更新数据库出现并发异常", null, ex);
+                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{GetTypeFullName()}.SaveChanges()", "数据库更新异常", "更新数据库出现并发异常", ex);
                 return new XResult<Int32>(0, ex);
             }
             catch (Exception ex)
             {
-                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.SaveChanges()", "数据库更新异常", "更新数据库出现并发异常", null, ex);
+                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.SaveChanges()", "数据库更新异常", "更新数据库出现异常", ex);
                 return new XResult<Int32>(0, ex);
             }
         }
