@@ -595,7 +595,7 @@ namespace CPI.Services.AgreePay
                     Amount = x.PayAmount,
                     PayType = x.PayType,
                     Status = x.PayStatus,
-                    Msg = GetQueryStatusMsg(x.PayStatus),
+                    Msg = GetQueryStatusMsg(x.PayStatus, x.PayType),
                     CreateTime = x.CreateTime
                 }).OrderByDescending(x => x.CreateTime);
 
@@ -803,8 +803,9 @@ namespace CPI.Services.AgreePay
             return PayStatus.PROCESSING;
         }
 
-        private String GetQueryStatusMsg(String status)
+        private String GetQueryStatusMsg(String status, String payType)
         {
+            payType = payType == "REFUND" ? "退款" : "支付";
             switch (status)
             {
                 case "APPLY":
@@ -812,11 +813,10 @@ namespace CPI.Services.AgreePay
                 case "PROCESSING":
                     return PayStatus.PROCESSING.GetDescription();
                 case "SUCCESS":
-                    return $"支付{PayStatus.SUCCESS.GetDescription()}";
+                    return $"{payType}{PayStatus.SUCCESS.GetDescription()}";
                 case "FAILURE":
-                    return $"支付{PayStatus.FAILURE.GetDescription()}";
+                    return $"{payType}{PayStatus.FAILURE.GetDescription()}";
             }
-
             return null;
         }
     }

@@ -15,7 +15,7 @@ namespace CPI.Common.Domain.AgreePay.YeePay
         /// </summary>
         public String YeePayTradeNo { get; set; }
         /// <summary>
-        /// 支付金额
+        /// 交易金额
         /// </summary>
         public Decimal Amount { get; set; }
         /// <summary>

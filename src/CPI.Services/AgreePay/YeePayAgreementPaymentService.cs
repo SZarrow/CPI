@@ -590,7 +590,7 @@ namespace CPI.Services.AgreePay
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "items", "查询处理中的订单失败", ex);
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "items", "查询易宝协议支付/代扣处理中的订单失败", ex);
                     return new XResult<Int32>(0);
                 }
 
@@ -617,7 +617,7 @@ namespace CPI.Services.AgreePay
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "Task.WaitAll(...)", "查询协议支付结果的并行任务出现异常", ex);
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "Task.WaitAll(...)", "查询易宝协议支付/代扣结果的并行任务出现异常", ex);
                 }
 
                 foreach (var result in results)
@@ -633,9 +633,7 @@ namespace CPI.Services.AgreePay
                 {
                     String sql = sb.ToString();
                     String traceMethod = $"{nameof(_payOrderRepository)}.ExecuteSql(...)";
-                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, $"开始调用{traceMethod}", $"SQL：{sql}");
                     var execResult = _payOrderRepository.ExecuteSql(FormattableStringFactory.Create(sql));
-                    _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, $"完成调用{traceMethod}", $"受影响{execResult.Value}行");
                     if (!execResult.Success)
                     {
                         _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "更新协议支付结果失败", execResult.FirstException, $"SQL：{sql}");
@@ -654,7 +652,99 @@ namespace CPI.Services.AgreePay
 
         public XResult<Int32> PullRefundStatus(Int32 count)
         {
-            throw new NotImplementedException();
+            if (count <= 0)
+            {
+                return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count必须大于0"));
+            }
+
+            String service = $"{this.GetType().FullName}.PullRefundStatus(...)";
+
+            var key = DateTime.Now.Date.GetHashCode();
+
+            if (_lockProvider.Exists(key))
+            {
+                return new XResult<Int32>(0);
+            }
+
+            try
+            {
+                if (!_lockProvider.Lock(key))
+                {
+                    return new XResult<Int32>(0);
+                }
+
+                List<PullQueryItem> items = null;
+
+                try
+                {
+                    items = (from t0 in _payOrderRepository.QueryProvider
+                             where t0.PayStatus != PayStatus.FAILURE.ToString()
+                             && t0.PayStatus != PayStatus.SUCCESS.ToString()
+                             && t0.PayChannelCode == GlobalConfig.YEEPAY_PAYCHANNEL_CODE
+                             && t0.PayType == PayType.REFUND.ToString()
+                             orderby t0.CreateTime
+                             select new PullQueryItem(t0.OutTradeNo, t0.CreateTime)).Take(count).ToList();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "items", "查询退款处理中的订单失败", ex);
+                    return new XResult<Int32>(0);
+                }
+
+                if (items == null || items.Count == 0)
+                {
+                    return new XResult<Int32>(0);
+                }
+
+                var tasks = new List<Task>(items.Count);
+                var results = new ConcurrentQueue<YeePayAgreePayQueryResult>();
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var item in items)
+                {
+                    tasks.Add(Task.Run(() =>
+                    {
+                        QueryRefundResultFromYeePay(item.OutTradeNo, results);
+                    }));
+                }
+
+                try
+                {
+                    Task.WaitAll(tasks.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "Task.WaitAll(...)", "查询退款结果的并行任务出现异常", ex);
+                }
+
+                foreach (var result in results)
+                {
+                    if (result.PayStatus == PayStatus.SUCCESS
+                        || result.PayStatus == PayStatus.FAILURE)
+                    {
+                        sb.Append($"update pay_order set pay_status='{result.PayStatus.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{result.OutTradeNo}' and pay_channel_code='{GlobalConfig.YEEPAY_PAYCHANNEL_CODE}';");
+                    }
+                }
+
+                if (sb.Length > 0)
+                {
+                    String sql = sb.ToString();
+                    String traceMethod = $"{nameof(_payOrderRepository)}.ExecuteSql(...)";
+                    var execResult = _payOrderRepository.ExecuteSql(FormattableStringFactory.Create(sql));
+                    if (!execResult.Success)
+                    {
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "更新退款结果失败", execResult.FirstException, $"SQL：{sql}");
+                    }
+
+                    return execResult;
+                }
+
+                return new XResult<Int32>(0);
+            }
+            finally
+            {
+                _lockProvider.UnLock(key);
+            }
         }
 
         private void QueryPayResultFromYeePay(String outTradeNo, ConcurrentQueue<YeePayAgreePayQueryResult> results)
@@ -678,6 +768,46 @@ namespace CPI.Services.AgreePay
                         YeePayTradeNo = respResult.yborderid,
                         PayStatus = respResult.status == "PAY_SUCCESS" ? PayStatus.SUCCESS : PayStatus.FAILURE
                     };
+                    results.Enqueue(result);
+                }
+            }
+        }
+
+        private void QueryRefundResultFromYeePay(String outTradeNo, ConcurrentQueue<YeePayAgreePayQueryResult> results)
+        {
+            var execResult = YeePayAgreePayUtil.Execute<Object, RawYeePayRefundResultQueryResponse>("/rest/v1.0/paperorder/api/refund/query", new
+            {
+                merchantno = GlobalConfig.YeePay_AgreePay_MerchantNo,
+                requestno = outTradeNo
+            });
+
+            if (execResult.Success && execResult.Value != null)
+            {
+                var respResult = execResult.Value;
+                var result = new YeePayAgreePayQueryResult()
+                {
+                    Amount = respResult.amount,
+                    CompleteTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    OutTradeNo = respResult.requestno,
+                    YeePayTradeNo = respResult.yborderid
+                };
+
+                Boolean changed = false;
+                switch (respResult.status)
+                {
+                    case "REFUND_SUCCESS":
+                        result.PayStatus = PayStatus.SUCCESS;
+                        changed = true;
+                        break;
+                    case "":
+                    case "REFUND_FAIL":
+                        result.PayStatus = PayStatus.FAILURE;
+                        changed = true;
+                        break;
+                }
+
+                if (changed)
+                {
                     results.Enqueue(result);
                 }
             }

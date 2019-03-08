@@ -48,6 +48,8 @@ namespace CPI.Handlers.AgreePay
                     return Refund_1_0(traceService, requestService, ref traceMethod);
                 case "cpi.agreepay.payresult.pull.yeepay.1.0":
                     return PayResultPull_1_0(traceService, requestService, ref traceMethod);
+                case "cpi.agreepay.refundresult.pull.yeepay.1.0":
+                    return RefundResultPull_1_0(traceService, requestService, ref traceMethod);
             }
 
             return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
@@ -169,6 +171,35 @@ namespace CPI.Handlers.AgreePay
             var pullResult = _agreePayService.PullPayStatus(pullRequest.Value.Count);
 
             _logger.Trace(TraceType.ROUTE.ToString(), (pullResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束拉取支付状态", pullResult.Value);
+
+            return pullResult.Success ? new ObjectResult(new CommonPullResponse()
+            {
+                SuccessCount = pullResult.Value
+            }) : new ObjectResult(null, pullResult.ErrorCode, pullResult.FirstException);
+        }
+
+        private ObjectResult RefundResultPull_1_0(String traceService, String requestService, ref String traceMethod)
+        {
+            var pullRequest = JsonUtil.DeserializeObject<CommonPullRequest>(_request.BizContent);
+            if (!pullRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", pullRequest.FirstException, _request.BizContent);
+                return new ObjectResult(0, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            pullRequest.Value.AppId = _request.AppId;
+
+            if (!pullRequest.Value.IsValid)
+            {
+                return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(pullRequest.Value.ErrorMessage));
+            }
+
+            traceMethod = $"{_agreePayService.GetType().FullName}.PullRefundStatus(...)";
+
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取退款结果", pullRequest.Value);
+
+            var pullResult = _agreePayService.PullRefundStatus(pullRequest.Value.Count);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (pullResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束拉取退款结果", pullResult.Value);
 
             return pullResult.Success ? new ObjectResult(new CommonPullResponse()
             {
