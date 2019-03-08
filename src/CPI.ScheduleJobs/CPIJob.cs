@@ -15,7 +15,6 @@ namespace CPI.ScheduleJobs
 {
     public abstract class CPIJob : IJob
     {
-        private static readonly ILogger _logger = LogManager.GetLogger();
         protected static readonly HttpClient _client = new HttpClient();
 
         protected CPIJob() { }
