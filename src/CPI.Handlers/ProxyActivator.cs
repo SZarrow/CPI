@@ -136,30 +136,32 @@ namespace CPI.Handlers
                     return null;
                 }
 
-                var payChannelService = XDI.Resolve<IPayChannelService>();
-                var channels = payChannelService.GetAllChannels();
-                if (channels != null && channels.Count() > 0)
-                {
-                    var cheapestChannel = (from ch in channels
-                                           let cost = paymentRequest.Value.GetPayAmount() * ch.PayRate
-                                           orderby cost
-                                           select new
-                                           {
-                                               ch.ChannelCode,
-                                               Cost = cost
-                                           }).FirstOrDefault();
+                #region 关闭协议支付
+                //var payChannelService = XDI.Resolve<IPayChannelService>();
+                //var channels = payChannelService.GetAllChannels();
+                //if (channels != null && channels.Count() > 0)
+                //{
+                //    var cheapestChannel = (from ch in channels
+                //                           let cost = paymentRequest.Value.GetPayAmount() * ch.PayRate
+                //                           orderby cost
+                //                           select new
+                //                           {
+                //                               ch.ChannelCode,
+                //                               Cost = cost
+                //                           }).FirstOrDefault();
 
-                    if (cheapestChannel.Cost > GlobalConfig.PayChannelFeeThreshold)
-                    {
-                        _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99EntrustPayInvocation");
-                        return CreateEntrustPayInvocation(cheapestChannel.ChannelCode, request);
-                    }
+                //    if (cheapestChannel.Cost > GlobalConfig.PayChannelFeeThreshold)
+                //    {
+                //        _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99EntrustPayInvocation");
+                //        return CreateEntrustPayInvocation(cheapestChannel.ChannelCode, request);
+                //    }
 
-                    return CreateAgreePayInvocation(cheapestChannel.ChannelCode, request);
-                }
+                //    return CreateAgreePayInvocation(cheapestChannel.ChannelCode, request);
+                //} 
+                #endregion
 
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 Bill99AgreePayInvocation");
-                return CreateAgreePayInvocation(GlobalConfig.X99BILL_PAYCHANNEL_CODE, request);
+                return CreateEntrustPayInvocation(GlobalConfig.X99BILL_PAYCHANNEL_CODE, request);
             }
 
             return null;
