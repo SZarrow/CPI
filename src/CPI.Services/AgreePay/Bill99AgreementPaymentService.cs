@@ -76,10 +76,11 @@ namespace CPI.Services.AgreePay
 
                 // 如果未保存绑卡信息则添加到数据库
                 var existsBankCard = _bankCardInfoRepository.Exists(x => x.IDCardNo == request.IDCardNo && x.BankCardNo == request.BankCardNo);
+                AgreePayBankCardInfo bankCardInfo = null;
                 if (!existsBankCard)
                 {
                     // 先将绑卡的银行卡数据入库
-                    var bankCardInfo = new AgreePayBankCardInfo()
+                    bankCardInfo = new AgreePayBankCardInfo()
                     {
                         Id = IDGenerator.GenerateID(),
                         AppId = request.AppId,
@@ -128,16 +129,19 @@ namespace CPI.Services.AgreePay
                 if (!result.Success)
                 {
                     _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "申请绑卡失败", result.FirstException, applyRequest);
+                    DeleteFailedBankCardInfo(service, callMethod, bankCardInfo);
                     return new XResult<CPIAgreePayApplyResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, result.FirstException);
                 }
 
                 if (result.Value == null)
                 {
+                    DeleteFailedBankCardInfo(service, callMethod, bankCardInfo);
                     return new XResult<CPIAgreePayApplyResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
                 }
 
                 if (result.Value.IndAuthContent == null)
                 {
+                    DeleteFailedBankCardInfo(service, callMethod, bankCardInfo);
                     return result.Value.ErrorMsgContent != null
                         ? new XResult<CPIAgreePayApplyResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(result.Value.ErrorMsgContent.ErrorMessage))
                         : new XResult<CPIAgreePayApplyResponse>(null, ErrorCode.REMOTE_RETURN_NOTHING);
@@ -146,6 +150,7 @@ namespace CPI.Services.AgreePay
                 var respContent = result.Value.IndAuthContent;
                 if (respContent.ResponseCode != "00")
                 {
+                    DeleteFailedBankCardInfo(service, callMethod, bankCardInfo);
                     return new XResult<CPIAgreePayApplyResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, new RemoteException(respContent.ResponseTextMessage));
                 }
 
@@ -164,6 +169,26 @@ namespace CPI.Services.AgreePay
             finally
             {
                 _lockProvider.UnLock(requestHash);
+            }
+        }
+
+        /// <summary>
+        /// 删除错误的绑卡记录
+        /// </summary>
+        private void DeleteFailedBankCardInfo(String service, String callMethod, AgreePayBankCardInfo bankCardInfo)
+        {
+            if (bankCardInfo != null)
+            {
+                _bankCardInfoRepository.Remove(bankCardInfo);
+                var deleteResult = _bankCardBindInfoRepository.SaveChanges();
+                if (!deleteResult.Success)
+                {
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_bankCardBindInfoRepository)}.SaveChanges()", "无法删除申请绑卡失败的记录", deleteResult.FirstException, bankCardInfo);
+                }
+                else
+                {
+                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, callMethod, LogPhase.ACTION, $"成功删除申请绑卡失败的记录", bankCardInfo);
+                }
             }
         }
 
