@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
-using CPI.Common;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
-using CPI.IService.SettleServices;
 using CPI.ScheduleJobs.Models;
 using CPI.Utils;
 using Lotus.Logging;
-using Lotus.Security;
 using Lotus.Net;
-using System.Security.Cryptography;
+using Lotus.Security;
 
 namespace CPI.ScheduleJobs.Settle
 {
