@@ -119,44 +119,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CPI.Common\CPI.Common.csproj">
-      <Project>{744ce24a-cadf-4415-aeff-a9643306bca8}</Project>
-      <Name>CPI.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.Config\CPI.Config.csproj">
-      <Project>{bef356ea-97d1-4ebe-9ab7-b9b85b63647c}</Project>
-      <Name>CPI.Config</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.Data.PostgreSQL\CPI.Data.PostgreSQL.csproj">
-      <Project>{74603d38-4b6b-4f7a-9f1e-8a3a0a393dee}</Project>
-      <Name>CPI.Data.PostgreSQL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.IData\CPI.IData.csproj">
-      <Project>{c33c5eb2-2d88-48ac-a507-4b554439d007}</Project>
-      <Name>CPI.IData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.IService\CPI.IService.csproj">
-      <Project>{0e38dd33-b3ad-46ca-8410-2ab6af05149a}</Project>
-      <Name>CPI.IService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.Providers\CPI.Providers.csproj">
-      <Project>{ba118b32-ec0f-4c48-bf83-dd759e9f1a90}</Project>
-      <Name>CPI.Providers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.Security\CPI.Security.csproj">
-      <Project>{e764adb0-44e1-4faf-9330-cbda5fdcb82e}</Project>
-      <Name>CPI.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.Services\CPI.Services.csproj">
-      <Project>{4e051618-4120-4442-b073-597a70eb43e3}</Project>
-      <Name>CPI.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CPI.Utils\CPI.Utils.csproj">
-      <Project>{e53b4dd3-e9a3-4091-825a-603c217b0725}</Project>
-      <Name>CPI.Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.7.2 %28x86 和 x64%29</ProductName>
@@ -167,6 +129,20 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CPI.Common\CPI.Common.csproj">
+      <Project>{744ce24a-cadf-4415-aeff-a9643306bca8}</Project>
+      <Name>CPI.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Config\CPI.Config.csproj">
+      <Project>{bef356ea-97d1-4ebe-9ab7-b9b85b63647c}</Project>
+      <Name>CPI.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPI.Utils\CPI.Utils.csproj">
+      <Project>{e53b4dd3-e9a3-4091-825a-603c217b0725}</Project>
+      <Name>CPI.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

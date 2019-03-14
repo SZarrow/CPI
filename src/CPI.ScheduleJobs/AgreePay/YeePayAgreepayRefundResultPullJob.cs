@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using CPI.ScheduleJobs.Models;
 using CPI.Utils;
-using Lotus.Security;
-using Lotus.Net;
 using Lotus.Logging;
+using Lotus.Net;
+using Lotus.Security;
 
 namespace CPI.ScheduleJobs.AgreePay
 {
