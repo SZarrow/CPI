@@ -34,7 +34,7 @@ namespace CPI.Data.PostgreSQL
 
             if (db == null)
             {
-                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"New {this.GetType().FullName}.TransactionScope(...)", "事务TransactionScope初始化", "解析CPIDbContext类型的实例失败");
+                _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{nameof(XDI)}.{nameof(XDI.Resolve)}<{nameof(CPIDbContext)}>", "事务TransactionScope初始化失败", "解析CPIDbContext类型的实例失败");
                 throw new ArgumentNullException(nameof(db));
             }
 
