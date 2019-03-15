@@ -695,8 +695,11 @@ namespace CPI.Services.AgreePay
                         sb.Append($"update pay_order set pay_status='{PayStatus.FAILURE.ToString()}', update_time='{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' where out_trade_no='{item.OutTradeNo}' and pay_channel_code='{GlobalConfig.X99BILL_PAYCHANNEL_CODE}';");
                     }
 
+                    String appName = _logger.CurrentAppName;
+                    String traceId = _logger.CurrentTraceId;
                     tasks.Add(Task.Run(() =>
                     {
+                        _logger.ContinueTrace(appName, traceId);
                         QueryFromBill99(item.OutTradeNo, results);
                     }));
                 }
