@@ -794,12 +794,14 @@ namespace CPI.Services.AgreePay
                         PayStatus = PayStatus.FAILURE
                     });
                 }
-
-                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "查询快钱协议支付结果失败", result.FirstException, new
+                else
                 {
-                    OutTradeNo = outTradeNo,
-                    result.Value.ErrorMsgContent
-                });
+                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "查询快钱协议支付结果失败", result.FirstException, new
+                    {
+                        OutTradeNo = outTradeNo,
+                        result.Value.ErrorMsgContent
+                    });
+                }
                 return;
             }
 
