@@ -785,6 +785,16 @@ namespace CPI.Services.AgreePay
 
             if (result.Value.ErrorMsgContent != null && result.Value.ErrorMsgContent.ErrorMessage.HasValue())
             {
+                //如果返回错误是交易不存在，则更新状态为失败
+                if (result.Value.ErrorMsgContent.ErrorCode == "B.MGW.0170")
+                {
+                    results.Enqueue(new Bill99AgreePayQueryResult()
+                    {
+                        OutTradeNo = outTradeNo,
+                        PayStatus = PayStatus.FAILURE
+                    });
+                }
+
                 _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "查询快钱协议支付结果失败", result.FirstException, new
                 {
                     OutTradeNo = outTradeNo,
@@ -811,10 +821,8 @@ namespace CPI.Services.AgreePay
 
             results.Enqueue(new Bill99AgreePayQueryResult()
             {
-                Amount = result.Value.QryTxnMsgContent.Amount.ToDecimal(),
                 OutTradeNo = result.Value.QryTxnMsgContent.ExternalRefNumber,
-                PayStatus = CalcPayStatus(result.Value.QryTxnMsgContent.TxnStatus),
-                CreateTime = result.Value.QryTxnMsgContent.EntryTime
+                PayStatus = CalcPayStatus(result.Value.QryTxnMsgContent.TxnStatus)
             });
         }
 

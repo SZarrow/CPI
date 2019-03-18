@@ -14,14 +14,6 @@ namespace CPI.Common.Domain.AgreePay
         /// </summary>
         public String OutTradeNo { get; set; }
         /// <summary>
-        /// 支付金额
-        /// </summary>
-        public Decimal Amount { get; set; }
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public String CreateTime { get; set; }
-        /// <summary>
         /// 支付状态
         /// </summary>
         public PayStatus PayStatus { get; set; }
