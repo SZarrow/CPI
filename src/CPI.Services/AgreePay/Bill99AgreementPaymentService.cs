@@ -583,7 +583,7 @@ namespace CPI.Services.AgreePay
             }
         }
 
-        public XResult<PagedList<CPIAgreePayQueryResult>> Query(CPIAgreePayQueryRequest request)
+        public XResult<PagedList<CPIAgreePayQueryResult>> QueryStatus(CPIAgreePayQueryRequest request)
         {
             if (request == null)
             {
@@ -635,6 +635,79 @@ namespace CPI.Services.AgreePay
             catch (Exception ex)
             {
                 return new XResult<PagedList<CPIAgreePayQueryResult>>(null, ErrorCode.DB_QUERY_FAILED, ex);
+            }
+        }
+
+        public XResult<PagedList<CPIAgreePayDetailQueryResult>> QueryDetail(CPIAgreePayDetailQueryRequest request)
+        {
+            if (request == null)
+            {
+                return new XResult<PagedList<CPIAgreePayDetailQueryResult>>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentNullException(nameof(request)));
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<PagedList<CPIAgreePayDetailQueryResult>>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+            var payorder = _payOrderRepository.QueryProvider;
+            var userinfo = _bankCardInfoRepository.QueryProvider;
+
+            if (request.Status.HasValue())
+            {
+                payorder = payorder.Where(x => x.PayStatus == request.Status);
+            }
+
+            if (request.From != null)
+            {
+                payorder = payorder.Where(x => x.CreateTime >= request.From.Value);
+            }
+
+            if (request.To != null)
+            {
+                payorder = payorder.Where(x => x.CreateTime <= request.To.Value);
+            }
+
+            try
+            {
+                var ds = (from x in payorder
+                          join y in userinfo on x.BankCardNo equals y.BankCardNo
+                          select new CPIAgreePayDetailQueryResult()
+                          {
+                              PayerId = x.PayerId,
+                              RealName = y.RealName,
+                              IDCardNo = y.IDCardNo,
+                              Mobile = y.Mobile,
+                              OutTradeNo = x.OutTradeNo,
+                              Fee = x.Fee,
+                              PayChannelCode = x.PayChannelCode,
+                              BankCardNo = x.BankCardNo,
+                              Amount = x.PayAmount,
+                              PayType = x.PayType,
+                              Status = x.PayStatus,
+                              Msg = GetQueryStatusMsg(x.PayStatus, x.PayType),
+                              CreateTime = x.CreateTime,
+                              Remark = x.Remark
+                          });
+
+                if (!String.IsNullOrWhiteSpace(request.Keyword))
+                {
+                    String w = request.Keyword.Trim();
+                    ds = ds.Where(x => x.OutTradeNo == w || x.BankCardNo.Contains(w) || x.PayerId.Contains(w)
+                    || x.IDCardNo.Contains(w) || x.Mobile.Contains(w) || x.RealName.Contains(w));
+                }
+
+                var result = new PagedList<CPIAgreePayDetailQueryResult>(ds.OrderByDescending(x => x.CreateTime), request.PageIndex, request.PageSize);
+                if (result.Exception != null)
+                {
+                    return new XResult<PagedList<CPIAgreePayDetailQueryResult>>(null, ErrorCode.DB_QUERY_FAILED, result.Exception);
+                }
+
+                return new XResult<PagedList<CPIAgreePayDetailQueryResult>>(result);
+            }
+            catch (Exception ex)
+            {
+                return new XResult<PagedList<CPIAgreePayDetailQueryResult>>(null, ErrorCode.DB_QUERY_FAILED, ex);
             }
         }
 

@@ -28,10 +28,15 @@ namespace CPI.IService.AgreePay
         /// <param name="request">支付请求参数</param>
         XResult<CPIAgreePayPaymentResponse> Pay(CPIAgreePayPaymentRequest request);
         /// <summary>
-        /// 支付单查询
+        /// 支付单状态查询
         /// </summary>
         /// <param name="request">查询请求参数</param>
-        XResult<PagedList<CPIAgreePayQueryResult>> Query(CPIAgreePayQueryRequest request);
+        XResult<PagedList<CPIAgreePayQueryResult>> QueryStatus(CPIAgreePayQueryRequest request);
+        /// <summary>
+        /// 支付单明细查询
+        /// </summary>
+        /// <param name="request">查询请求参数</param>
+        XResult<PagedList<CPIAgreePayDetailQueryResult>> QueryDetail(CPIAgreePayDetailQueryRequest request);
         /// <summary>
         /// 从快钱拉取支付结果
         /// </summary>

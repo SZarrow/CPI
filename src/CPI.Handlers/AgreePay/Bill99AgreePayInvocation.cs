@@ -116,7 +116,7 @@ namespace CPI.Handlers.AgreePay
 
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始查询支付状态", queryRequest.Value);
 
-                    var queryResult = _agreePayService.Query(queryRequest.Value);
+                    var queryResult = _agreePayService.QueryStatus(queryRequest.Value);
 
                     _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, $"结束查询支付状态", queryResult.Value);
 
