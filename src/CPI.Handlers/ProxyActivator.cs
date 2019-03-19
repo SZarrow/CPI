@@ -99,7 +99,8 @@ namespace CPI.Handlers
                 return new Bill99EntrustPayInvocation(request);
             }
 
-            if (request.Method.IndexOf("cpi.unified.querystatus") == 0)
+            if (request.Method.IndexOf("cpi.unified.querystatus") == 0
+                || request.Method.IndexOf("cpi.unified.querydetail") == 0)
             {
                 _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), service, tag, LogPhase.ACTION, "创建 AgreePayInvocation");
                 return new AgreePayInvocation(request);
