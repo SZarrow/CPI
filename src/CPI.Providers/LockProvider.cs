@@ -83,7 +83,7 @@ namespace CPI.Providers
             return new LockScope(this, key);
         }
 
-        internal struct LockScope : IDisposable, IEquatable<LockScope>
+        internal class LockScope : IDisposable, IEquatable<LockScope>
         {
             private readonly LockProvider _provider;
             private readonly Int32 _key;
