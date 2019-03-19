@@ -77,5 +77,40 @@ namespace CPI.Providers
                 }
             }
         }
+
+        public IDisposable CreateScope(Int32 key)
+        {
+            return new LockScope(this, key);
+        }
+
+        internal struct LockScope : IDisposable, IEquatable<LockScope>
+        {
+            private readonly LockProvider _provider;
+            private readonly Int32 _key;
+
+            public LockScope(LockProvider provider, Int32 key)
+            {
+                _provider = provider;
+                _key = key;
+
+                if (!_provider.Exists(_key))
+                {
+                    _provider.Lock(_key);
+                }
+            }
+
+            public void Dispose()
+            {
+                if (_provider.Exists(_key))
+                {
+                    _provider.UnLock(_key);
+                }
+            }
+
+            public Boolean Equals(LockScope other)
+            {
+                return this._key == other._key;
+            }
+        }
     }
 }
