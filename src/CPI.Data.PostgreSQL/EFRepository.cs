@@ -172,12 +172,12 @@ namespace CPI.Data.PostgreSQL
             {
                 //TODO
                 _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{GetTypeFullName()}.SaveChanges()", "数据库更新异常", "更新数据库出现并发异常", ex);
-                return new XResult<Int32>(0, ex);
+                return new XResult<Int32>(0, ErrorCode.DB_UPDATE_FAILED);
             }
             catch (Exception ex)
             {
                 _logger.Error(TraceType.DAL.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.SaveChanges()", "数据库更新异常", "更新数据库出现异常", ex);
-                return new XResult<Int32>(0, ex);
+                return new XResult<Int32>(0, ErrorCode.DB_UPDATE_FAILED);
             }
         }
 
