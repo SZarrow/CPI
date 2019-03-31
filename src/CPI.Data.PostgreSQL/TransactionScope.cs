@@ -28,7 +28,7 @@ namespace CPI.Data.PostgreSQL
         /// 初始化TransactionScope类的实例
         /// </summary>
         /// <param name="isolationLevel">事务隔离级别</param>
-        public TransactionScope(IsolationLevel isolationLevel = IsolationLevel.Serializable)
+        public TransactionScope(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
             var db = XDI.Resolve<CPIDbContext>();
 

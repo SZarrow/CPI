@@ -75,7 +75,7 @@ namespace CPI.Services.AgreePay
                 }
 
                 // 如果未保存绑卡信息则添加到数据库
-                var existsBankCard = _bankCardInfoRepository.Exists(x => x.IDCardNo == request.IDCardNo && x.BankCardNo == request.BankCardNo);
+                var existsBankCard = _bankCardInfoRepository.Exists(x => x.BankCardNo == request.BankCardNo);
                 AgreePayBankCardInfo bankCardInfo = null;
                 if (!existsBankCard)
                 {
