@@ -6,8 +6,8 @@ using CPI.Common.Domain.SettleDomain.Bill99;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using CPI.IService.SettleServices;
 using CPI.Utils;
-using Lotus.Core;
-using Lotus.Logging;
+using ATBase.Core;
+using ATBase.Logging;
 
 namespace CPI.Handlers.Settle
 {

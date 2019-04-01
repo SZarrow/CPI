@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CPI.Common.Domain.SettleDomain.Bill99;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.IService.SettleServices
 {

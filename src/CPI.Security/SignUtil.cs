@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Lotus.Core;
-using Lotus.Security;
+using ATBase.Core;
+using ATBase.Security;
 using Newtonsoft.Json;
 
 namespace CPI.Security

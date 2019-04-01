@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Lotus.Core;
-using Lotus.Validation;
+using ATBase.Core;
+using ATBase.Validation;
 using Newtonsoft.Json;
 
 namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0

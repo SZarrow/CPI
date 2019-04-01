@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using CPI.Common.Domain.FundOut.Bill99;
-using Lotus.Core;
-using Lotus.Core.Collections;
+using ATBase.Core;
+using ATBase.Core.Collections;
 
 namespace CPI.IService.FundOut
 {

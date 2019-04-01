@@ -6,8 +6,8 @@ using CPI.Common.Domain.AgreePay;
 using CPI.Common.Domain.Common;
 using CPI.IService.AgreePay;
 using CPI.Utils;
-using Lotus.Core;
-using Lotus.Logging;
+using ATBase.Core;
+using ATBase.Logging;
 
 namespace CPI.Handlers.AgreePay
 {

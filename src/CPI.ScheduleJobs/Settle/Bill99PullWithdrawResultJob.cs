@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
 using CPI.ScheduleJobs.Models;
 using CPI.Utils;
-using Lotus.Logging;
-using Lotus.Net;
-using Lotus.Security;
+using ATBase.Logging;
+using ATBase.Net;
+using ATBase.Security;
 
 namespace CPI.ScheduleJobs.Settle
 {

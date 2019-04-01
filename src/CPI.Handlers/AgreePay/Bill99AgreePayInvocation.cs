@@ -10,8 +10,8 @@ using CPI.Common.Exceptions;
 using CPI.Config;
 using CPI.IService.AgreePay;
 using CPI.Utils;
-using Lotus.Core;
-using Lotus.Logging;
+using ATBase.Core;
+using ATBase.Logging;
 
 namespace CPI.Handlers.AgreePay
 {

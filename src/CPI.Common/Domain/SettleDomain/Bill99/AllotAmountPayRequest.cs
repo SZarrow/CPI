@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Lotus.Validation;
+using ATBase.Validation;
 using Newtonsoft.Json;
 
 namespace CPI.Common.Domain.SettleDomain.Bill99
@@ -42,17 +42,15 @@ namespace CPI.Common.Domain.SettleDomain.Bill99
         [Required(ErrorMessage = "SettlePeriod字段必需")]
         public String SettlePeriod { get; set; }
 
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public override Boolean Validate()
+        public override ValidateResult Validate()
         {
             if (this.TotalAmount <= 0)
             {
-                return false;
+                return new ValidateResult(false, "总金额必须大于0");
             }
 
             return base.Validate();
         }
+
     }
 }

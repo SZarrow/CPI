@@ -5,7 +5,7 @@ using System.Text;
 using CPI.Common;
 using CPI.IData.BaseRepositories;
 using CPI.IService.BaseServices;
-using Lotus.Logging;
+using ATBase.Logging;
 
 namespace CPI.Services.BaseServices
 {

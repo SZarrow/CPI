@@ -20,11 +20,11 @@ using CPI.IData.BaseRepositories;
 using CPI.IService.AgreePay;
 using CPI.Providers;
 using CPI.Utils;
-using Lotus.Core;
-using Lotus.Core.Collections;
-using Lotus.Logging;
-using Lotus.Payment.Bill99;
-using Lotus.Payment.Bill99.Domain;
+using ATBase.Core;
+using ATBase.Core.Collections;
+using ATBase.Logging;
+using ATBase.Payment.Bill99;
+using ATBase.Payment.Bill99.Domain;
 
 namespace CPI.Services.AgreePay
 {

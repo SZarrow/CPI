@@ -6,7 +6,7 @@ using CPI.Common;
 using CPI.Common.Models;
 using CPI.IData.BaseRepositories;
 using CPI.IService.BaseServices;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.Services.BaseServices
 {

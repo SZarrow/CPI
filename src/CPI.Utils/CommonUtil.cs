@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Text;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.Utils
 {

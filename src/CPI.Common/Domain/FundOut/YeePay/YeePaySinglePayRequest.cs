@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using CPI.Common.Properties;
-using Lotus.Validation;
+using ATBase.Validation;
 
 namespace CPI.Common.Domain.FundOut.YeePay
 {

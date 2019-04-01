@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Lotus.Serialization;
+using ATBase.Serialization;
 
 namespace CPI.Common.Domain.FundOut.Bill99
 {

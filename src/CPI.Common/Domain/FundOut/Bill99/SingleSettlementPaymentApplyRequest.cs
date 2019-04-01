@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Lotus.Serialization;
-using Lotus.Validation;
+using ATBase.Serialization;
+using ATBase.Validation;
 
 namespace CPI.Common.Domain.FundOut.Bill99
 {

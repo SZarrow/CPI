@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Lotus.Core.Collections;
+using ATBase.Core.Collections;
 
 namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
 {

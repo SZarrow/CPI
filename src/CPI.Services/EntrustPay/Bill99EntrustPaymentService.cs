@@ -13,10 +13,10 @@ using CPI.IData.BaseRepositories;
 using CPI.IService.EntrustPay;
 using CPI.Providers;
 using CPI.Utils;
-using Lotus.Core;
-using Lotus.Logging;
-using Lotus.Payment.Bill99;
-using Lotus.Payment.Bill99.Domain;
+using ATBase.Core;
+using ATBase.Logging;
+using ATBase.Payment.Bill99;
+using ATBase.Payment.Bill99.Domain;
 
 namespace CPI.Services.EntrustPay
 {

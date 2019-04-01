@@ -17,8 +17,8 @@ using CPI.IData.BaseRepositories;
 using CPI.IService.SettleServices;
 using CPI.Providers;
 using CPI.Utils;
-using Lotus.Core;
-using Lotus.Logging;
+using ATBase.Core;
+using ATBase.Logging;
 
 namespace CPI.Services.SettleServices
 {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using CPI.Common.Domain.SettleDomain.Bill99;
 using CPI.Common.Domain.SettleDomain.Bill99.v1_0;
-using Lotus.Core;
-using Lotus.Core.Collections;
+using ATBase.Core;
+using ATBase.Core.Collections;
 
 namespace CPI.IService.SettleServices
 {

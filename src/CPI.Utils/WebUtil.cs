@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.Utils
 {

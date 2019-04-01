@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using CPI.Common.Models;
 using CPI.Config;
-using Lotus.Logging;
+using ATBase.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
