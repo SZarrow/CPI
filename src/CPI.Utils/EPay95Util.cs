@@ -7,9 +7,9 @@ using System.Text;
 using CPI.Common;
 using CPI.Common.Domain.FundOut.EPay95;
 using CPI.Config;
-using Lotus.Core;
-using Lotus.Logging;
-using Lotus.Security;
+using ATBase.Core;
+using ATBase.Logging;
+using ATBase.Security;
 
 namespace CPI.Utils
 {

@@ -1,6 +1,6 @@
 ﻿using CPI.Common.Domain.AgreePay;
 using CPI.Common.Models;
-using Lotus.Core;
+using ATBase.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;

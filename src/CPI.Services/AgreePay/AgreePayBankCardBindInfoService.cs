@@ -5,7 +5,7 @@ using CPI.Common.Domain.AgreePay;
 using CPI.Common.Exceptions;
 using CPI.IData.BaseRepositories;
 using CPI.IService.AgreePay;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.Services.AgreePay
 {

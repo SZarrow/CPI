@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CPI.Common.Models;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.IService.BaseServices
 {

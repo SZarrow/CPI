@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lotus.Core" Version="1.1.8" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CPI.Common\CPI.Common.csproj" />
   </ItemGroup>
 

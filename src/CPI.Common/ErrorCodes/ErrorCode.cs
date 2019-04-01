@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.Common
 {

@@ -7,7 +7,7 @@ using CPI.Common.Domain.SettleDomain.Bill99;
 using CPI.Common.Exceptions;
 using CPI.IService.SettleServices;
 using CPI.Utils;
-using Lotus.Core;
+using ATBase.Core;
 
 namespace CPI.Services.SettleServices
 {

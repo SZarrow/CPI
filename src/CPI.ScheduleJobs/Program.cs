@@ -2,8 +2,8 @@
 using System.Configuration;
 using System.IO;
 using CPI.Config;
-using Lotus.Core;
-using Lotus.Schedule;
+using ATBase.Core;
+using ATBase.Schedule;
 
 namespace CPI.ScheduleJobs
 {

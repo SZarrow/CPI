@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Lotus.Validation;
+using ATBase.Validation;
 
 namespace CPI.Common.Domain.FundOut.EPay95
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Lotus.Core;
+using ATBase.Core;
 using Newtonsoft.Json.Linq;
 
 namespace CPI.Utils

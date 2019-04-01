@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Lotus.Validation;
+using ATBase.Validation;
 
 namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
 {
