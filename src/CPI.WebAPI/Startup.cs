@@ -41,10 +41,7 @@ namespace CPI.WebAPI
         {
             services.AddMvc(options =>
             {
-                options.MaxModelValidationErrors = 0;
-
                 options.Filters.Add(typeof(LogTraceFilter));
-
             }).AddJsonOptions(options =>
             {
                 //忽略循环引用
@@ -54,6 +51,13 @@ namespace CPI.WebAPI
                 //设置时间格式
                 options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             }).AddXDI().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+
+            //关闭mvc自带模型验证
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(GlobalConfig.CommonRemoteCertificateValidationCallback);
             InitAgreePaymentHttpClient(services);
