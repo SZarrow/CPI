@@ -25,7 +25,7 @@ namespace CPI.Handlers.Settle
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -72,7 +72,7 @@ namespace CPI.Handlers.Settle
                     }
                     queryRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_service.GetType().FullName}.Query(...)";
+                    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.Query)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询分账结果", queryRequest.Value);
 
                     var queryResult = _service.Query(queryRequest.Value);
@@ -98,7 +98,7 @@ namespace CPI.Handlers.Settle
                 //    return modifyResult.Success ? new ObjectResult(modifyResult.Value) : new ObjectResult(null, modifyResult.ErrorCode, modifyResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
     }
 }

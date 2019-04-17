@@ -44,9 +44,9 @@ namespace CPI.Services.AgreePay
                 return new XResult<YeePayAgreePayApplyResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            String service = $"{this.GetType().FullName}.Apply(...)";
+            String service = $"{this.GetType().FullName}.{nameof(Apply)}(...)";
 
-            var requestHash = $"apply:{request.PayerId}.{request.BankCardNo}".GetHashCode();
+            var requestHash = $"{nameof(Apply)}:{request.PayerId}.{request.BankCardNo}".GetHashCode();
 
             if (_lockProvider.Exists(requestHash))
             {
@@ -104,7 +104,7 @@ namespace CPI.Services.AgreePay
                     authtype = "COMMON_FOUR"
                 });
 
-                String traceMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
+                String traceMethod = $"{nameof(YeePayAgreePayUtil)}.{nameof(YeePayAgreePayUtil.Execute)}(...)";
 
                 if (!execResult.Success)
                 {
@@ -160,9 +160,9 @@ namespace CPI.Services.AgreePay
                 return new XResult<YeePayAgreePayBindCardResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            String service = $"{this.GetType().FullName}.BindCard(...)";
+            String service = $"{this.GetType().FullName}.{nameof(BindCard)}(...)";
 
-            var requestHash = $"bindcard:{request.PayerId}.{request.BankCardNo}".GetHashCode();
+            var requestHash = $"{nameof(BindCard)}:{request.PayerId}.{request.BankCardNo}".GetHashCode();
 
             if (_lockProvider.Exists(requestHash))
             {
@@ -203,7 +203,7 @@ namespace CPI.Services.AgreePay
                     validatecode = request.SmsValidCode
                 });
 
-                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
+                String callMethod = $"{nameof(YeePayAgreePayUtil)}.{nameof(YeePayAgreePayUtil.Execute)}(...)";
 
                 if (!result.Success)
                 {
@@ -292,9 +292,9 @@ namespace CPI.Services.AgreePay
                 return new XResult<YeePayAgreePayPaymentResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException($"支付总金额必须大于{GlobalConfig.YeePay_AgreePay_PayMinAmount.ToString()}"));
             }
 
-            String service = $"{this.GetType().FullName}.Pay(...)";
+            String service = $"{this.GetType().FullName}.{nameof(Pay)}(...)";
 
-            var requestHash = $"pay:{request.OutTradeNo}".GetHashCode();
+            var requestHash = $"{nameof(Pay)}:{request.OutTradeNo}".GetHashCode();
 
             if (_lockProvider.Exists(requestHash))
             {
@@ -359,7 +359,7 @@ namespace CPI.Services.AgreePay
                     terminalno = request.TerminalNo
                 });
 
-                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
+                String callMethod = $"{nameof(YeePayAgreePayUtil)}.{nameof(YeePayAgreePayUtil.Execute)}(...)";
 
                 if (!result.Success)
                 {
@@ -375,7 +375,7 @@ namespace CPI.Services.AgreePay
                 var respResult = result.Value;
 
                 //如果易宝返回的不是PROCESSING则表示处理失败
-                if (respResult.status != "PROCESSING")
+                if (respResult.status != nameof(PayStatus.PROCESSING))
                 {
                     newOrder.PayStatus = PayStatus.FAILURE.ToString();
                     newOrder.UpdateTime = DateTime.Now;
@@ -420,9 +420,9 @@ namespace CPI.Services.AgreePay
                 return new XResult<YeePayAgreePayRefundResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            String service = $"{this.GetType().FullName}.Refund(...)";
+            String service = $"{this.GetType().FullName}.{nameof(Refund)}(...)";
 
-            var requestHash = $"refund:{request.OutTradeNo}".GetHashCode();
+            var requestHash = $"{nameof(Refund)}:{request.OutTradeNo}".GetHashCode();
 
             if (_lockProvider.Exists(requestHash))
             {
@@ -494,7 +494,7 @@ namespace CPI.Services.AgreePay
                     remark = request.Remark
                 });
 
-                String callMethod = $"{nameof(YeePayAgreePayUtil)}.Execute(...)";
+                String callMethod = $"{nameof(YeePayAgreePayUtil)}.{nameof(YeePayAgreePayUtil.Execute)}(...)";
 
                 if (!execResult.Success)
                 {
@@ -510,7 +510,7 @@ namespace CPI.Services.AgreePay
                 var respResult = execResult.Value;
 
                 //如果易宝返回的不是PROCESSING则表示处理失败
-                if (respResult.status != "PROCESSING")
+                if (respResult.status != nameof(PayStatus.PROCESSING))
                 {
                     refundOrder.PayStatus = PayStatus.FAILURE.ToString();
                     refundOrder.UpdateTime = DateTime.Now;
@@ -521,7 +521,7 @@ namespace CPI.Services.AgreePay
                 //如果易宝返回PROCESSING表示已处理
                 //并且要将易宝返回的易宝内部交易号更新到数据库
                 //这个TradeNo以后可以作为退款接口的原交易号
-                refundOrder.PayStatus = PayStatus.PROCESSING.ToString();
+                refundOrder.PayStatus = nameof(PayStatus.PROCESSING);
                 refundOrder.TradeNo = respResult.yborderid;
                 refundOrder.UpdateTime = DateTime.Now;
                 UpdatePayOrder(service, refundOrder);
@@ -560,7 +560,7 @@ namespace CPI.Services.AgreePay
                 return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count必须大于0"));
             }
 
-            String service = $"{this.GetType().FullName}.PullPayStatus(...)";
+            String service = $"{this.GetType().FullName}.{nameof(PullPayStatus)}(...)";
 
             var key = DateTime.Now.Date.GetHashCode();
 
@@ -632,7 +632,7 @@ namespace CPI.Services.AgreePay
                 if (sb.Length > 0)
                 {
                     String sql = sb.ToString();
-                    String traceMethod = $"{nameof(_payOrderRepository)}.ExecuteSql(...)";
+                    String traceMethod = $"{nameof(_payOrderRepository)}.{nameof(_payOrderRepository.ExecuteSql)}(...)";
                     var execResult = _payOrderRepository.ExecuteSql(FormattableStringFactory.Create(sql));
                     if (!execResult.Success)
                     {
@@ -657,7 +657,7 @@ namespace CPI.Services.AgreePay
                 return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count必须大于0"));
             }
 
-            String service = $"{this.GetType().FullName}.PullRefundStatus(...)";
+            String service = $"{this.GetType().FullName}.{nameof(PullRefundStatus)}(...)";
 
             var key = DateTime.Now.Date.GetHashCode();
 
@@ -687,7 +687,7 @@ namespace CPI.Services.AgreePay
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "items", "查询退款处理中的订单失败", ex);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, "items", "查询退款处理中的订单失败", ex);
                     return new XResult<Int32>(0);
                 }
 
@@ -714,7 +714,7 @@ namespace CPI.Services.AgreePay
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "Task.WaitAll(...)", "查询退款结果的并行任务出现异常", ex);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, "Task.WaitAll(...)", "查询退款结果的并行任务出现异常", ex);
                 }
 
                 foreach (var result in results)
@@ -733,7 +733,7 @@ namespace CPI.Services.AgreePay
                     var execResult = _payOrderRepository.ExecuteSql(FormattableStringFactory.Create(sql));
                     if (!execResult.Success)
                     {
-                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, traceMethod, "更新退款结果失败", execResult.FirstException, $"SQL：{sql}");
+                        _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, traceMethod, "更新退款结果失败", execResult.FirstException, $"SQL：{sql}");
                     }
 
                     return execResult;
@@ -758,7 +758,7 @@ namespace CPI.Services.AgreePay
             if (execResult.Success && execResult.Value != null)
             {
                 var respResult = execResult.Value;
-                if (respResult.status == "PAY_SUCCESS" || respResult.status == "PAY_FAIL" || respResult.status == String.Empty)
+                if (respResult.status == "SUCCESS" || respResult.status == "PAY_FAIL" || respResult.status == String.Empty)
                 {
                     var result = new YeePayAgreePayQueryResult()
                     {
@@ -766,7 +766,7 @@ namespace CPI.Services.AgreePay
                         CompleteTime = respResult.banksuccessdate,
                         OutTradeNo = respResult.requestno,
                         YeePayTradeNo = respResult.yborderid,
-                        PayStatus = respResult.status == "PAY_SUCCESS" ? PayStatus.SUCCESS : PayStatus.FAILURE
+                        PayStatus = respResult.status == nameof(PayStatus.SUCCESS) ? PayStatus.SUCCESS : PayStatus.FAILURE
                     };
                     results.Enqueue(result);
                 }

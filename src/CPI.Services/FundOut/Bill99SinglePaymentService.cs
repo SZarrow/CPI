@@ -50,9 +50,9 @@ namespace CPI.Services.FundOut
                 return new XResult<SingleSettlementPaymentApplyResponse>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            String service = $"{this.GetType().FullName}.Pay(...)";
+            String service = $"{this.GetType().FullName}.{nameof(Pay)}(...)";
 
-            var requestHash = $"payorder:{request.OrderNo}".GetHashCode();
+            var requestHash = $"{nameof(Pay)}:{request.OrderNo}".GetHashCode();
 
             if (_lockProvider.Exists(requestHash))
             {
@@ -109,7 +109,7 @@ namespace CPI.Services.FundOut
                 var saveResult = _fundOutOrderRepository.SaveChanges();
                 if (!saveResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存订单失败", saveResult.FirstException, fundoutOrder);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "保存订单失败", saveResult.FirstException, fundoutOrder);
                     return new XResult<SingleSettlementPaymentApplyResponse>(null, ErrorCode.DB_UPDATE_FAILED, new DbUpdateException($"保存订单失败，订单编号：{fundoutOrder.OutTradeNo}"));
                 }
 
@@ -141,7 +141,7 @@ namespace CPI.Services.FundOut
 
                 String callMethod = $"{nameof(_client)}.PostXml(...)";
 
-                _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, callMethod, LogPhase.BEGIN, $"开始调用{callMethod}", new Object[] { ApiConfig.Bill99FOSinglePayApplyRequestUrl, postXml });
+                _logger.Trace(TraceType.BLL.ToString(), nameof(CallResultStatus.OK), service, callMethod, LogPhase.BEGIN, $"开始调用{callMethod}", new Object[] { ApiConfig.Bill99FOSinglePayApplyRequestUrl, postXml });
 
                 var postResult = _client.PostXml(ApiConfig.Bill99FOSinglePayApplyRequestUrl, postXml);
 
@@ -156,11 +156,11 @@ namespace CPI.Services.FundOut
                 try
                 {
                     resp = postResult.Value.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, callMethod, LogPhase.END, $"调用{callMethod}结果", resp);
+                    _logger.Trace(TraceType.BLL.ToString(), nameof(CallResultStatus.OK), service, callMethod, LogPhase.END, $"调用{callMethod}结果", resp);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, callMethod, "读取第三方返回的消息内容失败", ex, postXml);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, callMethod, "读取第三方返回的消息内容失败", ex, postXml);
                     return new XResult<SingleSettlementPaymentApplyResponse>(null, ErrorCode.DEPENDENT_API_CALL_FAILED, ex);
                 }
 
@@ -175,7 +175,7 @@ namespace CPI.Services.FundOut
                 var parseResult = ParseXml(resp);
                 if (!parseResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "ParseXml(...)", "解析返回数据失败", parseResult.FirstException, resp);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, "ParseXml(...)", "解析返回数据失败", parseResult.FirstException, resp);
                     return new XResult<SingleSettlementPaymentApplyResponse>(null, ErrorCode.XML_PARSE_FAILED, new SystemException("解析返回数据失败"));
                 }
 
@@ -184,14 +184,14 @@ namespace CPI.Services.FundOut
                 var memberCodeEl = root.Descendants("memberCode").FirstOrDefault();
                 if (memberCodeEl == null)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "memberCodeEl", "返回数据中未包含<memberCode></memberCode>元素");
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, "memberCodeEl", "返回数据中未包含<memberCode></memberCode>元素");
                     return new XResult<SingleSettlementPaymentApplyResponse>(null, ErrorCode.XML_ELEMENT_NOT_EXIST, new RemoteException("<memberCode> not found"));
                 }
 
                 var decodeResult = Decode(root, "responseBody");
                 if (!decodeResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"Decode(...)", "解码失败");
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, $"Decode(...)", "解码失败");
                     return new XResult<SingleSettlementPaymentApplyResponse>(null, ErrorCode.DECODE_FAILED, decodeResult.FirstException);
                 }
 
@@ -223,7 +223,7 @@ namespace CPI.Services.FundOut
                     var updateResult = _fundOutOrderRepository.SaveChanges();
                     if (!updateResult.Success)
                     {
-                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "更新代付订单申请时间|结束时间|更新时间失败", updateResult.FirstException, fundoutOrder);
+                        _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, $"{nameof(_fundOutOrderRepository)}.SaveChanges()", "更新代付订单申请时间|结束时间|更新时间失败", updateResult.FirstException, fundoutOrder);
                     }
 
                     return new XResult<SingleSettlementPaymentApplyResponse>(result);
@@ -351,7 +351,7 @@ namespace CPI.Services.FundOut
                 return new XResult<Int32>(0, ErrorCode.INVALID_ARGUMENT, new ArgumentOutOfRangeException($"参数count超出范围[1,20]"));
             }
 
-            String service = $"{this.GetType().FullName}.Pull()";
+            String service = $"{this.GetType().FullName}.{nameof(Pull)}(...)";
 
             var key = DateTime.Now.ToString("yyMMddHH").GetHashCode();
 
@@ -379,7 +379,7 @@ namespace CPI.Services.FundOut
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, "orderCreateTimes", "查询待处理的代付订单记录失败", ex);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, "orderCreateTimes", "查询待处理的代付订单记录失败", ex);
                     return new XResult<Int32>(0);
                 }
 
@@ -451,8 +451,8 @@ namespace CPI.Services.FundOut
                 if (sb.Length > 0)
                 {
                     String sql = sb.ToString();
-                    String traceMethod = $"{nameof(_fundOutOrderRepository)}.ExecuteSql(...)";
-                    _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, traceMethod, LogPhase.BEGIN, $"开始执行SQL语句", sql);
+                    String traceMethod = $"{nameof(_fundOutOrderRepository)}.{nameof(_fundOutOrderRepository.ExecuteSql)}(...)";
+                    _logger.Trace(TraceType.BLL.ToString(), nameof(CallResultStatus.OK), service, traceMethod, LogPhase.BEGIN, $"开始执行SQL语句", sql);
                     var execResult = _fundOutOrderRepository.ExecuteSql(FormattableStringFactory.Create(sql));
                     _logger.Trace(TraceType.BLL.ToString(), (execResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), service, traceMethod, LogPhase.END, "完成执行SQL语句", $"受影响{execResult.Value}行");
                     return execResult;
@@ -468,7 +468,7 @@ namespace CPI.Services.FundOut
 
         private XResult<IEnumerable<Bill99SingleSettlementQueryResponse>> Query99bill(Bill99SingleSettlementQueryRequest request)
         {
-            String service = $"{this.GetType().FullName}.Query99bill(...)";
+            String service = $"{this.GetType().FullName}.{nameof(Query99bill)}(...)";
 
             if (!request.IsValid)
             {

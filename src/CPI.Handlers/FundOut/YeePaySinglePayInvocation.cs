@@ -28,7 +28,7 @@ namespace CPI.Handlers.FundOut
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -40,7 +40,7 @@ namespace CPI.Handlers.FundOut
                     return QueryStatus_1_0(traceService, requestService, ref traceMethod);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
 
         private ObjectResult Pay_1_0(String traceService, String requestService, ref String traceMethod)
@@ -58,7 +58,7 @@ namespace CPI.Handlers.FundOut
                 return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(payRequest.Value.ErrorMessage));
             }
 
-            traceMethod = $"{_service.GetType().FullName}.Pay(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.Pay)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始执行代付", payRequest.Value);
 
@@ -84,7 +84,7 @@ namespace CPI.Handlers.FundOut
                 return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(queryRequest.Value.ErrorMessage));
             }
 
-            traceMethod = $"{_service.GetType().FullName}.QueryStatus(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.QueryStatus)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始代付结果状态查询", queryRequest.Value);
 

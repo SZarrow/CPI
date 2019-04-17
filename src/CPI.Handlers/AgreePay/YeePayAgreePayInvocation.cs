@@ -31,7 +31,7 @@ namespace CPI.Handlers.AgreePay
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -52,7 +52,7 @@ namespace CPI.Handlers.AgreePay
                     return RefundResultPull_1_0(traceService, requestService, ref traceMethod);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
 
         private ObjectResult BindCard_1_0(String traceService, String requestService, ref String traceMethod)
@@ -65,7 +65,7 @@ namespace CPI.Handlers.AgreePay
             }
             bindRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.BindCard(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.BindCard)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始绑卡", bindRequest.Value);
 
@@ -86,7 +86,7 @@ namespace CPI.Handlers.AgreePay
             }
             applyRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.Apply(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.Apply)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始申请绑卡", applyRequest.Value);
 
@@ -106,17 +106,17 @@ namespace CPI.Handlers.AgreePay
                 return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
             }
 
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIAgreePayPaymentRequest(...)", LogPhase.BEGIN, "开始构造协议支付请求参数", commonPayRequest.Value);
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, $"{nameof(BuildCPIAgreePayPaymentRequest)}(...)", LogPhase.BEGIN, "开始构造协议支付请求参数", commonPayRequest.Value);
             var agreePayRequest = BuildCPIAgreePayPaymentRequest(commonPayRequest.Value);
             if (!agreePayRequest.Success)
             {
                 return new ObjectResult(null, agreePayRequest.ErrorCode, agreePayRequest.FirstException);
             }
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIAgreePayPaymentRequest(...)", LogPhase.END, "结束构造协议支付请求参数", agreePayRequest.Value);
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, $"{nameof(BuildCPIAgreePayPaymentRequest)}(...)", LogPhase.END, "结束构造协议支付请求参数", agreePayRequest.Value);
 
             agreePayRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.Pay(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.Pay)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始支付", agreePayRequest.Value);
 
@@ -138,7 +138,7 @@ namespace CPI.Handlers.AgreePay
 
             refundRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.Refund(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.Refund)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始退款", refundRequest.Value);
 
@@ -164,7 +164,7 @@ namespace CPI.Handlers.AgreePay
                 return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(pullRequest.Value.ErrorMessage));
             }
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.PullPayStatus(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.PullPayStatus)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取支付状态", pullRequest.Value);
 
@@ -193,7 +193,7 @@ namespace CPI.Handlers.AgreePay
                 return new ObjectResult(0, ErrorCode.INVALID_ARGUMENT, new ArgumentException(pullRequest.Value.ErrorMessage));
             }
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.PullRefundStatus(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.PullRefundStatus)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取退款结果", pullRequest.Value);
 
@@ -222,7 +222,7 @@ namespace CPI.Handlers.AgreePay
             var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.YEEPAY_PAYCHANNEL_CODE);
             if (!queryResult.Success || queryResult.Value == null || queryResult.Value.Count() == 0)
             {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), $"BuildCPIAgreePayPaymentRequest(...)", "构造协议支付请求参数", "未查询到该用户的绑卡信息", queryResult.FirstException, new
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), $"{nameof(BuildCPIAgreePayPaymentRequest)}(...)", "构造协议支付请求参数", "未查询到该用户的绑卡信息", queryResult.FirstException, new
                 {
                     request.PayerId,
                     request.BankCardNo,

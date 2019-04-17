@@ -29,7 +29,7 @@ namespace CPI.Handlers.FundOut
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -44,7 +44,7 @@ namespace CPI.Handlers.FundOut
                     }
                     payRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_service.GetType().FullName}.Pay(...)";
+                    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.Pay)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始支付", payRequest.Value);
 
                     var payResult = _service.Pay(payRequest.Value);
@@ -61,7 +61,7 @@ namespace CPI.Handlers.FundOut
                     }
                     queryStatusRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_service.GetType().FullName}.QueryStatus(...)";
+                    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.QueryStatus)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询支付结果状态", queryStatusRequest.Value);
 
                     var queryStatusResult = _service.QueryStatus(queryStatusRequest.Value);
@@ -86,7 +86,7 @@ namespace CPI.Handlers.FundOut
                     }
                     queryDetailRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_service.GetType().FullName}.QueryDetails(...)";
+                    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.QueryDetails)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询支付结果详情", queryDetailRequest.Value);
 
                     var queryResult = _service.QueryDetails(queryDetailRequest.Value);
@@ -104,7 +104,7 @@ namespace CPI.Handlers.FundOut
                         : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
     }
 }

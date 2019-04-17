@@ -142,7 +142,7 @@ namespace CPI.Utils
                 return new XResult<TResult>(default(TResult), new ArgumentNullException(nameof(request)));
             }
 
-            String service = $"{typeof(YeePayAgreePayUtil).FullName}.Execute(...)";
+            String service = $"{typeof(YeePayAgreePayUtil).FullName}.{nameof(Execute)}(...)";
 
             var client = GetClient();
 
