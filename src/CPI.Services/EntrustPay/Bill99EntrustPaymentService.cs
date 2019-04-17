@@ -61,7 +61,7 @@ namespace CPI.Services.EntrustPay
 
             var sharingInfo = parseSharingInfoResult.Value;
 
-            String service = $"{this.GetType().FullName}.Pay(...)";
+            String service = $"{this.GetType().FullName}.{nameof(Pay)}(...)";
 
             var requestHash = $"{request.OutTradeNo}".GetHashCode();
 
@@ -106,7 +106,7 @@ namespace CPI.Services.EntrustPay
                 var saveResult = _payOrderRepository.SaveChanges();
                 if (!saveResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_payOrderRepository)}.SaveChanges()", "支付单保存失败", saveResult.FirstException, newOrder);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, $"{nameof(_payOrderRepository)}.SaveChanges()", "支付单保存失败", saveResult.FirstException, newOrder);
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                 }
 
@@ -131,7 +131,7 @@ namespace CPI.Services.EntrustPay
 
                 if (!saveResult.Success)
                 {
-                    _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "分账数据保存失败", saveResult.FirstException, allotAmountOrder);
+                    _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "分账数据保存失败", saveResult.FirstException, allotAmountOrder);
                     return new XResult<CPIEntrustPayPaymentResponse>(null, ErrorCode.DB_UPDATE_FAILED, saveResult.FirstException);
                 }
 
@@ -194,7 +194,7 @@ namespace CPI.Services.EntrustPay
                     }
                 };
 
-                String callMethod = $"{_api.GetType().FullName}.EntrustPay(...)";
+                String callMethod = $"{_api.GetType().FullName}.{nameof(_api.EntrustPay)}(...)";
 
                 _logger.Trace(TraceType.BLL.ToString(), CallResultStatus.OK.ToString(), service, callMethod, LogPhase.BEGIN, $"开始调用{callMethod}", new Object[] { ApiConfig.Bill99_EntrustPay_Pay_RequestUrl, payRequest });
 
@@ -270,7 +270,7 @@ namespace CPI.Services.EntrustPay
             var saveResult = _allotAmountOrderRepository.SaveChanges();
             if (!saveResult.Success)
             {
-                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
+                _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, $"{nameof(_allotAmountOrderRepository)}.SaveChanges()", "更新分账状态失败", saveResult.FirstException, allotAmountOrder);
             }
         }
 

@@ -28,7 +28,7 @@ namespace CPI.Handlers.Settle
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -81,7 +81,7 @@ namespace CPI.Handlers.Settle
                     #endregion
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
 
         #region #v1.0
@@ -94,7 +94,7 @@ namespace CPI.Handlers.Settle
                 return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
             }
             queryStatusRequest.Value.AppId = _request.AppId;
-            traceMethod = $"{_service.GetType().FullName}.QueryBindCardStatus(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.QueryBindCardStatus)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人绑卡状态", queryStatusRequest.Value);
 
             var queryStatusResult = _service.QueryBindCardStatus(queryStatusRequest.Value);
@@ -113,7 +113,7 @@ namespace CPI.Handlers.Settle
             }
             queryListRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.GetBoundCards(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetBoundCards)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人绑卡列表", queryListRequest.Value);
 
             var queryListResult = _service.GetBoundCards(queryListRequest.Value);
@@ -133,7 +133,7 @@ namespace CPI.Handlers.Settle
             }
             cancelRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.CancelBoundCard(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.CancelBoundCard)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始取消个人绑卡", cancelRequest.Value);
 
             var cancelResult = _service.CancelBoundCard(cancelRequest.Value);
@@ -153,7 +153,7 @@ namespace CPI.Handlers.Settle
             }
             rebindRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.WithdrawRebindCard(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.WithdrawRebindCard)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人重新绑卡", rebindRequest.Value);
 
             var rebindResult = _service.WithdrawRebindCard(rebindRequest.Value);
@@ -173,7 +173,7 @@ namespace CPI.Handlers.Settle
             }
             bindRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.WithdrawBindCard(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.WithdrawBindCard)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现绑卡", bindRequest.Value);
 
             var bindResult = _service.WithdrawBindCard(bindRequest.Value);
@@ -193,7 +193,7 @@ namespace CPI.Handlers.Settle
             }
             queryInfoRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.GetAccountInfo(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetAccountInfo)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人账户信息", queryInfoRequest.Value);
 
             var queryInfoResult = _service.GetAccountInfo(queryInfoRequest.Value);
@@ -213,7 +213,7 @@ namespace CPI.Handlers.Settle
             }
             updateRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.UpdateAccountInfo(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.UpdateAccountInfo)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始更新个人账户信息", updateRequest.Value);
 
             var updateResult = _service.UpdateAccountInfo(updateRequest.Value);
@@ -233,7 +233,7 @@ namespace CPI.Handlers.Settle
             }
             regRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.Register(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.Register)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人开户", regRequest.Value);
 
             var regResult = _service.Register(regRequest.Value);
@@ -255,7 +255,7 @@ namespace CPI.Handlers.Settle
             }
             regRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.Register(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.Register)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人开户", regRequest.Value);
 
             var regResult = _serviceV1.Register(regRequest.Value);
@@ -275,7 +275,7 @@ namespace CPI.Handlers.Settle
             }
             queryRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.QueryRegisterInfo_1_1(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.QueryPersonalInfo)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人开户信息", queryRequest.Value);
 
             var queryResult = _serviceV1.QueryPersonalInfo(queryRequest.Value);
@@ -295,7 +295,7 @@ namespace CPI.Handlers.Settle
             }
             signRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.SignContract(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.SignContract)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始合同签约", signRequest.Value);
 
             var signResult = _serviceV1.SignContract(signRequest.Value);
@@ -315,7 +315,7 @@ namespace CPI.Handlers.Settle
             }
             regRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.QueryContract(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.QueryContract)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询合同", regRequest.Value);
 
             var regResult = _serviceV1.QueryContract(regRequest.Value);
@@ -335,7 +335,7 @@ namespace CPI.Handlers.Settle
             }
             request.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.QueryBankCardAccept(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.QueryBankCardAccept)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始调用查询银行卡受理能力接口", request.Value);
 
             var acceptResult = _serviceV1.QueryBankCardAccept(request.Value);
@@ -355,7 +355,7 @@ namespace CPI.Handlers.Settle
             }
             applyRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.ApplyBindCard_1_1(...)";
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_serviceV1.ApplyBindCard)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始申请提现绑卡", applyRequest.Value);
 
             var applyResult = _serviceV1.ApplyBindCard(applyRequest.Value);
@@ -375,7 +375,7 @@ namespace CPI.Handlers.Settle
             }
             bindRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.WithdrawBindCard_1_1(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.WithdrawBindCard)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现绑卡", bindRequest.Value);
 
             var bindResult = _serviceV1.WithdrawBindCard(bindRequest.Value);
@@ -395,7 +395,7 @@ namespace CPI.Handlers.Settle
             }
             withdrawRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.Withdraw_1_1(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.ApplyWithdraw)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现", withdrawRequest.Value);
 
             var withdrawResult = _serviceV1.ApplyWithdraw(withdrawRequest.Value);
@@ -415,7 +415,7 @@ namespace CPI.Handlers.Settle
             }
             withdrawOrderQueryRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.QueryWithdrawOrder_1_1(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.QueryWithdrawOrder)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现订单", withdrawOrderQueryRequest.Value);
 
             var queryResult = _serviceV1.QueryWithdrawOrder(withdrawOrderQueryRequest.Value);
@@ -435,7 +435,7 @@ namespace CPI.Handlers.Settle
             }
             withdrawOrderQueryRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.QueryWithdrawOrderList_1_1(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.QueryWithdrawOrderList)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现订单", withdrawOrderQueryRequest.Value);
 
             var queryResult = _serviceV1.QueryWithdrawOrderList(withdrawOrderQueryRequest.Value);
@@ -455,7 +455,7 @@ namespace CPI.Handlers.Settle
             }
             queryRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.AccountBalance_1_1(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.QueryAccountBalance)}(...)";
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询账户余额", queryRequest.Value);
 
             var queryResult = _serviceV1.QueryAccountBalance(queryRequest.Value);
@@ -475,7 +475,7 @@ namespace CPI.Handlers.Settle
             }
             pullRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_serviceV1.GetType().FullName}.Pull(...)";
+            traceMethod = $"{_serviceV1.GetType().FullName}.{nameof(_serviceV1.PullWithdrawResult)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始拉取提现状态", pullRequest.Value);
 

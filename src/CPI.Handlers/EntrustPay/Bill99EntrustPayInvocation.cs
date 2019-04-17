@@ -32,7 +32,7 @@ namespace CPI.Handlers.EntrustPay
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -46,18 +46,18 @@ namespace CPI.Handlers.EntrustPay
                         return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
                     }
 
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIEntrustPayPaymentRequest(...)", LogPhase.BEGIN, "开始构造代扣支付请求参数");
+                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, $"{nameof(BuildCPIEntrustPayPaymentRequest)}(...)", LogPhase.BEGIN, "开始构造代扣支付请求参数");
                     var unifiedPayRequest = BuildCPIEntrustPayPaymentRequest(commonPayRequest.Value);
                     if (!unifiedPayRequest.Success)
                     {
                         return new ObjectResult(null, unifiedPayRequest.FirstException);
                     }
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildCPIEntrustPayPaymentRequest(...)", LogPhase.END, "结束构造代扣支付请求参数");
+                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, $"{nameof(BuildCPIEntrustPayPaymentRequest)}(...)", LogPhase.END, "结束构造代扣支付请求参数");
 
                     unifiedPayRequest.Value.AppId = _request.AppId;
                     unifiedPayRequest.Value.SharingInfo = commonPayRequest.Value.SharingInfo;
 
-                    traceMethod = $"{_entrustPayService.GetType().FullName}.Pay(...)";
+                    traceMethod = $"{_entrustPayService.GetType().FullName}.{nameof(_entrustPayService.Pay)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"快钱代扣：开始支付", unifiedPayRequest.Value);
 
                     var unifiedPayResult = _entrustPayService.Pay(unifiedPayRequest.Value);
@@ -74,7 +74,7 @@ namespace CPI.Handlers.EntrustPay
                     }
                     entrustPayRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_entrustPayService.GetType().FullName}.Pay(...)";
+                    traceMethod = $"{_entrustPayService.GetType().FullName}.{nameof(_entrustPayService.Pay)}(...)";
 
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始支付", entrustPayRequest.Value);
 
@@ -85,7 +85,7 @@ namespace CPI.Handlers.EntrustPay
                     return entrustPayResult.Success ? new ObjectResult(entrustPayResult.Value) : new ObjectResult(null, entrustPayResult.ErrorCode, entrustPayResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
 
         private XResult<CPIEntrustPayPaymentRequest> BuildCPIEntrustPayPaymentRequest(CommonPayRequest request)
@@ -100,12 +100,12 @@ namespace CPI.Handlers.EntrustPay
                 return new XResult<CPIEntrustPayPaymentRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            String service = $"{this.GetType().FullName}.BuildCPIEntrustPayPaymentRequest(...)";
+            String service = $"{this.GetType().FullName}.{nameof(BuildCPIEntrustPayPaymentRequest)}(...)";
 
             var queryResult = _bindInfoService.GetBankCardBindDetails(request.PayerId, request.BankCardNo, GlobalConfig.X99BILL_PAYCHANNEL_CODE);
             if (!queryResult.Success || queryResult.Value == null || queryResult.Value.Count() == 0)
             {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_bindInfoService)}.GetBankCardBindDetails(...)", "未查询到该用户的绑卡信息", queryResult.FirstException, new
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_bindInfoService)}.{nameof(_bindInfoService.GetBankCardBindDetails)}(...)", "未查询到该用户的绑卡信息", queryResult.FirstException, new
                 {
                     request.PayerId,
                     request.BankCardNo,

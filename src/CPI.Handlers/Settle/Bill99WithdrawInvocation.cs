@@ -28,7 +28,7 @@ namespace CPI.Handlers.Settle
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Inv)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -42,9 +42,9 @@ namespace CPI.Handlers.Settle
                         return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
                     }
 
-                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, "BuildWithdrawRequest(...)", LogPhase.BEGIN, "开始构造分账提现请求参数");
+                    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, $"{nameof(BuildWithdrawRequest)}(...)", LogPhase.BEGIN, "开始构造分账提现请求参数");
                     var withdrawApplyRequest = BuildWithdrawRequest(commonWithdrawRequest.Value);
-                    _logger.Trace(TraceType.ROUTE.ToString(), (withdrawApplyRequest.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, "BuildWithdrawRequest(...)", LogPhase.END, "完成构造分账提现请求参数");
+                    _logger.Trace(TraceType.ROUTE.ToString(), (withdrawApplyRequest.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, $"{nameof(BuildWithdrawRequest)}(...)", LogPhase.END, "完成构造分账提现请求参数");
 
                     if (!withdrawApplyRequest.Success)
                     {
@@ -54,7 +54,7 @@ namespace CPI.Handlers.Settle
 
                     withdrawApplyRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_allotAmountWithdrawService.GetType().FullName}.Apply(...)";
+                    traceMethod = $"{_allotAmountWithdrawService.GetType().FullName}.{nameof(_allotAmountWithdrawService.Apply)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始申请分账提现", withdrawApplyRequest.Value);
 
                     var applyResult = _allotAmountWithdrawService.Apply(withdrawApplyRequest.Value);
@@ -71,7 +71,7 @@ namespace CPI.Handlers.Settle
                     }
                     withdrawPayRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_withdrawService.GetType().FullName}.Withdraw(...)";
+                    traceMethod = $"{_withdrawService.GetType().FullName}.{nameof(_withdrawService.Withdraw)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始提现", withdrawPayRequest.Value);
 
                     var withdrawResult = _withdrawService.Withdraw(withdrawPayRequest.Value);
@@ -88,7 +88,7 @@ namespace CPI.Handlers.Settle
                     }
                     queryDetailsRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_withdrawService.GetType().FullName}.QueryDetails(...)";
+                    traceMethod = $"{_withdrawService.GetType().FullName}.{nameof(_withdrawService.QueryDetails)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现结果详情", queryDetailsRequest.Value);
 
                     var queryDetailsResult = _withdrawService.QueryDetails(queryDetailsRequest.Value);
@@ -105,7 +105,7 @@ namespace CPI.Handlers.Settle
                     }
                     queryStatusRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_withdrawService.GetType().FullName}.QueryStatus(...)";
+                    traceMethod = $"{_withdrawService.GetType().FullName}.{nameof(_withdrawService.QueryStatus)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现结果状态", queryStatusRequest.Value);
 
                     var queryStatusResult = _withdrawService.QueryStatus(queryStatusRequest.Value);
@@ -128,7 +128,7 @@ namespace CPI.Handlers.Settle
                     }
                     queryFeeRequest.Value.AppId = _request.AppId;
 
-                    traceMethod = $"{_withdrawService.GetType().FullName}.QueryFee(...)";
+                    traceMethod = $"{_withdrawService.GetType().FullName}.{nameof(_withdrawService.QueryFee)}(...)";
                     _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询提现手续费", queryFeeRequest.Value);
 
                     var queryFeeResult = _withdrawService.QueryFee(queryFeeRequest.Value);
@@ -138,7 +138,7 @@ namespace CPI.Handlers.Settle
                     return queryFeeResult.Success ? new ObjectResult(queryFeeResult.Value) : new ObjectResult(null, queryFeeResult.ErrorCode, queryFeeResult.FirstException);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"method \"{requestService}\" not support"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
 
         private XResult<AllotAmountWithdrawApplyRequest> BuildWithdrawRequest(CommonWithdrawRequest request)
@@ -150,7 +150,7 @@ namespace CPI.Handlers.Settle
 
             if (!request.IsValid)
             {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.BuildWithdrawRequest()", "构造分账提现请求参数", $"快钱盈帐通：参数验证失败：{request.ErrorMessage}");
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), $"{this.GetType().FullName}.{nameof(BuildWithdrawRequest)}()", "构造分账提现请求参数", $"快钱盈帐通：参数验证失败：{request.ErrorMessage}");
                 return new XResult<AllotAmountWithdrawApplyRequest>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 

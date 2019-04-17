@@ -28,7 +28,7 @@ namespace CPI.Handlers.AgreePay
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.Invoke()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 
@@ -40,7 +40,7 @@ namespace CPI.Handlers.AgreePay
                     return QueryDetail(traceService, requestService, ref traceMethod);
             }
 
-            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"方法 \"{requestService}\" 不支持"));
+            return new ObjectResult(null, ErrorCode.METHOD_NOT_SUPPORT, new NotSupportedException($"不支持服务\"{requestService}\""));
         }
 
         private ObjectResult QueryDetail(String traceService, String requestService, ref String traceMethod)
@@ -53,7 +53,7 @@ namespace CPI.Handlers.AgreePay
             }
             queryRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.QueryDetail(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.QueryDetail)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始查询支付明细", queryRequest.Value);
 
@@ -80,7 +80,7 @@ namespace CPI.Handlers.AgreePay
             }
             queryRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_agreePayService.GetType().FullName}.Query(...)";
+            traceMethod = $"{_agreePayService.GetType().FullName}.{nameof(_agreePayService.QueryStatus)}(...)";
 
             _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, $"开始查询支付状态", queryRequest.Value);
 

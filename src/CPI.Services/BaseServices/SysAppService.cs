@@ -28,7 +28,7 @@ namespace CPI.Services.BaseServices
                 return _rsaPublicKeyCache[appid];
             }
 
-            String service = $"{this.GetType().FullName}:GetRSAPublicKey()";
+            String service = $"{this.GetType().FullName}:{nameof(GetRSAPublicKey)}()";
 
             try
             {
@@ -42,7 +42,7 @@ namespace CPI.Services.BaseServices
             }
             catch (Exception ex)
             {
-                _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, ":", "查询应用系统的RSA公钥失败", ex, new
+                _logger.Error(TraceType.BLL.ToString(), nameof(CallResultStatus.ERROR), service, ":", "查询应用系统的RSA公钥失败", ex, new
                 {
                     AppId = appid
                 });
