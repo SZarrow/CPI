@@ -217,6 +217,47 @@ namespace CPI.Services.SettleServices
             }
         }
 
+        public XResult<PersonalRegesiterAccountsQueryResponseV1> QueryPersonalRegesiterAccounts(PersonalRegesiterAccountsQueryRequestV1 request)
+        {
+            if (request == null)
+            {
+                return new XResult<PersonalRegesiterAccountsQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT);
+            }
+
+            if (!request.IsValid)
+            {
+                return new XResult<PersonalRegesiterAccountsQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
+            }
+
+
+            try
+            {
+                var accounts = (from t0 in _personalSubAccountRepository.QueryProvider
+                                where t0.AppId == request.AppId
+                                select new PersonalRegesiterAccountInfo()
+                                {
+                                    AppId = t0.AppId,
+                                    UserId = t0.UID,
+                                    IDCardNo = t0.IDCardNo,
+                                    RealName = t0.RealName,
+                                    Mobile = t0.Mobile
+                                }).ToList();
+
+                var resp = new PersonalRegesiterAccountsQueryResponseV1()
+                {
+                    PersonalRegesiterAccounts = accounts,
+                    Status = CommonStatus.SUCCESS.ToString(),
+                    Msg = CommonStatus.SUCCESS.GetDescription()
+                };
+
+                return new XResult<PersonalRegesiterAccountsQueryResponseV1>(resp);
+            }
+            catch (Exception ex)
+            {
+                return new XResult<PersonalRegesiterAccountsQueryResponseV1>(null, ErrorCode.DB_QUERY_FAILED, ex);
+            }
+        }
+
         public XResult<QueryBankCardAcceptResponseV1> QueryBankCardAccept(QueryBankCardAcceptRequestV1 request)
         {
             if (request == null)

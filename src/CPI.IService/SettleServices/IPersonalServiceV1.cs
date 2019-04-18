@@ -24,6 +24,11 @@ namespace CPI.IService.SettleServices
         /// <param name="request"></param>
         XResult<PersonalRegisterInfoQueryResponseV1> QueryPersonalInfo(PersonalRegisterInfoQueryRequestV1 request);
         /// <summary>
+        /// 查询开户列表
+        /// </summary>
+        /// <param name="request"></param>
+        XResult<PersonalRegesiterAccountsQueryResponseV1> QueryPersonalRegesiterAccounts(PersonalRegesiterAccountsQueryRequestV1 request);
+        /// <summary>
         /// 查询银行卡受理能力
         /// </summary>
         /// <param name="request"></param>

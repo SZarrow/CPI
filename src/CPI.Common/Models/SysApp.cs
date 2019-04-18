@@ -8,7 +8,7 @@ namespace CPI.Common.Models
     /// <summary>
     /// 系统应用表
     /// </summary>
-    [Table("sysapp")]
+    [Table("sys_app")]
     public class SysApp
     {
         /// <summary>
