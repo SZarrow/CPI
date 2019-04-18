@@ -28,7 +28,7 @@ namespace CPI.Handlers.Settle
 
         public ObjectResult Invoke()
         {
-            String traceService = $"{this.GetType().FullName}.{nameof(Inv)}()";
+            String traceService = $"{this.GetType().FullName}.{nameof(Invoke)}()";
             String requestService = $"{_request.Method}.{_request.Version}";
             String traceMethod = String.Empty;
 

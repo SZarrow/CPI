@@ -35,22 +35,22 @@ namespace CPI.Handlers.Settle
             switch (requestService)
             {
                 #region #v1.0
-                case "cpi.settle.personal.register.1.0":
-                    return Register_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.updateinfo.1.0":
-                    return UpdateInfo_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.info.1.0":
-                    return QueryInfo_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.bindcard.1.0":
-                    return BindCard_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.rebindcard.1.0":
-                    return ReBindCard_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.cancelbindcard.1.0":
-                    return CancelBindCard_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.bindcardlist.1.0":
-                    return BindCardList_1_0(traceService, requestService, ref traceMethod);
-                case "cpi.settle.personal.bindcard.querystatus.1.0":
-                    return QueryStatus_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.register.1.0":
+                //    return Register_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.updateinfo.1.0":
+                //    return UpdateInfo_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.info.1.0":
+                //    return QueryInfo_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.bindcard.1.0":
+                //    return BindCard_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.rebindcard.1.0":
+                //    return ReBindCard_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.cancelbindcard.1.0":
+                //    return CancelBindCard_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.bindcardlist.1.0":
+                //    return BindCardList_1_0(traceService, requestService, ref traceMethod);
+                //case "cpi.settle.personal.bindcard.querystatus.1.0":
+                //    return QueryStatus_1_0(traceService, requestService, ref traceMethod);
                 #endregion
 
                 #region #v1.1
@@ -58,6 +58,8 @@ namespace CPI.Handlers.Settle
                     return Register_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.register.info.1.1":
                     return QueryRegisterInfo_1_1(traceService, requestService, ref traceMethod);
+                case "cpi.settle.personal.account.list.1.1":
+                    return QueryAccounts_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.contractinfo.1.1":
                     return ContractInfo_1_1(traceService, requestService, ref traceMethod);
                 case "cpi.settle.personal.signcontract.1.1":
@@ -85,163 +87,163 @@ namespace CPI.Handlers.Settle
         }
 
         #region #v1.0
-        private ObjectResult QueryStatus_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var queryStatusRequest = JsonUtil.DeserializeObject<WithdrawBindCardQueryStatusRequest>(_request.BizContent);
-            if (!queryStatusRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryStatusRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            queryStatusRequest.Value.AppId = _request.AppId;
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.QueryBindCardStatus)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人绑卡状态", queryStatusRequest.Value);
+        //private ObjectResult QueryStatus_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var queryStatusRequest = JsonUtil.DeserializeObject<WithdrawBindCardQueryStatusRequest>(_request.BizContent);
+        //    if (!queryStatusRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryStatusRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    queryStatusRequest.Value.AppId = _request.AppId;
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.QueryBindCardStatus)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人绑卡状态", queryStatusRequest.Value);
 
-            var queryStatusResult = _service.QueryBindCardStatus(queryStatusRequest.Value);
-            _logger.Trace(TraceType.ROUTE.ToString(), (queryStatusResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人绑卡状态", queryStatusResult.Value);
+        //    var queryStatusResult = _service.QueryBindCardStatus(queryStatusRequest.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (queryStatusResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人绑卡状态", queryStatusResult.Value);
 
-            return queryStatusResult.Success ? new ObjectResult(queryStatusResult.Value) : new ObjectResult(null, queryStatusResult.ErrorCode, queryStatusResult.FirstException);
-        }
+        //    return queryStatusResult.Success ? new ObjectResult(queryStatusResult.Value) : new ObjectResult(null, queryStatusResult.ErrorCode, queryStatusResult.FirstException);
+        //}
 
-        private ObjectResult BindCardList_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var queryListRequest = JsonUtil.DeserializeObject<PersonalBoundCardListQueryRequest>(_request.BizContent);
-            if (!queryListRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryListRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            queryListRequest.Value.AppId = _request.AppId;
+        //private ObjectResult BindCardList_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var queryListRequest = JsonUtil.DeserializeObject<PersonalBoundCardListQueryRequest>(_request.BizContent);
+        //    if (!queryListRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryListRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    queryListRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetBoundCards)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人绑卡列表", queryListRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetBoundCards)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人绑卡列表", queryListRequest.Value);
 
-            var queryListResult = _service.GetBoundCards(queryListRequest.Value);
+        //    var queryListResult = _service.GetBoundCards(queryListRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (queryListResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人绑卡列表", queryListResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (queryListResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人绑卡列表", queryListResult.Value);
 
-            return queryListResult.Success ? new ObjectResult(queryListResult.Value) : new ObjectResult(null, queryListResult.ErrorCode, queryListResult.FirstException);
-        }
+        //    return queryListResult.Success ? new ObjectResult(queryListResult.Value) : new ObjectResult(null, queryListResult.ErrorCode, queryListResult.FirstException);
+        //}
 
-        private ObjectResult CancelBindCard_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var cancelRequest = JsonUtil.DeserializeObject<PersonalCancelBoundCardRequest>(_request.BizContent);
-            if (!cancelRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", cancelRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            cancelRequest.Value.AppId = _request.AppId;
+        //private ObjectResult CancelBindCard_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var cancelRequest = JsonUtil.DeserializeObject<PersonalCancelBoundCardRequest>(_request.BizContent);
+        //    if (!cancelRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", cancelRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    cancelRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.CancelBoundCard)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始取消个人绑卡", cancelRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.CancelBoundCard)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始取消个人绑卡", cancelRequest.Value);
 
-            var cancelResult = _service.CancelBoundCard(cancelRequest.Value);
+        //    var cancelResult = _service.CancelBoundCard(cancelRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (cancelResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束取消个人绑卡", cancelResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (cancelResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束取消个人绑卡", cancelResult.Value);
 
-            return cancelResult.Success ? new ObjectResult(cancelResult.Value) : new ObjectResult(null, cancelResult.ErrorCode, cancelResult.FirstException);
-        }
+        //    return cancelResult.Success ? new ObjectResult(cancelResult.Value) : new ObjectResult(null, cancelResult.ErrorCode, cancelResult.FirstException);
+        //}
 
-        private ObjectResult ReBindCard_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var rebindRequest = JsonUtil.DeserializeObject<PersonalWithdrawRebindCardRequest>(_request.BizContent);
-            if (!rebindRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", rebindRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            rebindRequest.Value.AppId = _request.AppId;
+        //private ObjectResult ReBindCard_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var rebindRequest = JsonUtil.DeserializeObject<PersonalWithdrawRebindCardRequest>(_request.BizContent);
+        //    if (!rebindRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", rebindRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    rebindRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.WithdrawRebindCard)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人重新绑卡", rebindRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.WithdrawRebindCard)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人重新绑卡", rebindRequest.Value);
 
-            var rebindResult = _service.WithdrawRebindCard(rebindRequest.Value);
+        //    var rebindResult = _service.WithdrawRebindCard(rebindRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (rebindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人重新绑卡", rebindResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (rebindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人重新绑卡", rebindResult.Value);
 
-            return rebindResult.Success ? new ObjectResult(rebindResult.Value) : new ObjectResult(null, rebindResult.ErrorCode, rebindResult.FirstException);
-        }
+        //    return rebindResult.Success ? new ObjectResult(rebindResult.Value) : new ObjectResult(null, rebindResult.ErrorCode, rebindResult.FirstException);
+        //}
 
-        private ObjectResult BindCard_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var bindRequest = JsonUtil.DeserializeObject<PersonalWithdrawBindCardRequest>(_request.BizContent);
-            if (!bindRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            bindRequest.Value.AppId = _request.AppId;
+        //private ObjectResult BindCard_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var bindRequest = JsonUtil.DeserializeObject<PersonalWithdrawBindCardRequest>(_request.BizContent);
+        //    if (!bindRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", bindRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    bindRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.WithdrawBindCard)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现绑卡", bindRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.WithdrawBindCard)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人提现绑卡", bindRequest.Value);
 
-            var bindResult = _service.WithdrawBindCard(bindRequest.Value);
+        //    var bindResult = _service.WithdrawBindCard(bindRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现绑卡", bindResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (bindResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人提现绑卡", bindResult.Value);
 
-            return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
-        }
+        //    return bindResult.Success ? new ObjectResult(bindResult.Value) : new ObjectResult(null, bindResult.ErrorCode, bindResult.FirstException);
+        //}
 
-        private ObjectResult QueryInfo_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var queryInfoRequest = JsonUtil.DeserializeObject<PersonalInfoQueryRequest>(_request.BizContent);
-            if (!queryInfoRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryInfoRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            queryInfoRequest.Value.AppId = _request.AppId;
+        //private ObjectResult QueryInfo_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var queryInfoRequest = JsonUtil.DeserializeObject<PersonalInfoQueryRequest>(_request.BizContent);
+        //    if (!queryInfoRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryInfoRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    queryInfoRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetAccountInfo)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人账户信息", queryInfoRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetAccountInfo)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人账户信息", queryInfoRequest.Value);
 
-            var queryInfoResult = _service.GetAccountInfo(queryInfoRequest.Value);
+        //    var queryInfoResult = _service.GetAccountInfo(queryInfoRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (queryInfoResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人账户信息", queryInfoResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (queryInfoResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人账户信息", queryInfoResult.Value);
 
-            return queryInfoResult.Success ? new ObjectResult(queryInfoResult.Value) : new ObjectResult(null, queryInfoResult.ErrorCode, queryInfoResult.FirstException);
-        }
+        //    return queryInfoResult.Success ? new ObjectResult(queryInfoResult.Value) : new ObjectResult(null, queryInfoResult.ErrorCode, queryInfoResult.FirstException);
+        //}
 
-        private ObjectResult UpdateInfo_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var updateRequest = JsonUtil.DeserializeObject<PersonalInfoUpdateRequest>(_request.BizContent);
-            if (!updateRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", updateRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            updateRequest.Value.AppId = _request.AppId;
+        //private ObjectResult UpdateInfo_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var updateRequest = JsonUtil.DeserializeObject<PersonalInfoUpdateRequest>(_request.BizContent);
+        //    if (!updateRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", updateRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    updateRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.UpdateAccountInfo)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始更新个人账户信息", updateRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.UpdateAccountInfo)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始更新个人账户信息", updateRequest.Value);
 
-            var updateResult = _service.UpdateAccountInfo(updateRequest.Value);
+        //    var updateResult = _service.UpdateAccountInfo(updateRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (updateResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束更新个人账户信息", updateResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (updateResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束更新个人账户信息", updateResult.Value);
 
-            return updateResult.Success ? new ObjectResult(updateResult.Value) : new ObjectResult(null, updateResult.ErrorCode, updateResult.FirstException);
-        }
+        //    return updateResult.Success ? new ObjectResult(updateResult.Value) : new ObjectResult(null, updateResult.ErrorCode, updateResult.FirstException);
+        //}
 
-        private ObjectResult Register_1_0(String traceService, String requestService, ref String traceMethod)
-        {
-            var regRequest = JsonUtil.DeserializeObject<PersonalRegisterRequest>(_request.BizContent);
-            if (!regRequest.Success)
-            {
-                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", regRequest.FirstException, _request.BizContent);
-                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
-            }
-            regRequest.Value.AppId = _request.AppId;
+        //private ObjectResult Register_1_0(String traceService, String requestService, ref String traceMethod)
+        //{
+        //    var regRequest = JsonUtil.DeserializeObject<PersonalRegisterRequest>(_request.BizContent);
+        //    if (!regRequest.Success)
+        //    {
+        //        _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", regRequest.FirstException, _request.BizContent);
+        //        return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+        //    }
+        //    regRequest.Value.AppId = _request.AppId;
 
-            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.Register)}(...)";
-            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人开户", regRequest.Value);
+        //    traceMethod = $"{_service.GetType().FullName}.{nameof(_service.Register)}(...)";
+        //    _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始个人开户", regRequest.Value);
 
-            var regResult = _service.Register(regRequest.Value);
+        //    var regResult = _service.Register(regRequest.Value);
 
-            _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人开户", regResult.Value);
+        //    _logger.Trace(TraceType.ROUTE.ToString(), (regResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束个人开户", regResult.Value);
 
-            return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
-        }
+        //    return regResult.Success ? new ObjectResult(regResult.Value) : new ObjectResult(null, regResult.ErrorCode, regResult.FirstException);
+        //}
         #endregion
 
         #region #v1.1
@@ -283,6 +285,26 @@ namespace CPI.Handlers.Settle
             _logger.Trace(TraceType.ROUTE.ToString(), (queryResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人开户信息", queryResult.Value);
 
             return queryResult.Success ? new ObjectResult(queryResult.Value) : new ObjectResult(null, queryResult.ErrorCode, queryResult.FirstException);
+        }
+
+        private ObjectResult QueryAccounts_1_1(String traceService, String requestService, ref String traceMethod)
+        {
+            var queryInfoRequest = JsonUtil.DeserializeObject<PersonalRegesiterAccountsQueryRequestV1>(_request.BizContent);
+            if (!queryInfoRequest.Success)
+            {
+                _logger.Error(TraceType.ROUTE.ToString(), CallResultStatus.ERROR.ToString(), traceService, requestService, "BizContent解析失败", queryInfoRequest.FirstException, _request.BizContent);
+                return new ObjectResult(null, ErrorCode.BIZ_CONTENT_DESERIALIZE_FAILED);
+            }
+            queryInfoRequest.Value.AppId = _request.AppId;
+
+            traceMethod = $"{_service.GetType().FullName}.{nameof(_service.GetAccountInfo)}(...)";
+            _logger.Trace(TraceType.ROUTE.ToString(), CallResultStatus.OK.ToString(), traceService, traceMethod, LogPhase.BEGIN, "开始查询个人账户信息", queryInfoRequest.Value);
+
+            var queryInfoResult = _serviceV1.QueryPersonalRegesiterAccounts(queryInfoRequest.Value);
+
+            _logger.Trace(TraceType.ROUTE.ToString(), (queryInfoResult.Success ? CallResultStatus.OK : CallResultStatus.ERROR).ToString(), traceService, traceMethod, LogPhase.END, "结束查询个人账户信息", queryInfoResult.Value);
+
+            return queryInfoResult.Success ? new ObjectResult(queryInfoResult.Value) : new ObjectResult(null, queryInfoResult.ErrorCode, queryInfoResult.FirstException);
         }
 
         private ObjectResult SignContract_1_1(String traceService, String requestService, ref String traceMethod)
