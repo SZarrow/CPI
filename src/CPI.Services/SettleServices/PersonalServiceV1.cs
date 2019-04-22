@@ -1183,15 +1183,6 @@ namespace CPI.Services.SettleServices
                          select t0;
             }
 
-            if (request.Keyword.HasValue())
-            {
-                String kw = request.Keyword.Trim();
-
-                orders = from t0 in orders
-                         where t0.OutTradeNo == kw || t0.Remark.Contains(kw) || t0.Status.Contains(kw)
-                         select t0;
-            }
-
             if (request.From != null)
             {
                 var fromDate = request.From.Value.Date;
@@ -1228,6 +1219,16 @@ namespace CPI.Services.SettleServices
                              CompleteTime = order.CompleteTime,
                              Remark = order.Remark
                          };
+
+                if (request.Keyword.HasValue())
+                {
+                    String kw = request.Keyword.Trim();
+
+                    ds = from t0 in ds
+                         where t0.IDCardNo == kw || t0.Mobile == kw || t0.RealName.Contains(kw) || t0.BankCardNo == kw
+                             || t0.OutTradeNo == kw || t0.Remark.Contains(kw) || t0.Status.Contains(kw)
+                         select t0;
+                }
 
                 var result = new PagedList<WithdrawOrderListQueryItem>(ds, request.PageIndex, request.PageSize);
                 return new XResult<WithdrawOrderListQueryResponseV1>(new WithdrawOrderListQueryResponseV1()
