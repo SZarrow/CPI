@@ -28,6 +28,7 @@ namespace CPI.Services.EntrustPay
 
         private readonly IPayOrderRepository _payOrderRepository = null;
         private readonly IAllotAmountOrderRepository _allotAmountOrderRepository = null;
+        private readonly IAgreePayBankCardInfoRepository _agreePayBankCardInfoRepository = null;
 
         private static EntrustPaymentApi CreateEntrustPaymentApi()
         {
@@ -224,6 +225,33 @@ namespace CPI.Services.EntrustPay
                 }
 
                 UpdateAllotAmountOrder(service, allotAmountOrder, AllotAmountOrderStatus.SUCCESS);
+
+                //判断是否有该付款人的绑卡信息，如果没有则创建
+                var existesBankCardInfo = (from t0 in _agreePayBankCardInfoRepository.QueryProvider
+                                           where t0.IDCardNo == request.IDCardNo && t0.BankCardNo == request.BankCardNo
+                                           select t0).Count() > 0;
+                if (!existesBankCardInfo)
+                {
+                    var bankcardInfo = new AgreePayBankCardInfo()
+                    {
+                        Id = IDGenerator.GenerateID(),
+                        AppId = request.AppId,
+                        RealName = request.RealName,
+                        BankCardNo = request.BankCardNo,
+                        IDCardNo = request.IDCardNo,
+                        Mobile = request.Mobile,
+                        BankCode = "-",
+                        UpdateTime = DateTime.Now
+                    };
+
+                    _agreePayBankCardInfoRepository.Add(bankcardInfo);
+
+                    saveResult = _agreePayBankCardInfoRepository.SaveChanges();
+                    if (!saveResult.Success)
+                    {
+                        _logger.Error(TraceType.BLL.ToString(), CallResultStatus.ERROR.ToString(), service, $"{nameof(_agreePayBankCardInfoRepository)}.SaveChanges()", "保存付款人信息失败", saveResult.FirstException, bankcardInfo);
+                    }
+                }
 
                 var resp = new CPIEntrustPayPaymentResponse()
                 {
