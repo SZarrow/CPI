@@ -1167,55 +1167,66 @@ namespace CPI.Services.SettleServices
                 return new XResult<WithdrawOrderListQueryResponseV1>(null, ErrorCode.INVALID_ARGUMENT, new ArgumentException(request.ErrorMessage));
             }
 
-            var q = _withdrawOrderRepository.QueryProvider.Where(x => x.PayeeId == request.PayeeId);
+            var orders = _withdrawOrderRepository.QueryProvider;
+            if (request.PayeeId.HasValue())
+            {
+                orders = orders.Where(x => x.PayeeId == request.PayeeId);
+            }
 
-            var successCount = q.Where(x => x.Status == WithdrawBindCardStatus.SUCCESS.ToString()).Count();
-            var successAmount = q.Where(x => x.Status == WithdrawBindCardStatus.SUCCESS.ToString()).Select(x => x.Amount).Sum();
+            var successCount = orders.Where(x => x.Status == WithdrawBindCardStatus.SUCCESS.ToString()).Count();
+            var successAmount = orders.Where(x => x.Status == WithdrawBindCardStatus.SUCCESS.ToString()).Select(x => x.Amount).Sum();
 
             if (request.Status.HasValue())
             {
-                q = from t0 in q
-                    where t0.Status == request.Status
-                    select t0;
+                orders = from t0 in orders
+                         where t0.Status == request.Status
+                         select t0;
             }
 
             if (request.Keyword.HasValue())
             {
                 String kw = request.Keyword.Trim();
 
-                q = from t0 in q
-                    where t0.OutTradeNo == kw || t0.Remark.Contains(kw) || t0.Status.Contains(kw)
-                    select t0;
+                orders = from t0 in orders
+                         where t0.OutTradeNo == kw || t0.Remark.Contains(kw) || t0.Status.Contains(kw)
+                         select t0;
             }
 
             if (request.From != null)
             {
                 var fromDate = request.From.Value.Date;
-                q = from t0 in q
-                    where t0.ApplyTime >= fromDate
-                    select t0;
+                orders = from t0 in orders
+                         where t0.ApplyTime >= fromDate
+                         select t0;
             }
 
             if (request.To != null)
             {
                 var toDate = request.To.Value.Date.AddDays(1).Date;
-                q = from t0 in q
-                    where t0.ApplyTime < toDate
-                    select t0;
+                orders = from t0 in orders
+                         where t0.ApplyTime < toDate
+                         select t0;
             }
 
             try
             {
-                var ds = from x in q
+                var ds = from order in orders
+                         join user in _personalSubAccountRepository.QueryProvider on order.PayeeId equals user.UID
+                         join card in _withdrawBankCardBindInfoRepository.QueryProvider on order.PayeeId equals card.PayeeId
                          select new WithdrawOrderListQueryItem()
                          {
-                             Id = x.Id.ToString(),
-                             Amount = x.Amount,
-                             Status = x.Status,
-                             OutTradeNo = x.OutTradeNo,
-                             ApplyTime = x.ApplyTime,
-                             CompleteTime = x.CompleteTime,
-                             Remark = x.Remark
+                             Id = order.Id.ToString(),
+                             PayeeId = user.UID,
+                             IDCardNo = user.IDCardNo,
+                             RealName = user.RealName,
+                             BankCardNo = card.BankCardNo,
+                             Mobile = card.Mobile,
+                             Amount = order.Amount,
+                             Status = order.Status,
+                             OutTradeNo = order.OutTradeNo,
+                             ApplyTime = order.ApplyTime,
+                             CompleteTime = order.CompleteTime,
+                             Remark = order.Remark
                          };
 
                 var result = new PagedList<WithdrawOrderListQueryItem>(ds, request.PageIndex, request.PageSize);

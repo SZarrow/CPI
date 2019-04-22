@@ -11,9 +11,6 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         [Required(ErrorMessage = "AppId字段必需")]
         public String AppId { get; set; }
 
-        [Required(ErrorMessage = "PayeeId字段必需")]
-        public String PayeeId { get; set; }
-
         public String Status { get; set; }
         public String Keyword { get; set; }
 
@@ -25,6 +22,7 @@ namespace CPI.Common.Domain.SettleDomain.Bill99.v1_0
         [Range(1, 50, ErrorMessage = "PageSize范围[1-50]")]
         public Int32 PageSize { get; set; }
 
+        public String PayeeId { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
     }
