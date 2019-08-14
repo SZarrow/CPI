@@ -103,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ATBase.Logging">
-      <Version>1.1.24</Version>
+      <Version>1.2.1</Version>
     </PackageReference>
     <PackageReference Include="ATBase.Net">
       <Version>1.1.0</Version>
@@ -112,7 +112,7 @@
       <Version>1.0.6</Version>
     </PackageReference>
     <PackageReference Include="ATBase.Security">
-      <Version>1.0.10</Version>
+      <Version>1.0.14</Version>
     </PackageReference>
     <PackageReference Include="Quartz">
       <Version>3.0.7</Version>
